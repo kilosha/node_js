@@ -11,12 +11,6 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.listen(port, () => { console.log(`Now server is listening on port ${port}`)})
 
-//app.use выполняется при каждом получении запроса приложением. Вызов ba - чтобы всё пошло дальше.
-app.use((aaa,a,ba) => {
-    console.log("Я выполнилась!")
-    ba()
-})
-
 const users = [
     {id: 1, name: "Pasha", isMan: true, age: 25},
     {id: 2, name: "Sasha", isMan: true, age: 18},
@@ -27,13 +21,6 @@ const users = [
 
 // 1 GET /users => array of all users && // 7 GET /users?min=18&max=50 
 // Способ 1:
-
-app.all('/users', (req, res,next) => {
-    
-    console.log("What is next?)))")
-    next()
-})
-
 
 app.get('/users', (req, res) => {
     if (Object.values(req.query).length) {

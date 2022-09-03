@@ -4,8 +4,7 @@
   "description": "my first node",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
-    "firstTask": "nodemon firstTask.js"
+    "start": "nodemon start.js"
   },
   "keywords": [
     "node"
