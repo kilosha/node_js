@@ -73,9 +73,9 @@ app.patch('/user/:id', (req, res) => {
 
     if (req.body.age) {
         users[userIndex].age = +req.body.age;
-    } else if (req.body.name) {
+    } if (req.body.name) {
         users[userIndex].name = req.body.name;
-    } else if (req.body.isMan !== undefined) {
+    } if (req.body.isMan !== undefined) {
         users[userIndex].isMan = req.body.isMan;
     }
     
