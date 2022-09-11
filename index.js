@@ -13,4 +13,4 @@ app.use(bodyparser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyparser.json());
 app.use('/api', routes);
-app.listen(process.env.PORT, () => { console.log(`Now server is listening on port http://localhost:${process.env.PORT}`)});
+app.listen(process.env.PORT, () => { console.log(`Now server is listening on http://localhost:${process.env.PORT}`)});
