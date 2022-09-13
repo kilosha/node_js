@@ -3,32 +3,42 @@
       {
          "ID": "3c2af1c7-2bb9-4b33-b485-77f5a7d1d19a",
          "name": "Sasha",
+         "username": "sanya22",
+         "email": "sanya22@gmail.com",
          "isMan": true,
          "age": 18
       },
       {
          "ID": "a172aba1-6328-461d-bd2a-fd62eabff2fb",
          "name": "Masha",
+         "username": "mary25",
+         "email": "mary25@gmail.com",
          "isMan": false,
          "age": 25
       },
       {
          "ID": "02f839bb-e36f-4f22-8e9d-5c39fa13de31",
          "name": "Alina",
+         "username": "sunny",
+         "email": "sunny@mail.ru",
          "isMan": false,
          "age": 21
       },
       {
          "ID": "d28e6dd0-a5ce-4c2c-8790-2ba0980007da",
          "name": "Mariya",
+         "username": "marr1",
+         "email": "marr1@mail.ru",
          "isMan": false,
          "age": 25
       },
       {
          "ID": "09587864-4352-4261-a7ad-f9fc2ca4e39f",
-         "name": "Vladislav",
-         "isMan": true,
-         "age": 25
+         "name": "as",
+         "username": "nika22",
+         "email": "j",
+         "isMan": false,
+         "age": 18
       }
    ]
 }

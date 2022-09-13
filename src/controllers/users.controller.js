@@ -1,44 +1,128 @@
+import { validationResult } from 'express-validator';
 import UsersServices from '../services/users.service.js';
 
 class UsersControllers {
-    async getAllUsers() {
-        const users = await UsersServices.getAllUsers();
-        return users;
+
+    async getUsers(req, res) {
+        let users = [];
+        try {
+            if (Object.values(req.query).length) {
+                users = await UsersServices.getQueryUsers(req.query);
+            } else {
+                users = await UsersServices.getAllUsers();
+            }
+            res.send(users);
+        } catch (e) {
+            res.status(404).send(e.message);
+        }
     }
 
-    async getQueryUsers(query) {
-        const queryUsers = await UsersServices.getQueryUsers(query);
-        return queryUsers;
+    async getUserByID(req, res) {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(400).send({
+                success: false,
+                errors: errors.array(),
+            });
+        } else {
+            try {
+                const user = await UsersServices.getUserByID(req.params.ID);
+                res.send(user);
+            } catch (e) {
+                res.status(404).send(e.message);
+            }
+        }  
     }
 
-    async getUserByID(ID) {
-        const user = await UsersServices.getUserByID(ID);
-        return user;
+    async createUser(req, res) {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(400).send({
+                success: false,
+                errors: errors.array(),
+            });
+        } else {
+            try {
+                const newUser = await UsersServices.createUser(req.body);
+                res.send(newUser);
+            } catch(e) {
+                res.status(400).send(e.message);
+            }
+        }
     }
 
-    async createUser(userInfo) {
-        const newUser = await UsersServices.createUser(userInfo);
-        return newUser;
+    async updateFullUser (req, res) {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(400).send({
+                success: false,
+                errors: errors.array(),
+            });
+        } else {
+            try {
+                const updatedUser = await UsersServices.updateFullUser(req.params.ID, req.body);
+                res.send(updatedUser);
+            } catch (e) {
+                res.status(400).send(e.message);
+            }
+        }
     }
 
-    async updateFullUser(ID, params) {
-        const updatedUser = await UsersServices.updateFullUser(ID, params);
-        return updatedUser;
+    async updateUser (req, res) {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(400).send({
+                success: false,
+                errors: errors.array(),
+            });
+        } else {
+            try {
+                const updatedUser = await UsersServices.updateUser(req.params.ID, req.body);
+                res.send(updatedUser);
+            } catch (e) {
+                res.send(e.message);
+            }
+        }
     }
 
-    async updateUser(ID, params) {
-        const updatedUser = await UsersServices.updateUser(ID, params);
-        return updatedUser;
+    async deleteUser (req, res) {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(400).send({
+                success: false,
+                errors: errors.array(),
+            });
+        } else {
+            try {
+                const deletedUser = await UsersServices.deleteUser(req.params.ID);
+                res.send(deletedUser);
+            } catch (e) {
+                res.send(e.message);
+            }
+        }
     }
 
-    async deleteUser(ID) {
-        const deletedUser = await UsersServices.deleteUser(ID);
-        return deletedUser;
-    }
+    async filterUsers (req, res) {
+        const errors = validationResult(req);
 
-    async filterUsers(param) {
-        const filteredUsers = await UsersServices.filterUsers(param);
-        return filteredUsers;
+        if (!errors.isEmpty()) {
+            return res.status(400).send({
+                success: false,
+                errors: errors.mapped(),
+            });
+        } else {
+            try {
+                const filteredUsers = await UsersServices.filterUsers(req.params.param);
+                res.send(filteredUsers);
+            } catch (e) {
+                res.send(e.message);
+            }
+        }
     }
 }
 
