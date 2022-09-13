@@ -1,6 +1,5 @@
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
-import { validate as uuidValidate } from 'uuid';
 
 class UsersServices {
     getAllUsers() {
@@ -31,8 +30,6 @@ class UsersServices {
     }
 
     getUserByID(ID) {
-        if (!uuidValidate(ID)) throw new Error('Некорректный ID');
-        
         return new Promise((res, rej) => {
             this
             .getAllUsers()
@@ -63,8 +60,6 @@ class UsersServices {
     }
 
     updateFullUser(ID, params){
-        if (!uuidValidate(ID)) throw new Error('Некорректный ID');
-
         return new Promise((res, rej) => {
             this
             .getAllUsers()
@@ -84,8 +79,6 @@ class UsersServices {
     }
 
     updateUser(ID, params) {
-        if (!uuidValidate(ID)) throw new Error('Некорректный ID');
-
         return new Promise((res, rej) => {
             this
             .getAllUsers()
@@ -111,8 +104,6 @@ class UsersServices {
     }
 
     deleteUser(ID) {
-        if (!uuidValidate(ID)) throw new Error('Некорректный ID');
-
         return new Promise((res, rej) => {
             this
             .getAllUsers()
@@ -140,8 +131,6 @@ class UsersServices {
                 } else if (param === 'F') {
                     res(users.filter(user => !user.isMan));
                 } else {
-                    if (!uuidValidate(param)) rej(new Error('Некорректный ID'));
-
                     const user = users.find(user => user.ID === param);
                     if (user) {
                         res(user);
