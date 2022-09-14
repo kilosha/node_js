@@ -30,13 +30,13 @@ const router = express.Router();
  *                type: array
  *                items: 
  *                  $ref: '#/definitions/CreatedOrUpdatedUser'
- *           400:
+ *           404:
  *              description: Error
  *              schema:
  *                type: string
  *                example: "Пользователи не найдены"
  */
-router.get('/', Validator.validateQueryIfPresent(), UsersControllers.getUsers);
+router.get('/', UsersControllers.getUsers);
 
 /**
  * @swagger
@@ -52,12 +52,13 @@ router.get('/', Validator.validateQueryIfPresent(), UsersControllers.getUsers);
  *          required: true
  *          description: Set an {ID} of a user to get
  *          type: string
+ *          example: d28e6dd0-a5ce-4c2c-8790-2ba0980007da
  *      responses:
  *           200:
  *              description: Successful response
  *              schema:
  *                $ref: '#/definitions/CreatedOrUpdatedUser'
- *           400:
+ *           404:
  *              description: Error
  *              schema:
  *                type: string
@@ -212,6 +213,7 @@ router.post("/", Validator.validateNewUser(), UsersControllers.createUser);
  *          required: true
  *          description: Set an {ID} of a user to update
  *          type: string
+ *          example: d28e6dd0-a5ce-4c2c-8790-2ba0980007da
  *        - in: body
  *          name: Users
  *          required: true
@@ -246,6 +248,7 @@ router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersCont
  *          required: true
  *          description: Set an {ID} of a user to update
  *          type: string
+ *          example: d28e6dd0-a5ce-4c2c-8790-2ba0980007da
  *        - in: body
  *          name: Users
  *          required: true
@@ -280,6 +283,7 @@ router.patch('/:ID', [Validator.validateID(), Validator.validateUser()], UsersCo
  *          required: true
  *          description: ID of user to delete
  *          type: string
+ *          example: d28e6dd0-a5ce-4c2c-8790-2ba0980007da
  *      responses:
  *           200:
  *              description: Successful response

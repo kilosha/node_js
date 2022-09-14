@@ -4,7 +4,7 @@ class Validator {
     validateNewUser() {
         return [
             body().custom(user => {
-                return this.isValidUser(user);
+                return this.isValidNewUser(user);
             }),
             body("name")
                 .notEmpty().withMessage("Не заполнено обязательное поле name")
@@ -69,29 +69,31 @@ class Validator {
         return true;
     }
 
+    isValidNewUser(user) {
+        const { name, username, email, isMan, age, ...other} = {...user};
+
+        if (Object.keys(other).length > 0) {
+            throw new Error('Объект содержит некорректные поля: ' + Object.keys(other));
+        } 
+
+        return true;
+    }
+
     validateQueryIfPresent() {
         return [ query().custom(query => {
-            
-            
-            }),
+            if (Object.keys(query).length > 0) {
+                const { min, max, ...other } = {...query};
+                if (Object.keys(other).length > 0) {
+                    throw new Error('Некорректные query параметры: ' + Object.keys(other));
+                }
+                
+                if (min > max) {
+                    throw new Error('Некорректные query параметры: min должно быть <= max');
+                }
+            }}),
             query('min').isNumeric({ "no_symbols": true}).withMessage("Минимальный возраст должен быть целым числом"),
             query('max').isNumeric({ "no_symbols": true}).withMessage("Максимальный возраст должен быть целым числом")
         ]
-    }
-
-    validateQueryParams(query) {
-        if (Object.keys(query).length > 0) {
-            const { min, max, ...other } = {...query};
-            if (Object.keys(other).length > 0) {
-                throw new Error('Некорректные query параметры: ' + Object.keys(other));
-            }
-            
-            if (min > max) {
-                throw new Error('Некорректные query параметры: min должно быть <= max');
-            }
-        }
-
-        return true
     }
 }
 
