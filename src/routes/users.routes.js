@@ -4,7 +4,39 @@ import Validator from "../utils/validator.js";
 
 const router = express.Router();
 
-router.get('/', UsersControllers.getUsers);
+/**
+ * @swagger
+ * /api/users:
+ *  get:
+ *      summary: Get all users or users filtered by age range if query exists
+ *      description: Returns users array
+ *      tags:
+ *          - Users
+ *      parameters:
+ *        - in: query
+ *          name: min
+ *          required: false
+ *          description: Set an min age of users to get (from 10 to 100)
+ *          type: integer
+ *        - in: query
+ *          name: max
+ *          required: false
+ *          description: Set an max age of users to get (from 10 to 100)
+ *          type: integer
+ *      responses:
+ *           200:
+ *              description: Successful response
+ *              schema:
+ *                type: array
+ *                items: 
+ *                  $ref: '#/definitions/CreatedOrUpdatedUser'
+ *           400:
+ *              description: Error
+ *              schema:
+ *                type: string
+ *                example: "Пользователи не найдены"
+ */
+router.get('/', Validator.validateQueryIfPresent(), UsersControllers.getUsers);
 
 /**
  * @swagger
