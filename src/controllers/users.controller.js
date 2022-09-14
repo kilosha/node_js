@@ -89,7 +89,7 @@ class UsersControllers {
                 res.send(updatedUser);
             } catch (e) {
                 Sentry.captureException(e);
-                res.send(e.message);
+                res.status(400).send(e.message);
             }
         }
     }
@@ -108,7 +108,7 @@ class UsersControllers {
                 res.send(deletedUser);
             } catch (e) {
                 Sentry.captureException(e);
-                res.send(e.message);
+                res.status(400).send(e.message);
             }
         }
     }
@@ -127,7 +127,7 @@ class UsersControllers {
                 res.send(filteredUsers);
             } catch (e) {
                 Sentry.captureException(e);
-                res.send(e.message);
+                res.status(404).send(e.message);
             }
         }
     }
