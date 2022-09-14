@@ -3,7 +3,6 @@ import Sentry from '@sentry/node';
 import UsersServices from '../services/users.service.js';
 
 class UsersControllers {
-
     async getUsers(req, res) {
         let users = [];
         try {
@@ -14,7 +13,7 @@ class UsersControllers {
             }
             res.send(users);
         } catch (e) {
-            Sentry.captureException(e.message);
+            Sentry.captureException(e);
             res.status(404).send(e.message);
         }
     }
@@ -32,10 +31,10 @@ class UsersControllers {
                 const user = await UsersServices.getUserByID(req.params.ID);
                 res.send(user);
             } catch (e) {
-                Sentry.captureException(e.message);
+                Sentry.captureException(e);
                 res.status(404).send(e.message);
             }
-        }  
+        }
     }
 
     async createUser(req, res) {
@@ -50,14 +49,14 @@ class UsersControllers {
             try {
                 const newUser = await UsersServices.createUser(req.body);
                 res.send(newUser);
-            } catch(e) {
-                Sentry.captureException(e.message);
+            } catch (e) {
+                Sentry.captureException(e);
                 res.status(400).send(e.message);
             }
         }
     }
 
-    async updateFullUser (req, res) {
+    async updateFullUser(req, res) {
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
@@ -70,13 +69,13 @@ class UsersControllers {
                 const updatedUser = await UsersServices.updateFullUser(req.params.ID, req.body);
                 res.send(updatedUser);
             } catch (e) {
-                Sentry.captureException(e.message);
+                Sentry.captureException(e);
                 res.status(400).send(e.message);
             }
         }
     }
 
-    async updateUser (req, res) {
+    async updateUser(req, res) {
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
@@ -89,13 +88,13 @@ class UsersControllers {
                 const updatedUser = await UsersServices.updateUser(req.params.ID, req.body);
                 res.send(updatedUser);
             } catch (e) {
-                Sentry.captureException(e.message);
+                Sentry.captureException(e);
                 res.send(e.message);
             }
         }
     }
 
-    async deleteUser (req, res) {
+    async deleteUser(req, res) {
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
@@ -108,13 +107,13 @@ class UsersControllers {
                 const deletedUser = await UsersServices.deleteUser(req.params.ID);
                 res.send(deletedUser);
             } catch (e) {
-                Sentry.captureException(e.message);
+                Sentry.captureException(e);
                 res.send(e.message);
             }
         }
     }
 
-    async filterUsers (req, res) {
+    async filterUsers(req, res) {
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
@@ -127,7 +126,7 @@ class UsersControllers {
                 const filteredUsers = await UsersServices.filterUsers(req.params.param);
                 res.send(filteredUsers);
             } catch (e) {
-                Sentry.captureException(e.message);
+                Sentry.captureException(e);
                 res.send(e.message);
             }
         }
