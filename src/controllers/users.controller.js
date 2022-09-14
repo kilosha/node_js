@@ -1,4 +1,5 @@
 import { validationResult } from 'express-validator';
+import Sentry from '@sentry/node';
 import UsersServices from '../services/users.service.js';
 
 class UsersControllers {
@@ -13,6 +14,7 @@ class UsersControllers {
             }
             res.send(users);
         } catch (e) {
+            Sentry.captureException(e.message);
             res.status(404).send(e.message);
         }
     }
@@ -30,6 +32,7 @@ class UsersControllers {
                 const user = await UsersServices.getUserByID(req.params.ID);
                 res.send(user);
             } catch (e) {
+                Sentry.captureException(e.message);
                 res.status(404).send(e.message);
             }
         }  
@@ -48,6 +51,7 @@ class UsersControllers {
                 const newUser = await UsersServices.createUser(req.body);
                 res.send(newUser);
             } catch(e) {
+                Sentry.captureException(e.message);
                 res.status(400).send(e.message);
             }
         }
@@ -66,6 +70,7 @@ class UsersControllers {
                 const updatedUser = await UsersServices.updateFullUser(req.params.ID, req.body);
                 res.send(updatedUser);
             } catch (e) {
+                Sentry.captureException(e.message);
                 res.status(400).send(e.message);
             }
         }
@@ -84,6 +89,7 @@ class UsersControllers {
                 const updatedUser = await UsersServices.updateUser(req.params.ID, req.body);
                 res.send(updatedUser);
             } catch (e) {
+                Sentry.captureException(e.message);
                 res.send(e.message);
             }
         }
@@ -102,6 +108,7 @@ class UsersControllers {
                 const deletedUser = await UsersServices.deleteUser(req.params.ID);
                 res.send(deletedUser);
             } catch (e) {
+                Sentry.captureException(e.message);
                 res.send(e.message);
             }
         }
@@ -120,6 +127,7 @@ class UsersControllers {
                 const filteredUsers = await UsersServices.filterUsers(req.params.param);
                 res.send(filteredUsers);
             } catch (e) {
+                Sentry.captureException(e.message);
                 res.send(e.message);
             }
         }

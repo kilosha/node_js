@@ -6,7 +6,7 @@
          "username": "sanya22",
          "email": "sanya22@gmail.com",
          "isMan": true,
-         "age": 18
+         "age": 25
       },
       {
          "ID": "a172aba1-6328-461d-bd2a-fd62eabff2fb",
@@ -33,12 +33,12 @@
          "age": 25
       },
       {
-         "ID": "09587864-4352-4261-a7ad-f9fc2ca4e39f",
-         "name": "as",
-         "username": "nika22",
-         "email": "j",
+         "ID": "6f3ee3ec-87fd-45f2-a6c4-fb54e82c741d",
+         "name": "Masha",
+         "username": "marry22",
+         "email": "example@example.com",
          "isMan": false,
-         "age": 18
+         "age": 25
       }
    ]
 }
