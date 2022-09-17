@@ -62,7 +62,7 @@ class UsersControllers {
                 } else {
                     return res.status(400).send({
                         success: false,
-                        message: "Введенный логин уже используется"
+                        message: "Введенный email уже используется"
                     });
                 }
             } catch (e) {
