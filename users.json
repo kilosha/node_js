@@ -15,7 +15,7 @@
          "username": "st100",
          "email": "st100@gmail.com",
          "password": "$2b$05$ko7W8SdtY1dNQGY.fe.XUewpsDK0pANEtpxcPqWQFEKpIH0S7TLAm",
-         "isMan": false,
+         "isMan": true,
          "age": 25
       },
       {
@@ -41,7 +41,7 @@
          "name": "Masha",
          "username": "marry333",
          "email": "marya134@mail.ru",
-         "isMan": true,
+         "isMan": false,
          "password": "$2b$05$bA7njGDIsJ2qsS1K97589ONeLshwIQLPU81ZN8boV15FdFbMsLJhO",
          "age": 23
       }
