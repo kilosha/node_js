@@ -82,7 +82,11 @@ class UsersControllers {
             });
         } else {
             try {
-                const updatedUser = await UsersServices.updateFullUser(req.params.ID, req.body);
+                const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+                const updatedUser = await UsersServices.updateFullUser({
+                    ...req.body,
+                    password: hashedPassword
+                });
                 res.send(updatedUser);
             } catch (e) {
                 Sentry.captureException(e);
@@ -101,7 +105,16 @@ class UsersControllers {
             });
         } else {
             try {
-                const updatedUser = await UsersServices.updateUser(req.params.ID, req.body);
+                let hashedPassword;
+                if (req.body.password) {
+                    hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+                }
+
+                const updatedUser = await UsersServices.updateUser({
+                    ...req.body,
+                    password: hashedPassword || req.body.password
+                });
+
                 res.send(updatedUser);
             } catch (e) {
                 Sentry.captureException(e);
