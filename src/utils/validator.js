@@ -76,7 +76,7 @@ class Validator {
     }
 
     isValidUser(user) {
-        const { ID, name, username, email, password, isMan, age, ...other } = { ...user };
+        const { ID, name, username, email, password, isMan, age, ...other } = user;
 
         if (Object.keys(other).length > 0) {
             throw new Error('Объект содержит некорректные поля: ' + Object.keys(other));
@@ -86,7 +86,7 @@ class Validator {
     }
 
     isValidNewUser(user) {
-        const { name, username, email, password, isMan, age, ...other } = { ...user };
+        const { name, username, email, password, isMan, age, ...other } = user;
 
         if (Object.keys(other).length > 0) {
             throw new Error('Объект содержит некорректные поля: ' + Object.keys(other));
@@ -98,7 +98,7 @@ class Validator {
     validateQueryIfPresent() {
         return [query().custom(query => {
             if (Object.keys(query).length > 0) {
-                const { min, max, ...other } = { ...query };
+                const { min, max, ...other } = query;
                 if (Object.keys(other).length > 0) {
                     throw new Error('Некорректные query параметры: ' + Object.keys(other));
                 }
