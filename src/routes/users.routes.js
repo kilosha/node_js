@@ -196,7 +196,7 @@ router.get('/:param', Validator.validateFilter(), UsersControllers.filterUsers);
  *         type: integer
  *         example: 25
  */
-router.post("/", Validator.validateNewUser(), UsersControllers.createUser);
+router.post("/", Validator.validateUser(), UsersControllers.createUser);
 
 /**
  * @swagger
@@ -224,7 +224,7 @@ router.post("/", Validator.validateNewUser(), UsersControllers.createUser);
  *           200:
  *              description: Successful response
  *              schema:
- *                $ref: '#/definitions/CreatedOrUpdatedUser'
+ *                $ref: '#/definitions/Users'
  *           400:
  *              description: Error
  *              schema:
@@ -266,7 +266,7 @@ router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersCont
  *                type: string
  *                example: "Укажите корректный email"
  */
-router.patch('/:ID', [Validator.validateID(), Validator.validateUser()], UsersControllers.updateUser);
+router.patch('/:ID', [Validator.validateID(), Validator.validateUserUpdate()], UsersControllers.updateUser);
 
 /**
  * @swagger
