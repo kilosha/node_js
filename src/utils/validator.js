@@ -1,7 +1,7 @@
 import {body, param, query, oneOf} from 'express-validator';
 
 class Validator {
-    validateNewUser() {
+    validateUser() {
         return [
             body().custom(user => {
                 return this.isValidNewUser(user);
@@ -25,7 +25,7 @@ class Validator {
     }
 
     // Проверяем, изменяется ли определенный параметр, если да - его валидируем
-    validateUser() {
+    validateUserUpdate() {
         return [
             body().custom(user => {
                 return this.isValidUser(user);
