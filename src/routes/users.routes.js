@@ -219,12 +219,12 @@ router.post("/", Validator.validateUser(), UsersControllers.createUser);
  *          required: true
  *          description: Object to update
  *          schema:
- *              $ref: '#/definitions/UpdateUser'
+ *              $ref: '#/definitions/Users'
  *      responses:
  *           200:
  *              description: Successful response
  *              schema:
- *                $ref: '#/definitions/Users'
+ *                $ref: '#/definitions/CreatedOrUpdatedUser'
  *           400:
  *              description: Error
  *              schema:
