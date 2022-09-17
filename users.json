@@ -5,14 +5,16 @@
          "name": "Sasha",
          "username": "sanya22",
          "email": "sanya22@gmail.com",
+         "password": "$2b$05$sPwesSRG6ew42i9G2XhzmOJ4W6aji7ubUb5ptdE/4ZgnEFFGuxjmi",
          "isMan": true,
          "age": 25
       },
       {
          "ID": "a172aba1-6328-461d-bd2a-fd62eabff2fb",
-         "name": "Masha",
-         "username": "mary25",
-         "email": "mary25@gmail.com",
+         "name": "Stas",
+         "username": "st100",
+         "email": "st100@gmail.com",
+         "password": "$2b$05$ko7W8SdtY1dNQGY.fe.XUewpsDK0pANEtpxcPqWQFEKpIH0S7TLAm",
          "isMan": false,
          "age": 25
       },
@@ -21,6 +23,7 @@
          "name": "Alina",
          "username": "sunny",
          "email": "sunny@mail.ru",
+         "password": "$2b$05$ws5qEDKGt2hE5mSv5aTZJ.4mnf/dtzn2jVYMH5KHxZzpvOam1q8v.",
          "isMan": false,
          "age": 21
       },
@@ -29,16 +32,18 @@
          "name": "Mariya",
          "username": "marr1",
          "email": "marr1@mail.ru",
+         "password": "$2b$05$/0rDRTpF1BN7654DFy2tbOuUQ0VPTHqxlOUPxTZAJxbIIOGHwQfbO",
          "isMan": false,
          "age": 25
       },
       {
-         "ID": "6f3ee3ec-87fd-45f2-a6c4-fb54e82c741d",
+         "ID": "9d0bfc88-853a-46be-88ae-7774317da7a6",
          "name": "Masha",
-         "username": "marry22",
-         "email": "example@example.com",
-         "isMan": false,
-         "age": 25
+         "username": "marry333",
+         "email": "marya134@mail.ru",
+         "isMan": true,
+         "password": "$2b$05$bA7njGDIsJ2qsS1K97589ONeLshwIQLPU81ZN8boV15FdFbMsLJhO",
+         "age": 23
       }
    ]
 }

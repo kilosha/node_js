@@ -1,6 +1,10 @@
 import { validationResult } from 'express-validator';
 import Sentry from '@sentry/node';
+import * as bcrypt from 'bcrypt';
+
 import UsersServices from '../services/users.service.js';
+
+const saltRounds = 5;
 
 class UsersControllers {
     async getUsers(req, res) {
@@ -47,8 +51,20 @@ class UsersControllers {
             });
         } else {
             try {
-                const newUser = await UsersServices.createUser(req.body);
-                res.send(newUser);
+                const isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email);
+                if (!isEmailAlreadyUsed) {
+                    const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+                    const newUser = await UsersServices.createUser({
+                        ...req.body,
+                        password: hashedPassword
+                    });
+                    res.send(newUser);
+                } else {
+                    return res.status(400).send({
+                        success: false,
+                        message: "Введенный email уже используется"
+                    });
+                }
             } catch (e) {
                 Sentry.captureException(e);
                 res.status(400).send(e.message);
