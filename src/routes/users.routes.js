@@ -29,7 +29,7 @@ const router = express.Router();
  *              schema:
  *                type: array
  *                items: 
- *                  $ref: '#/definitions/CreatedOrUpdatedUser'
+ *                  $ref: '#/definitions/UserWithID'
  *           404:
  *              description: Error
  *              schema:
@@ -57,7 +57,7 @@ router.get('/', UsersControllers.getUsers);
  *           200:
  *              description: Successful response
  *              schema:
- *                $ref: '#/definitions/CreatedOrUpdatedUser'
+ *                $ref: '#/definitions/UserWithID'
  *           404:
  *              description: Error
  *              schema:
@@ -115,7 +115,7 @@ router.get('/:param', Validator.validateFilter(), UsersControllers.filterUsers);
  *        200:
  *          description: Successful response
  *          schema:
- *            $ref: '#/definitions/CreatedOrUpdatedUser'
+ *            $ref: '#/definitions/UserWithID'
  *        400:
  *          description: Error
  *          schema:
@@ -136,7 +136,11 @@ router.get('/:param', Validator.validateFilter(), UsersControllers.filterUsers);
  *       email:
  *         type: string
  *         example: example@example.com
- *         description: Users' email 
+ *         description: Users' email
+ *       password: 
+ *         type: string
+ *         example: 1Sq_22qw
+ *         description: Users' password (min length - 8 symbols, min 1 uppercase, min 1 lowercase, min 1 number, min 1 symbol) 
  *       isMan:
  *         type: boolean
  *         example: false
@@ -149,6 +153,7 @@ router.get('/:param', Validator.validateFilter(), UsersControllers.filterUsers);
  *      - name
  *      - username
  *      - email
+ *      - password
  *      - isMan
  *      - age
  *   UpdateUser:
@@ -165,7 +170,11 @@ router.get('/:param', Validator.validateFilter(), UsersControllers.filterUsers);
  *       email:
  *         type: string
  *         example: example@example.com
- *         description: Users' email 
+ *         description: Users' email
+ *       password: 
+ *         type: string
+ *         example: 1Sq_22qw
+ *         description: Users' password (min length - 8 symbols, min 1 uppercase, min 1 lowercase, min 1 number, min 1 symbol) 
  *       isMan:
  *         type: boolean
  *         example: false
@@ -174,7 +183,7 @@ router.get('/:param', Validator.validateFilter(), UsersControllers.filterUsers);
  *         type: integer
  *         example: 25
  *         description: Users' age
- *   CreatedOrUpdatedUser:
+ *   UserWithID:
  *     description: Users object
  *     properties:
  *       ID:
@@ -189,6 +198,9 @@ router.get('/:param', Validator.validateFilter(), UsersControllers.filterUsers);
  *       email:
  *         type: string
  *         example: example@example.com
+ *       password:
+ *         type: string
+ *         example: $2b$05$N3D9QDUXCp3N7cjNJyfi9uHwzx862bgvEhx03Krwh54VXyOPUIJcm
  *       isMan:
  *         type: boolean
  *         example: false
@@ -224,12 +236,12 @@ router.post("/", Validator.validateUser(), UsersControllers.createUser);
  *           200:
  *              description: Successful response
  *              schema:
- *                $ref: '#/definitions/CreatedOrUpdatedUser'
+ *                $ref: '#/definitions/UserWithID'
  *           400:
  *              description: Error
  *              schema:
  *                type: string
- *                example: "Укажите корректный email"
+ *                example: "Укажите корректный email (example@example.com)"
  */
 router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersControllers.updateFullUser);
 
@@ -259,12 +271,12 @@ router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersCont
  *           200:
  *              description: Successful response
  *              schema:
- *                $ref: '#/definitions/CreatedOrUpdatedUser'
+ *                $ref: '#/definitions/UserWithID'
  *           400:
  *              description: Error
  *              schema:
  *                type: string
- *                example: "Укажите корректный email"
+ *                example: "Укажите корректный email (example@example.com)"
  */
 router.patch('/:ID', [Validator.validateID(), Validator.validateUserUpdate()], UsersControllers.updateUser);
 
@@ -288,7 +300,7 @@ router.patch('/:ID', [Validator.validateID(), Validator.validateUserUpdate()], U
  *           200:
  *              description: Successful response
  *              schema:
- *                $ref: '#/definitions/CreatedOrUpdatedUser'
+ *                $ref: '#/definitions/UserWithID'
  *           400:
  *              description: Error
  *              schema:

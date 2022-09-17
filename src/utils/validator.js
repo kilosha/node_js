@@ -1,4 +1,4 @@
-import {body, param, query, oneOf} from 'express-validator';
+import { body, param, query, oneOf } from 'express-validator';
 
 class Validator {
     validateUser() {
@@ -14,13 +14,22 @@ class Validator {
                 .isString().withMessage("Username должно быть строкой"),
             body("email")
                 .notEmpty().withMessage("Не заполнено обязательное поле email")
-                .isEmail().normalizeEmail().withMessage("Укажите корректный email"),
+                .isEmail().normalizeEmail().withMessage("Укажите корректный email (example@example.com)"),
+            body("password")
+                .notEmpty().withMessage("Не заполнено обязательное поле password")
+                .isStrongPassword({
+                    minLength: 8,
+                    minLowercase: 1,
+                    minUppercase: 1,
+                    minNumbers: 1,
+                    minSymbols: 1
+                }).withMessage("Пароль должен быть длиной не менее 8 символов, из них минимум 1 заглавная буква, 1 прописная, 1 число и 1 символ"),
             body("isMan")
                 .notEmpty().withMessage("Не заполнено обязательное поле isMan")
                 .isBoolean().withMessage("Значение должно быть true или false"),
             body("age")
                 .notEmpty().withMessage("Не заполнено обязательное поле age")
-                .isNumeric({ "no_symbols": true}).withMessage("Введите целое число")
+                .isNumeric({ "no_symbols": true }).withMessage("Введите целое число")
         ]
     }
 
@@ -38,13 +47,20 @@ class Validator {
                 .isString().withMessage("Username должно быть строкой"),
             body("email").if(body('email').exists())
                 .notEmpty().withMessage("Не заполнено обязательное поле email")
-                .isEmail().normalizeEmail().withMessage("Укажите корректный email"),
+                .isEmail().normalizeEmail().withMessage("Укажите корректный email (example@example.com)"),
+            body("password").if(body('password').exists()).isStrongPassword({
+                minLength: 8,
+                minLowercase: 1,
+                minUppercase: 1,
+                minNumbers: 1,
+                minSymbols: 1
+            }).withMessage("Пароль должен быть длиной не менее 8 символов, из них минимум 1 заглавная буква, 1 прописная, 1 число и 1 символ"),
             body("isMan").if(body('isMan').exists())
                 .notEmpty().withMessage("Не заполнено обязательное поле isMan")
                 .isBoolean().withMessage("Значение должно быть true или false"),
             body("age").if(body('age').exists())
                 .notEmpty().withMessage("Не заполнено обязательное поле age")
-                .isNumeric({ "no_symbols": true}).withMessage("Введите целое число")
+                .isNumeric({ "no_symbols": true }).withMessage("Введите целое число")
         ]
     }
 
@@ -60,39 +76,40 @@ class Validator {
     }
 
     isValidUser(user) {
-        const { ID, name, username, email, isMan, age, ...other} = {...user};
+        const { ID, name, username, email, password, isMan, age, ...other } = { ...user };
 
         if (Object.keys(other).length > 0) {
             throw new Error('Объект содержит некорректные поля: ' + Object.keys(other));
-        } 
+        }
 
         return true;
     }
 
     isValidNewUser(user) {
-        const { name, username, email, isMan, age, ...other} = {...user};
+        const { name, username, email, password, isMan, age, ...other } = { ...user };
 
         if (Object.keys(other).length > 0) {
             throw new Error('Объект содержит некорректные поля: ' + Object.keys(other));
-        } 
+        }
 
         return true;
     }
 
     validateQueryIfPresent() {
-        return [ query().custom(query => {
+        return [query().custom(query => {
             if (Object.keys(query).length > 0) {
-                const { min, max, ...other } = {...query};
+                const { min, max, ...other } = { ...query };
                 if (Object.keys(other).length > 0) {
                     throw new Error('Некорректные query параметры: ' + Object.keys(other));
                 }
-                
+
                 if (min > max) {
                     throw new Error('Некорректные query параметры: min должно быть <= max');
                 }
-            }}),
-            query('min').isNumeric({ "no_symbols": true}).withMessage("Минимальный возраст должен быть целым числом"),
-            query('max').isNumeric({ "no_symbols": true}).withMessage("Максимальный возраст должен быть целым числом")
+            }
+        }),
+        query('min').isNumeric({ "no_symbols": true }).withMessage("Минимальный возраст должен быть целым числом"),
+        query('max').isNumeric({ "no_symbols": true }).withMessage("Максимальный возраст должен быть целым числом")
         ]
     }
 }
