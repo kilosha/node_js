@@ -2,6 +2,7 @@ import { validationResult } from 'express-validator';
 import Sentry from '@sentry/node';
 import * as bcrypt from 'bcrypt';
 
+import User from '../models/User.js';
 import UsersServices from '../services/users.service.js';
 
 const saltRounds = 5;
@@ -52,17 +53,25 @@ class UsersControllers {
         } else {
             try {
                 const isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email);
-                if (!isEmailAlreadyUsed) {
+                const isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username);
+                if (!isEmailAlreadyUsed && !isUserNameAlreadyUsed) {
                     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-                    const newUser = await UsersServices.createUser({
-                        ...req.body,
-                        password: hashedPassword
-                    });
-                    res.send(newUser);
+                    const newUser = new User(req.body, hashedPassword);
+                    const newDBUser = await UsersServices.createUser(newUser);
+                    res.send(newDBUser);
                 } else {
+                    let message;
+                    if (!isUserNameAlreadyUsed) {
+                        message = "Введенный email уже используется";
+                    } else if (!isEmailAlreadyUsed) {
+                        message = "Введенный username уже используется";
+                    } else {
+                        message = "Введенныe username и email уже используются";
+                    }
+
                     return res.status(400).send({
                         success: false,
-                        message: "Введенный email уже используется"
+                        message: message
                     });
                 }
             } catch (e) {
@@ -82,12 +91,31 @@ class UsersControllers {
             });
         } else {
             try {
-                const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-                const updatedUser = await UsersServices.updateFullUser({
-                    ...req.body,
-                    password: hashedPassword
-                });
-                res.send(updatedUser);
+                const isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email, req.params.ID);
+                const isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username, req.params.ID);
+
+                if (!isEmailAlreadyUsed && !isUserNameAlreadyUsed) {
+                    const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+                    const updatedUser = await UsersServices.updateFullUser({
+                        ...req.body,
+                        password: hashedPassword
+                    });
+                    res.send(updatedUser);
+                } else {
+                    let message;
+                    if (!isUserNameAlreadyUsed) {
+                        message = "Введенный email уже используется";
+                    } else if (!isEmailAlreadyUsed) {
+                        message = "Введенный username уже используется";
+                    } else {
+                        message = "Введенныe username и email уже используются";
+                    }
+
+                    return res.status(400).send({
+                        success: false,
+                        message: message
+                    });
+                }
             } catch (e) {
                 Sentry.captureException(e);
                 res.status(400).send(e.message);
@@ -105,17 +133,41 @@ class UsersControllers {
             });
         } else {
             try {
-                let hashedPassword;
-                if (req.body.password) {
-                    hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+                let isEmailAlreadyUsed, isUserNameAlreadyUsed;
+                if (req.body.email) {
+                    isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email, req.params.ID);
                 }
 
-                const updatedUser = await UsersServices.updateUser({
-                    ...req.body,
-                    password: hashedPassword || req.body.password
-                });
+                if (req.body.username) {
+                    isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username, req.params.ID);
+                }
+                
+                if (!isEmailAlreadyUsed && !isUserNameAlreadyUsed) {
+                    const updatedFields = {...req.body};
 
-                res.send(updatedUser);
+                    if (req.body.password) {
+                        const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+                        updatedFields.password = hashedPassword;
+                    }
+
+                    const updatedUser = await UsersServices.updateUser(updatedFields);
+
+                    res.send(updatedUser);
+                } else {
+                    let message;
+                    if (!isUserNameAlreadyUsed) {
+                        message = "Введенный email уже используется";
+                    } else if (!isEmailAlreadyUsed) {
+                        message = "Введенный username уже используется";
+                    } else {
+                        message = "Введенныe username и email уже используются";
+                    }
+
+                    return res.status(400).send({
+                        success: false,
+                        message: message
+                    });
+                }
             } catch (e) {
                 Sentry.captureException(e);
                 res.status(400).send(e.message);
@@ -161,5 +213,8 @@ class UsersControllers {
         }
     }
 }
+
+
+// username and email проверка повторяется в 3х функциях, переписать!
 
 export default new UsersControllers();

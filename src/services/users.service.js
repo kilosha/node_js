@@ -163,12 +163,33 @@ class UsersServices {
         })
     }
 
-    checkEmailUsage(email) {
+    checkEmailUsage(email, ID) {
         return new Promise((res, rej) => {
             this
                 .getAllUsers()
                 .then(users => {
+                    if (ID) {
+                        users = users.filter(user => user.ID !== ID);
+                    }
                     const user = users.find(user => user.email === email);
+                    if (user) {
+                        res(true);
+                    } else {
+                        res(false);
+                    }
+                })
+        })
+    }
+
+    checkUsernameUsage(username, ID) {
+        return new Promise((res, rej) => {
+            this
+                .getAllUsers()
+                .then(users => {
+                    if (ID) {
+                        users = users.filter(user => user.ID !== ID);
+                    }
+                    const user = users.find(user => user.username === username);
                     if (user) {
                         res(true);
                     } else {

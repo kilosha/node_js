@@ -44,6 +44,33 @@
          "isMan": false,
          "password": "$2b$05$bA7njGDIsJ2qsS1K97589ONeLshwIQLPU81ZN8boV15FdFbMsLJhO",
          "age": 23
+      },
+      {
+         "ID": "fca55332-354c-4c75-a328-c241f0101595",
+         "name": "Masha Gutkovskaya",
+         "username": "marrya91",
+         "email": "masha18@gmail.com",
+         "password": "$2b$05$jVaePYaiHBCP4PC4N2xEJuKZYTUXZPuxa52sKzl3B4pIuJ7aNI7KO",
+         "isMan": false,
+         "age": 25
+      },
+      {
+         "ID": "785f60b7-1a29-4cf4-8626-f3f3f2c62b12",
+         "name": "Masha Gutkovskaya",
+         "username": "marya91",
+         "email": "masha8@gmail.com",
+         "password": "$2b$05$ukH8nShjIzFSkk61fhS.Ze41.0/KaS2mzpLMhx2h8seU8Qgv5x/R6",
+         "isMan": false,
+         "age": 25
+      },
+      {
+         "ID": "ff1be2bb-d160-40d0-8bbc-68a830a7dc60",
+         "name": "Vlad",
+         "username": "vlad91",
+         "email": "vlad8@mail.ru",
+         "password": "$2b$05$6hofnN.xcxJ0Xg0kmn/Sqe3Jh9IxTcW1VNlGwYoobFKXvp8HIqHMG",
+         "isMan": true,
+         "age": 25
       }
    ]
 }
