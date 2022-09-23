@@ -112,6 +112,31 @@ class Validator {
         query('max').isNumeric({ "no_symbols": true }).withMessage("Максимальный возраст должен быть целым числом")
         ]
     }
+
+    validateLogin() {
+        return [
+            body().custom(info => {
+                return this.isValidLoginInfo(info);
+            }), 
+            body("email")
+                .notEmpty().withMessage("Не заполнено обязательное поле email")
+                .isEmail().normalizeEmail().withMessage("Укажите корректный email (example@example.com)"),
+            body("password")
+                .notEmpty().withMessage("Не заполнено обязательное поле password")
+            ]
+    }
+
+
+    isValidLoginInfo(info) {
+        const { email, password, ...other } = info;
+
+        if (Object.keys(other).length > 0) {
+            throw new Error('Объект содержит некорректные поля: ' + Object.keys(other));
+        }
+
+        return true;
+    }
+
 }
 
 export default new Validator();

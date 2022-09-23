@@ -1,6 +1,7 @@
 import express from "express";
 import UsersControllers from "../controllers/users.controller.js";
 import Validator from "../utils/validator.js";
+import authenticateToken from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -36,7 +37,7 @@ const router = express.Router();
  *                type: string
  *                example: "Пользователи не найдены"
  */
-router.get('/', UsersControllers.getUsers);
+router.get('/', authenticateToken, UsersControllers.getUsers);
 
 /**
  * @swagger
