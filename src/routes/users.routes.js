@@ -13,6 +13,8 @@ const router = express.Router();
  *      description: Returns users array
  *      tags:
  *          - Users
+ *      security:
+ *           - bearerAuth: []
  *      parameters:
  *        - in: query
  *          name: min
@@ -36,6 +38,12 @@ const router = express.Router();
  *              schema:
  *                type: string
  *                example: "Пользователи не найдены"
+ *  components:
+ *  securitySchemes:
+ *   bearerAuth:            # arbitrary name for the security scheme
+ *     type: http
+ *     scheme: bearer
+ *     bearerFormat: JWT  
  */
 router.get('/', authenticateToken, UsersControllers.getUsers);
 

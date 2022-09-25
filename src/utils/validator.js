@@ -137,6 +137,26 @@ class Validator {
         return true;
     }
 
+    validateTodoTitle() {
+        return [ 
+            body().custom(todo => {
+                return this.isValidTodoObject(todo);
+            }), 
+            body("title")
+            .notEmpty().withMessage("Не заполнено обязательное поле title")
+            .isString().withMessage("Title должно быть строкой")
+        ]
+    }
+
+    isValidTodoObject(todo) {
+        const { title, ...other } = todo;
+
+        if (Object.keys(other).length > 0) {
+            throw new Error('Объект содержит некорректные поля: ' + Object.keys(other));
+        }
+
+        return true;
+    }
 }
 
-export default new Validator();
+export default new Validator(); 
