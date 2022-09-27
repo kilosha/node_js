@@ -93,10 +93,13 @@ router.get('/', authenticateToken, TodosControllers.getTodos);
  *     UnauthorizedError:
  *       description: Unauthorized Error
  *       content:
- *         text/plain:
+ *         application/json:
  *           schema:
- *             type: string
- *             example: "Для работы нужен токен!"
+ *             type: object
+ *             properties:
+ *               message:
+ *                 type: string
+ *                 example: Для работы нужен токен!
  */
 router.post('/', authenticateToken, Validator.validateTodoTitle(), TodosControllers.createTodo);
 

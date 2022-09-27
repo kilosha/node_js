@@ -13,46 +13,47 @@ const router = express.Router();
  *          Check email and password correctness
  *      tags:
  *          - Login
- *      parameters:
- *        - name: log info
- *          in: body
- *          description: Users' email and password
- *          required: true
- *          schema:
- *            $ref: '#/definitions/LogInfo'
+ *      requestBody:
+ *        $ref: '#/components/requestBodies/LogInfo'
  *      responses:
  *        200:
- *          description: Successful response
- *          schema:
- *            $ref: '#/definitions/TokenObject'
- *            title: Return token
+ *          description: Successful response with generated JWT token
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object 
+ *                properties:
+ *                  token:
+ *                    type: string
+ *                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InZsYWQ4QG1haWwucnUiLCJpYXQiOjE2NjM5MjczOTZ9.3t7XJh3E8v5Va_ngMaIAmY6kqTbkpRbjHzQiF4xoOo0"
  *        400:
- *          description: Error
- *          schema:
- *            type: string
- *            example: "Такого пользователя нет!"
- * definitions:
- *   LogInfo:
- *     description: Users' email and password
- *     properties:
- *       email:
- *         type: string
- *         example: vlad8@mail.ru
- *         description: Users' email
- *       password: 
- *         type: string
- *         example: Hello_34
- *         description: Users' password (min length - 8 symbols, min 1 uppercase, min 1 lowercase, min 1 number, min 1 symbol) 
- *     required:
- *      - email
- *      - password
- *   TokenObject:
- *     description: Token
- *     properties:
- *       token:
- *         type: string
- *         example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InZsYWQ4QG1haWwucnUiLCJpYXQiOjE2NjM5MjczOTZ9.3t7XJh3E8v5Va_ngMaIAmY6kqTbkpRbjHzQiF4xoOo0"
- *         description: Token
+ *          description: "Error: Bad Request"
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Такого пользователя нет!
+ * components:
+ *   requestBodies: 
+ *     LogInfo:
+ *       description: Users' email and password
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: vlad8@mail.ru
+ *                 description: Users' email
+ *               password: 
+ *                 type: string
+ *                 example: Hello_34
+ *                 description: Users' password (min length - 8 symbols, min 1 uppercase, min 1 lowercase, min 1 number, min 1 symbol) 
  */
 router.post('/login', Validator.validateLogin(), AuthControllers.login);
 

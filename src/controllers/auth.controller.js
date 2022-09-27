@@ -18,8 +18,8 @@ class AuthControllers {
       try {
         const { email, password } = req.body;
         const user = await AuthServices.getUser(email);
-        const ID = user.ID;
         if (user) {
+          const ID = user.ID;
           const compareUser = await bcrypt.compare(password, user.password);
           if (compareUser) {
             const token = sign({ email, ID }, process.env.ACCESS_TOKEN_SECRET);

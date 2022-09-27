@@ -10,7 +10,7 @@ class TodosControllers {
             res.send(todos);
         } catch (e) {
             Sentry.captureException(e);
-            res.status(404).send(e.message);
+            res.status(404).send({ message: e.message });
         }
     }
 
@@ -29,7 +29,7 @@ class TodosControllers {
                 res.send(newTodo);
             } catch (e) {
                 Sentry.captureException(e);
-                res.status(400).send(e.message);
+                res.status(400).send({ message: e.message });
             }
         }
     }
@@ -48,7 +48,7 @@ class TodosControllers {
                 res.send(updatedTodo);
             } catch (e) {
                 Sentry.captureException(e);
-                res.status(400).send(e.message);
+                res.status(400).send({ message: e.message });
             }
         }
     }
@@ -68,7 +68,7 @@ class TodosControllers {
                 res.send(updatedTodo);
             } catch (e) {
                 Sentry.captureException(e);
-                res.status(400).send(e.message);
+                res.status(400).send({ message: e.message });
             }
         }
     }  
@@ -87,7 +87,7 @@ class TodosControllers {
                 res.send(deletedTodo);
             } catch (e) {
                 Sentry.captureException(e);
-                res.status(400).send(e.message);
+                res.status(400).send({ message: e.message });
             }
         }
     }

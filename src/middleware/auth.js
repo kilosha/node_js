@@ -5,7 +5,7 @@ const authenticateToken = (req, res, next) => {
         const authHeader = req.headers.authorization;
         const token = authHeader && authHeader.split(" ")[1];
         if (!token) {
-            res.status(401).send("Для работы нужен токен!");
+            res.status(401).send({message: "Для работы нужен токен!"});
         } else {
             jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
                 if (err) throw new Error("Invalid token");
@@ -14,7 +14,7 @@ const authenticateToken = (req, res, next) => {
             })
         }
     } catch (err) {
-        res.status(400).send(err.message);
+        res.status(400).send({ message: err.message });
     }
 }
 
