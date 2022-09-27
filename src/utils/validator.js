@@ -96,20 +96,22 @@ class Validator {
     }
 
     validateQueryIfPresent() {
-        return [query().custom(query => {
-            if (Object.keys(query).length > 0) {
-                const { min, max, ...other } = query;
-                if (Object.keys(other).length > 0) {
-                    throw new Error('Некорректные query параметры: ' + Object.keys(other));
-                }
+        return [
+            query().custom(query => {
+                if (Object.keys(query).length > 0) {
+                    const { min, max, ...other } = query;
+                    if (Object.keys(other).length > 0) {
+                        throw new Error('Некорректные query параметры: ' + Object.keys(other));
+                    }
 
-                if (min > max) {
-                    throw new Error('Некорректные query параметры: min должно быть <= max');
+                    if (+min > +max) {
+                        throw new Error('Некорректные query параметры: min должно быть <= max');
+                    }
                 }
-            }
-        }),
-        query('min').isNumeric({ "no_symbols": true }).withMessage("Минимальный возраст должен быть целым числом"),
-        query('max').isNumeric({ "no_symbols": true }).withMessage("Максимальный возраст должен быть целым числом")
+                return true;
+            }),
+            query('min').if(query('min').exists()).isInt({ min: 10, max: 100 }).withMessage("Минимальный возраст должен быть целым числом от 10 до 100"),
+            query('max').if(query('max').exists()).isInt({ min: 10, max: 100 }).withMessage("Максимальный возраст должен быть целым числом от 10 до 100")
         ]
     }
 

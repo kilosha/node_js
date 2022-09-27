@@ -19,25 +19,6 @@ class UsersServices {
             this
                 .getAllUsers()
                 .then(users => {
-                    const { min, max, ...other } = { ...query };
-
-                    // TODO : перенести в validator.js
-                    if (Object.keys(other).length > 0) {
-                        rej(new Error('Некорректные query параметры: ' + Object.keys(other)));
-                    }
-
-                    if (+min > +max) {
-                        rej(new Error('Некорректные query параметры: min должно быть <= max'));
-                    }
-
-                    if (+min <= 10 || +min >= 100 || !min) {
-                        rej(new Error('Минимальный возраст должен быть в диапазоне от 10 до 100 лет'));
-                    }
-
-                    if (+max <= 10 || +max >= 100 || !max) {
-                        rej(new Error('Максимальный возраст должен быть в диапазоне от 10 до 100 лет'));
-                    }
-
                     const queryUsers = users.filter(user => +query.min <= user.age && user.age <= +query.max);
                     if (queryUsers.length > 0) {
                         res(queryUsers);

@@ -25,19 +25,21 @@ const router = express.Router();
  *          description: Set an max age of users to get (from 10 to 100)
  *          type: integer
  *      responses:
- *           200:
- *              description: Successful response
+ *        200:
+ *          description: Successful response
+ *          content:
+ *            application/json:
  *              schema:
  *                type: array
  *                items: 
- *                  $ref: '#/definitions/UserWithID'
- *           404:
- *              description: Error
- *              schema:
- *                type: string
- *                example: "Пользователи не найдены"
+ *                  $ref: '#/components/schemas/UserWithID'
+ *        404:
+ *          description: Error
+ *          schema:
+ *            type: string
+ *            example: "Пользователи не найдены"
  */
-router.get('/', authenticateToken, UsersControllers.getUsers);
+router.get('/', Validator.validateQueryIfPresent(), UsersControllers.getUsers);
 
 /**
  * @swagger
@@ -55,15 +57,17 @@ router.get('/', authenticateToken, UsersControllers.getUsers);
  *          type: string
  *          example: d28e6dd0-a5ce-4c2c-8790-2ba0980007da
  *      responses:
- *           200:
- *              description: Successful response
+ *        200:
+ *          description: Successful response
+ *          content:
+ *            application/json:
  *              schema:
- *                $ref: '#/definitions/UserWithID'
- *           404:
- *              description: Error
- *              schema:
- *                type: string
- *                example: "Пользователь с ID 3c2af1c7-2bb9-4b33-b485-77f5a7d1d12a не найден"
+ *                $ref: '#/components/schemas/UserWithID'
+ *        404:
+ *          description: Error
+ *          schema:
+ *            type: string
+ *            example: "Пользователь с ID 3c2af1c7-2bb9-4b33-b485-77f5a7d1d12a не найден"
  */
 router.get('/user/:ID', Validator.validateID(), UsersControllers.getUserByID);
 
@@ -82,17 +86,21 @@ router.get('/user/:ID', Validator.validateID(), UsersControllers.getUserByID);
  *          description: If 'M' or 'F' get array of users with isMan true or false, if ID - return user with this ID
  *          type: string
  *      responses:
- *           200:
- *              description: Successful response
+ *        200:
+ *          description: Successful response
+ *          content:
+ *            application/json:
  *              schema:
- *                oneOf:
- *                  - $ref: '#/definitions/UpdateUser'
- *                  - $ref: '#/definitions/Users'
- *           400:
- *              description: Error
- *              schema:
- *                type: string
- *                example: "Пользователь с ID 3c2af1c7-2bb9-4b33-b485-77f5a7d1d12a не найден"
+ *                type: array
+ *                items: 
+ *                  oneOf:
+ *                    - $ref: '#/components/schemas/UpdateUser'
+ *                    - $ref: '#/components/schemas/Users'
+ *        400:
+ *          description: Error
+ *          schema:
+ *            type: string
+ *            example: "Пользователь с ID 3c2af1c7-2bb9-4b33-b485-77f5a7d1d12a не найден"
  */
 router.get('/:param', Validator.validateFilter(), UsersControllers.filterUsers);
 
@@ -111,103 +119,106 @@ router.get('/:param', Validator.validateFilter(), UsersControllers.filterUsers);
  *          description: user object
  *          required: true
  *          schema:
- *            $ref: '#/definitions/Users'
+ *            $ref: '#/components/schemas/Users'
  *      responses:
  *        200:
  *          description: Successful response
- *          schema:
- *            $ref: '#/definitions/UserWithID'
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/UserWithID'
  *        400:
  *          description: Error
  *          schema:
  *            type: string
  *            example: "Не заполнено обязательное поле username"
- * definitions:
- *   Users:
- *     description: Users object
- *     properties:
- *       name:
- *         type: string
- *         example: Masha
- *         description: Users' name
- *       username:
- *         type: string
- *         example: marry22
- *         description: Username
- *       email:
- *         type: string
- *         example: example@example.com
- *         description: Users' email
- *       password: 
- *         type: string
- *         example: 1Sq_22qw
- *         description: Users' password (min length - 8 symbols, min 1 uppercase, min 1 lowercase, min 1 number, min 1 symbol) 
- *       isMan:
- *         type: boolean
- *         example: false
- *         description: Man or woman
- *       age:
- *         type: integer
- *         example: 25
- *         description: Users' age
- *     required:
- *      - name
- *      - username
- *      - email
- *      - password
- *      - isMan
- *      - age
- *   UpdateUser:
- *     description: User with properties which should be updated
- *     properties:
- *       name:
- *         type: string
- *         example: Masha
- *         description: Users' name
- *       username:
- *         type: string
- *         example: marry22
- *         description: Username
- *       email:
- *         type: string
- *         example: example@example.com
- *         description: Users' email
- *       password: 
- *         type: string
- *         example: 1Sq_22qw
- *         description: Users' password (min length - 8 symbols, min 1 uppercase, min 1 lowercase, min 1 number, min 1 symbol) 
- *       isMan:
- *         type: boolean
- *         example: false
- *         description: Man or woman
- *       age:
- *         type: integer
- *         example: 25
- *         description: Users' age
- *   UserWithID:
- *     description: Users object
- *     properties:
- *       ID:
- *         type: string
- *         example: d28e6dd0-a5ce-4c2c-8790-2ba0980007da
- *       name:
- *         type: string
- *         example: Masha
- *       username:
- *         type: string
- *         example: marry22
- *       email:
- *         type: string
- *         example: example@example.com
- *       password:
- *         type: string
- *         example: $2b$05$N3D9QDUXCp3N7cjNJyfi9uHwzx862bgvEhx03Krwh54VXyOPUIJcm
- *       isMan:
- *         type: boolean
- *         example: false
- *       age:
- *         type: integer
- *         example: 25
+ * components:
+ *   schemas:
+ *     Users:
+ *       description: Users object
+ *       properties:
+ *         name:
+ *           type: string
+ *           example: Masha
+ *           description: Users' name
+ *         username:
+ *           type: string
+ *           example: marry22
+ *           description: Username
+ *         email:
+ *           type: string
+ *           example: example@example.com
+ *           description: Users' email
+ *         password: 
+ *           type: string
+ *           example: 1Sq_22qw
+ *           description: Users' password (min length - 8 symbols, min 1 uppercase, min 1 lowercase, min 1 number, min 1 symbol) 
+ *         isMan:
+ *           type: boolean
+ *           example: false
+ *           description: Man or woman
+ *         age:
+ *           type: integer
+ *           example: 25
+ *           description: Users' age
+ *       required:
+ *        - name
+ *        - username
+ *        - email
+ *        - password
+ *        - isMan
+ *        - age
+ *     UpdateUser:
+ *       description: User with properties which should be updated
+ *       properties:
+ *         name:
+ *           type: string
+ *           example: Masha
+ *           description: Users' name
+ *         username:
+ *           type: string
+ *           example: marry22
+ *           description: Username
+ *         email:
+ *           type: string
+ *           example: example@example.com
+ *           description: Users' email
+ *         password: 
+ *           type: string
+ *           example: 1Sq_22qw
+ *           description: Users' password (min length - 8 symbols, min 1 uppercase, min 1 lowercase, min 1 number, min 1 symbol) 
+ *         isMan:
+ *           type: boolean
+ *           example: false
+ *           description: Man or woman
+ *         age:
+ *           type: integer
+ *           example: 25
+ *           description: Users' age
+ *     UserWithID:
+ *       description: Users object
+ *       properties:
+ *         ID:
+ *           type: string
+ *           example: d28e6dd0-a5ce-4c2c-8790-2ba0980007da
+ *         name:
+ *           type: string
+ *           example: Masha
+ *         username:
+ *           type: string
+ *           example: marry22
+ *         email:
+ *           type: string
+ *           example: example@example.com
+ *         password:
+ *           type: string
+ *           example: $2b$05$N3D9QDUXCp3N7cjNJyfi9uHwzx862bgvEhx03Krwh54VXyOPUIJcm
+ *         isMan:
+ *           type: boolean
+ *           example: false
+ *         age:
+ *           type: integer
+ *           example: 25
  */
 router.post("/", Validator.validateUser(), UsersControllers.createUser);
 
@@ -232,17 +243,19 @@ router.post("/", Validator.validateUser(), UsersControllers.createUser);
  *          required: true
  *          description: Object to update
  *          schema:
- *              $ref: '#/definitions/Users'
+ *              $ref: '#/components/schemas/Users'
  *      responses:
- *           200:
- *              description: Successful response
+ *        200:
+ *          description: Successful response
+ *          content:
+ *            application/json:
  *              schema:
- *                $ref: '#/definitions/UserWithID'
- *           400:
- *              description: Error
- *              schema:
- *                type: string
- *                example: "Укажите корректный email (example@example.com)"
+ *                $ref: '#/components/schemas/UserWithID'
+ *        400:
+ *          description: Error
+ *          schema:
+ *            type: string
+ *            example: "Укажите корректный email (example@example.com)"
  */
 router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersControllers.updateFullUser);
 
@@ -267,17 +280,19 @@ router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersCont
  *          required: true
  *          description: Object to update
  *          schema:
- *              $ref: '#/definitions/UpdateUser'
+ *              $ref: '#/components/schemas/UpdateUser'
  *      responses:
- *           200:
- *              description: Successful response
+ *        200:
+ *          description: Successful response
+ *          content:
+ *            application/json:
  *              schema:
- *                $ref: '#/definitions/UserWithID'
- *           400:
- *              description: Error
- *              schema:
- *                type: string
- *                example: "Укажите корректный email (example@example.com)"
+ *                $ref: '#/components/schemas/UserWithID'
+ *        400:
+ *          description: Error
+ *          schema:
+ *            type: string
+ *            example: "Укажите корректный email (example@example.com)"
  */
 router.patch('/:ID', [Validator.validateID(), Validator.validateUserUpdate()], UsersControllers.updateUser);
 
@@ -298,15 +313,17 @@ router.patch('/:ID', [Validator.validateID(), Validator.validateUserUpdate()], U
  *          type: string
  *          example: d28e6dd0-a5ce-4c2c-8790-2ba0980007da
  *      responses:
- *           200:
- *              description: Successful response
+  *        200:
+ *          description: Successful response
+ *          content:
+ *            application/json:
  *              schema:
- *                $ref: '#/definitions/UserWithID'
- *           400:
- *              description: Error
- *              schema:
- *                type: string
- *                example: "Пользователь с ID 3c2af1c7-2bb9-4b33-b485-77f5a7d1d12a не найден"
+ *                $ref: '#/components/schemas/UserWithID'
+ *        400:
+ *          description: Error
+ *          schema:
+ *            type: string
+ *            example: "Пользователь с ID 3c2af1c7-2bb9-4b33-b485-77f5a7d1d12a не найден"
  */
 router.delete('/:ID', Validator.validateID(), UsersControllers.deleteUser);
 
