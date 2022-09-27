@@ -8,18 +8,45 @@ import Sentry from '@sentry/node';
 
 dotenv.config();
 
-const swaggerOptions = {
-    swaggerDefinition: {
-        info: {
-            title: "Users API",
-            description: "API for getting, creating and updating users",
-            servers: ["http://localhost:3000"],
-            version: "1.0.0",
-          },
-    },
-    apis: ["./src/routes/*.js"],
-};
+// const swaggerOptions = {
+//     swaggerDefinition: {
+//         info: {
+//             title: "Users API",
+//             description: "API for getting, creating and updating users",
+//             servers: ["http://localhost:3000"],
+//             version: "1.0.0",
+//           },
+//     },
+//     apis: ["./src/routes/*.js"]
+// };
   
+// const swaggerDocs = swaggerJSDoc(swaggerOptions);
+
+//OAS 3
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Users API',
+      description: 'API for getting, creating and updating users',
+      servers: ["http://localhost:3000"],
+      version: '1.0.0'
+    },
+    components: {
+      securitySchemes: { bearerAuth : {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "name": "Authorization"
+      }
+    }}
+  },
+  apis: [
+      "./src/routes/*.js"
+  ]
+}
+
+
 const swaggerDocs = swaggerJSDoc(swaggerOptions);
 
 const app = express();
