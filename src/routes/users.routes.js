@@ -32,7 +32,7 @@ const router = express.Router();
  *              schema:
  *                type: array
  *                items: 
- *                  $ref: '#/components/schemas/UserWithID'
+ *                  $ref: '#/components/schemas/User'
  *        404:
  *          description: Error
  *          schema:
@@ -62,7 +62,7 @@ router.get('/', Validator.validateQueryIfPresent(), UsersControllers.getUsers);
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/UserWithID'
+ *                $ref: '#/components/schemas/User'
  *        404:
  *          description: Error
  *          schema:
@@ -95,7 +95,6 @@ router.get('/user/:ID', Validator.validateID(), UsersControllers.getUserByID);
  *                items: 
  *                  oneOf:
  *                    - $ref: '#/components/schemas/UpdateUser'
- *                    - $ref: '#/components/schemas/Users'
  *        400:
  *          description: Error
  *          schema:
@@ -106,96 +105,71 @@ router.get('/:param', Validator.validateFilter(), UsersControllers.filterUsers);
 
 /**
  * @swagger
- *  /api/users:
+ *  /api/register:
  *    post:
  *      summary: Add new user and return new user object with ID if success
  *      description:
  *          Register 'User' object.
  *      tags:
  *          - Users
- *      parameters:
- *        - name: user
- *          in: body
- *          description: user object
- *          required: true
- *          schema:
- *            $ref: '#/components/schemas/Users'
+ *          - Registration
+ *      requestBody:
+ *        $ref: '#/components/requestBodies/User'
  *      responses:
  *        200:
  *          description: Successful response
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/UserWithID'
+ *                $ref: '#/components/schemas/User'
  *        400:
  *          description: Error
  *          schema:
  *            type: string
  *            example: "Не заполнено обязательное поле username"
  * components:
- *   schemas:
- *     Users:
+ *   requestBodies:
+ *     User:
  *       description: Users object
- *       properties:
- *         name:
- *           type: string
- *           example: Masha
- *           description: Users' name
- *         username:
- *           type: string
- *           example: marry22
- *           description: Username
- *         email:
- *           type: string
- *           example: example@example.com
- *           description: Users' email
- *         password: 
- *           type: string
- *           example: 1Sq_22qw
- *           description: Users' password (min length - 8 symbols, min 1 uppercase, min 1 lowercase, min 1 number, min 1 symbol) 
- *         isMan:
- *           type: boolean
- *           example: false
- *           description: Man or woman
- *         age:
- *           type: integer
- *           example: 25
- *           description: Users' age
- *       required:
- *        - name
- *        - username
- *        - email
- *        - password
- *        - isMan
- *        - age
- *     UpdateUser:
- *       description: User with properties which should be updated
- *       properties:
- *         name:
- *           type: string
- *           example: Masha
- *           description: Users' name
- *         username:
- *           type: string
- *           example: marry22
- *           description: Username
- *         email:
- *           type: string
- *           example: example@example.com
- *           description: Users' email
- *         password: 
- *           type: string
- *           example: 1Sq_22qw
- *           description: Users' password (min length - 8 symbols, min 1 uppercase, min 1 lowercase, min 1 number, min 1 symbol) 
- *         isMan:
- *           type: boolean
- *           example: false
- *           description: Man or woman
- *         age:
- *           type: integer
- *           example: 25
- *           description: Users' age
- *     UserWithID:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: Masha
+ *                 description: Users' name
+ *               username:
+ *                 type: string
+ *                 example: marry22
+ *                 description: Username
+ *               email:
+ *                 type: string
+ *                 example: example@example.com
+ *                 description: Users' email
+ *               password: 
+ *                 type: string
+ *                 example: 1Sq_22qw
+ *                 description: Users' password (min length - 8 symbols, min 1 uppercase, min 1 lowercase, min 1 number, min 1 symbol) 
+ *               isMan:
+ *                 type: boolean
+ *                 example: false
+ *                 description: Man or woman
+ *               age:
+ *                 type: integer
+ *                 example: 25
+ *                 description: Users' age
+ *             required:
+ *              - name
+ *              - username
+ *              - email
+ *              - password
+ *              - isMan
+ *              - age
+ *   schemas:
+ *     User:
  *       description: Users object
  *       properties:
  *         ID:
@@ -238,19 +212,15 @@ router.post("/", Validator.validateUser(), UsersControllers.createUser);
  *          description: Set an {ID} of a user to update
  *          type: string
  *          example: d28e6dd0-a5ce-4c2c-8790-2ba0980007da
- *        - in: body
- *          name: Users
- *          required: true
- *          description: Object to update
- *          schema:
- *              $ref: '#/components/schemas/Users'
+ *      requestBody:
+ *        $ref: '#/components/requestBodies/User'
  *      responses:
  *        200:
  *          description: Successful response
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/UserWithID'
+ *                $ref: '#/components/schemas/User'
  *        400:
  *          description: Error
  *          schema:
@@ -275,24 +245,54 @@ router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersCont
  *          description: Set an {ID} of a user to update
  *          type: string
  *          example: d28e6dd0-a5ce-4c2c-8790-2ba0980007da
- *        - in: body
- *          name: Users
- *          required: true
- *          description: Object to update
- *          schema:
- *              $ref: '#/components/schemas/UpdateUser'
+ *      requestBody:
+ *        $ref: '#/components/requestBodies/UserPropertiesForUpdate'
  *      responses:
  *        200:
  *          description: Successful response
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/UserWithID'
+ *                $ref: '#/components/schemas/User'
  *        400:
  *          description: Error
  *          schema:
  *            type: string
  *            example: "Укажите корректный email (example@example.com)"
+ * components:
+ *   requestBodies:
+ *     UserPropertiesForUpdate:
+ *       description: User properties which were edited.
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: Masha
+ *                 description: Users' name
+ *               username:
+ *                 type: string
+ *                 example: marry22
+ *                 description: Username
+ *               email:
+ *                 type: string
+ *                 example: example@example.com
+ *                 description: Users' email
+ *               password: 
+ *                 type: string
+ *                 example: 1Sq_22qw
+ *                 description: Users' password (min length - 8 symbols, min 1 uppercase, min 1 lowercase, min 1 number, min 1 symbol) 
+ *               isMan:
+ *                 type: boolean
+ *                 example: false
+ *                 description: Man or woman
+ *               age:
+ *                 type: integer
+ *                 example: 25
+ *                 description: Users' age
  */
 router.patch('/:ID', [Validator.validateID(), Validator.validateUserUpdate()], UsersControllers.updateUser);
 
@@ -318,7 +318,7 @@ router.patch('/:ID', [Validator.validateID(), Validator.validateUserUpdate()], U
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/UserWithID'
+ *                $ref: '#/components/schemas/User'
  *        400:
  *          description: Error
  *          schema:

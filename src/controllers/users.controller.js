@@ -68,19 +68,10 @@ class UsersControllers {
                     const newUser = new User(req.body, hashedPassword);
                     const newDBUser = await UsersServices.createUser(newUser);
                     res.send(newDBUser);
-                } else {
-                    let message;
-                    if (!isUserNameAlreadyUsed) {
-                        message = "Введенный email уже используется";
-                    } else if (!isEmailAlreadyUsed) {
-                        message = "Введенный username уже используется";
-                    } else {
-                        message = "Введенныe username и email уже используются";
-                    }
-
+                } else {   
                     return res.status(400).send({
                         success: false,
-                        message: message
+                        message: this._createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed)
                     });
                 }
             } catch (e) {
@@ -111,18 +102,9 @@ class UsersControllers {
                     });
                     res.send(updatedUser);
                 } else {
-                    let message;
-                    if (!isUserNameAlreadyUsed) {
-                        message = "Введенный email уже используется";
-                    } else if (!isEmailAlreadyUsed) {
-                        message = "Введенный username уже используется";
-                    } else {
-                        message = "Введенныe username и email уже используются";
-                    }
-
                     return res.status(400).send({
                         success: false,
-                        message: message
+                        message: this._createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed)
                     });
                 }
             } catch (e) {
@@ -142,7 +124,7 @@ class UsersControllers {
             });
         } else {
             try {
-                let isEmailAlreadyUsed, isUserNameAlreadyUsed;
+                let isEmailAlreadyUsed, isUserNameAlreadyUsed = false;
                 if (req.body.email) {
                     isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email, req.params.ID);
                 }
@@ -163,18 +145,9 @@ class UsersControllers {
 
                     res.send(updatedUser);
                 } else {
-                    let message;
-                    if (!isUserNameAlreadyUsed) {
-                        message = "Введенный email уже используется";
-                    } else if (!isEmailAlreadyUsed) {
-                        message = "Введенный username уже используется";
-                    } else {
-                        message = "Введенныe username и email уже используются";
-                    }
-
                     return res.status(400).send({
                         success: false,
-                        message: message
+                        message: this._createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed)
                     });
                 }
             } catch (e) {
@@ -221,9 +194,19 @@ class UsersControllers {
             }
         }
     }
+
+    _createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed) {
+        let message;
+        if (!isUserNameAlreadyUsed) {
+            message = "Введенный email уже используется";
+        } else if (!isEmailAlreadyUsed) {
+            message = "Введенный username уже используется";
+        } else {
+            message = "Введенныe username и email уже используются";
+        }
+
+        return message;
+    }
 }
-
-
-// username and email проверка повторяется в 3х функциях, переписать!
 
 export default new UsersControllers();
