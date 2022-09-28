@@ -2,6 +2,7 @@ import { validationResult } from 'express-validator';
 import Sentry from '@sentry/node';
 
 import TodosServices from '../services/todos.service.js';
+import Todo from '../models/Todo.js';
 
 class TodosControllers {
     async getTodos(req, res) {
@@ -24,9 +25,9 @@ class TodosControllers {
             });
         } else {
             try {
-                const newTodoInfo = {...req.body, isCompleted: false, user_ID: req.user.ID}
-                const newTodo = await TodosServices.createTodo(newTodoInfo);
-                res.send(newTodo);
+                const newTodo = new Todo(req.body.title, req.user.ID);
+                const newDBTodo = await TodosServices.createTodo(newTodo);
+                res.send(newDBTodo);
             } catch (e) {
                 Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
@@ -52,7 +53,6 @@ class TodosControllers {
             }
         }
     }
-
 
     async updateTodoStatus(req, res) { 
         const errors = validationResult(req);
