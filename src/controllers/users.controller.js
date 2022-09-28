@@ -1,9 +1,9 @@
-import { validationResult } from 'express-validator';
-import Sentry from '@sentry/node';
-import * as bcrypt from 'bcrypt';
+import { validationResult } from "express-validator";
+import Sentry from "@sentry/node";
+import * as bcrypt from "bcrypt";
 
-import User from '../models/User.js';
-import UsersServices from '../services/users.service.js';
+import User from "../models/User.js";
+import UsersServices from "../services/users.service.js";
 
 const saltRounds = 5;
 

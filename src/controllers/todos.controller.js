@@ -1,8 +1,8 @@
-import { validationResult } from 'express-validator';
-import Sentry from '@sentry/node';
+import { validationResult } from "express-validator";
+import Sentry from "@sentry/node";
 
-import TodosServices from '../services/todos.service.js';
-import Todo from '../models/Todo.js';
+import TodosServices from "../services/todos.service.js";
+import Todo from "../models/Todo.js";
 
 class TodosControllers {
     async getTodos(req, res) {

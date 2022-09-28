@@ -32,14 +32,14 @@ const router = express.Router();
  *              schema:
  *                type: array
  *                items: 
- *                  $ref: '#/components/schemas/User'
+ *                  $ref: "#/components/schemas/User"
  *        404:
  *          description: Error
  *          schema:
  *            type: string
  *            example: "Пользователи не найдены"
  */
-router.get('/', Validator.validateQueryIfPresent(), UsersControllers.getUsers);
+router.get("/", Validator.validateQueryIfPresent(), UsersControllers.getUsers);
 
 /**
  * @swagger
@@ -62,14 +62,14 @@ router.get('/', Validator.validateQueryIfPresent(), UsersControllers.getUsers);
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/User'
+ *                $ref: "#/components/schemas/User"
  *        404:
  *          description: Error
  *          schema:
  *            type: string
  *            example: "Пользователь с ID 3c2af1c7-2bb9-4b33-b485-77f5a7d1d12a не найден"
  */
-router.get('/user/:ID', Validator.validateID(), UsersControllers.getUserByID);
+router.get("/user/:ID", Validator.validateID(), UsersControllers.getUserByID);
 
 /**
  * @swagger
@@ -83,7 +83,7 @@ router.get('/user/:ID', Validator.validateID(), UsersControllers.getUserByID);
  *        - in: path
  *          name: param
  *          required: true
- *          description: If 'M' or 'F' get array of users with isMan true or false, if ID - return user with this ID
+ *          description: If "M" or "F" get array of users with isMan true or false, if ID - return user with this ID
  *          type: string
  *      responses:
  *        200:
@@ -94,34 +94,34 @@ router.get('/user/:ID', Validator.validateID(), UsersControllers.getUserByID);
  *                type: array
  *                items: 
  *                  oneOf:
- *                    - $ref: '#/components/schemas/UpdateUser'
+ *                    - $ref: "#/components/schemas/UpdateUser"
  *        400:
  *          description: Error
  *          schema:
  *            type: string
  *            example: "Пользователь с ID 3c2af1c7-2bb9-4b33-b485-77f5a7d1d12a не найден"
  */
-router.get('/:param', Validator.validateFilter(), UsersControllers.filterUsers);
+router.get("/:param", Validator.validateFilter(), UsersControllers.filterUsers);
 
 /**
  * @swagger
- *  /api/register:
+ *  /api/users/register:
  *    post:
  *      summary: Add new user and return new user object with ID if success
  *      description:
- *          Register 'User' object.
+ *          Register "User" object.
  *      tags:
  *          - Users
  *          - Registration
  *      requestBody:
- *        $ref: '#/components/requestBodies/User'
+ *        $ref: "#/components/requestBodies/User"
  *      responses:
  *        200:
  *          description: Successful response
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/User'
+ *                $ref: "#/components/schemas/User"
  *        400:
  *          description: Error
  *          schema:
@@ -194,7 +194,7 @@ router.get('/:param', Validator.validateFilter(), UsersControllers.filterUsers);
  *           type: integer
  *           example: 25
  */
-router.post("/", Validator.validateUser(), UsersControllers.createUser);
+router.post("/register", Validator.validateUser(), UsersControllers.createUser);
 
 /**
  * @swagger
@@ -213,14 +213,14 @@ router.post("/", Validator.validateUser(), UsersControllers.createUser);
  *          type: string
  *          example: d28e6dd0-a5ce-4c2c-8790-2ba0980007da
  *      requestBody:
- *        $ref: '#/components/requestBodies/User'
+ *        $ref: "#/components/requestBodies/User"
  *      responses:
  *        200:
  *          description: Successful response
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/User'
+ *                $ref: "#/components/schemas/User"
  *        400:
  *          description: Error
  *          schema:
@@ -246,14 +246,14 @@ router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersCont
  *          type: string
  *          example: d28e6dd0-a5ce-4c2c-8790-2ba0980007da
  *      requestBody:
- *        $ref: '#/components/requestBodies/UserPropertiesForUpdate'
+ *        $ref: "#/components/requestBodies/UserPropertiesForUpdate"
  *      responses:
  *        200:
  *          description: Successful response
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/User'
+ *                $ref: "#/components/schemas/User"
  *        400:
  *          description: Error
  *          schema:
@@ -294,7 +294,7 @@ router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersCont
  *                 example: 25
  *                 description: Users' age
  */
-router.patch('/:ID', [Validator.validateID(), Validator.validateUserUpdate()], UsersControllers.updateUser);
+router.patch("/:ID", [Validator.validateID(), Validator.validateUserUpdate()], UsersControllers.updateUser);
 
 /**
  * @swagger
@@ -318,13 +318,13 @@ router.patch('/:ID', [Validator.validateID(), Validator.validateUserUpdate()], U
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/User'
+ *                $ref: "#/components/schemas/User"
  *        400:
  *          description: Error
  *          schema:
  *            type: string
  *            example: "Пользователь с ID 3c2af1c7-2bb9-4b33-b485-77f5a7d1d12a не найден"
  */
-router.delete('/:ID', Validator.validateID(), UsersControllers.deleteUser);
+router.delete("/:ID", Validator.validateID(), UsersControllers.deleteUser);
 
 export default router;

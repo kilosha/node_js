@@ -1,10 +1,10 @@
-import fs from 'fs';
-import { v4 as uuidv4 } from 'uuid';
+import fs from "fs";
+import { v4 as uuidv4 } from "uuid";
 
 class UsersServices {
     getAllUsers() {
         return new Promise((res, rej) => {
-            fs.readFile('./users.json', 'utf8', function (err, data) {
+            fs.readFile("./users.json", "utf8", function (err, data) {
                 if (err) {
                     rej(err);
                 } else {
@@ -120,9 +120,9 @@ class UsersServices {
             this
                 .getAllUsers()
                 .then(users => {
-                    if (param === 'M') {
+                    if (param === "M") {
                         res(users.filter(user => user.isMan));
-                    } else if (param === 'F') {
+                    } else if (param === "F") {
                         res(users.filter(user => !user.isMan));
                     } else {
                         const user = users.find(user => user.ID === param);
@@ -137,7 +137,7 @@ class UsersServices {
     }
 
     _updateFile(users) {
-        fs.writeFile('./users.json', JSON.stringify({ users }, null, 3), (err) => {
+        fs.writeFile("./users.json", JSON.stringify({ users }, null, 3), (err) => {
             if (err) {
                 throw err;
             }

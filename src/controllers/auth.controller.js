@@ -1,9 +1,9 @@
-import { validationResult } from 'express-validator';
-import * as bcrypt from 'bcrypt';
-import pkg from 'jsonwebtoken';
+import { validationResult } from "express-validator";
+import * as bcrypt from "bcrypt";
+import pkg from "jsonwebtoken";
 const { sign } = pkg;
 
-import AuthServices from '../services/auth.service.js';
+import AuthServices from "../services/auth.service.js";
 
 class AuthControllers {
   async login(req, res) {

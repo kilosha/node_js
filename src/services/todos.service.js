@@ -1,5 +1,5 @@
-import fs from 'fs';
-import { v4 as uuidv4 } from 'uuid';
+import fs from "fs";
+import { v4 as uuidv4 } from "uuid";
 
 class TodosServices {
     getTodos(userID) {
@@ -15,7 +15,7 @@ class TodosServices {
 
     _getAllTodos() {
         return new Promise((res, rej) => {
-            fs.readFile('./todos.json', 'utf8', function (err, data) {
+            fs.readFile("./todos.json", "utf8", function (err, data) {
                 if (err) {
                     rej(err);
                 } else {
@@ -99,7 +99,7 @@ class TodosServices {
     }
 
     _updateFile(todos) {
-        fs.writeFile('./todos.json', JSON.stringify({ todos }, null, 3), (err) => {
+        fs.writeFile("./todos.json", JSON.stringify({ todos }, null, 3), (err) => {
             if (err) {
                 throw err;
             }

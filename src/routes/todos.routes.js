@@ -1,5 +1,5 @@
-import express from 'express';
-import authenticateToken from '../middleware/auth.js';
+import express from "express";
+import authenticateToken from "../middleware/auth.js";
 import TodosControllers from "../controllers/todos.controller.js";
 import Validator from "../utils/validator.js";
 
@@ -23,11 +23,11 @@ const router = express.Router();
  *                  schema: 
  *                    type: array
  *                    items:
- *                      $ref: '#/components/schemas/TodoItem'     
+ *                      $ref: "#/components/schemas/TodoItem"     
  *           401:
- *             $ref: '#/components/responses/UnauthorizedError'
+ *             $ref: "#/components/responses/UnauthorizedError"
  */
-router.get('/', authenticateToken, TodosControllers.getTodos);
+router.get("/", authenticateToken, TodosControllers.getTodos);
 
 /**
  * @swagger
@@ -41,25 +41,25 @@ router.get('/', authenticateToken, TodosControllers.getTodos);
  *      tags:
  *          - Todos
  *      requestBody:
- *        $ref: '#/components/requestBodies/TodoTitle'
+ *        $ref: "#/components/requestBodies/TodoTitle"
  *      responses:
  *        200:
  *          description: Successful response
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/TodoItem'            
+ *                $ref: "#/components/schemas/TodoItem"            
  *        401:
- *          $ref: '#/components/responses/UnauthorizedError'
+ *          $ref: "#/components/responses/UnauthorizedError"
  * components:
  *   schemas: 
  *     TodoItem:
- *       description: Todos' object
+ *       description: Todos object
  *       properties:
  *         ID:
  *           type: string
  *           example: 410bed16-5f00-44f8-aa33-d1f27bd4db13
- *           description: Todos' ID
+ *           description: Todos ID
  *         title:
  *           type: string
  *           example: Купить гвозди
@@ -101,7 +101,7 @@ router.get('/', authenticateToken, TodosControllers.getTodos);
  *                 type: string
  *                 example: Для работы нужен токен!
  */
-router.post('/', authenticateToken, Validator.validateTodoTitle(), TodosControllers.createTodo);
+router.post("/", authenticateToken, Validator.validateTodoTitle(), TodosControllers.createTodo);
 
 /**
  * @swagger
@@ -120,18 +120,18 @@ router.post('/', authenticateToken, Validator.validateTodoTitle(), TodosControll
  *          type: string
  *          example: f465260c-3096-4069-9a30-0ad03bed7ca0
  *      requestBody:
- *        $ref: '#/components/requestBodies/TodoTitle'
+ *        $ref: "#/components/requestBodies/TodoTitle"
  *      responses:
  *           200:
  *              description: Successful response with updated Todo
  *              content:
  *                application/json:
  *                  schema:
- *                    $ref: '#/components/schemas/TodoItem'      
+ *                    $ref: "#/components/schemas/TodoItem"      
  *           401:
- *             $ref: '#/components/responses/UnauthorizedError'
+ *             $ref: "#/components/responses/UnauthorizedError"
  */
-router.patch('/:ID', authenticateToken, [Validator.validateID(), Validator.validateTodoTitle()], TodosControllers.updateTodoTitle);
+router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.validateTodoTitle()], TodosControllers.updateTodoTitle);
 
 /**
  * @swagger
@@ -155,11 +155,11 @@ router.patch('/:ID', authenticateToken, [Validator.validateID(), Validator.valid
  *              content:
  *                application/json:
  *                  schema:
- *                    $ref: '#/components/schemas/TodoItem'      
+ *                    $ref: "#/components/schemas/TodoItem"      
  *           401:
- *             $ref: '#/components/responses/UnauthorizedError'
+ *             $ref: "#/components/responses/UnauthorizedError"
  */
-router.patch('/isCompleted/:ID', authenticateToken, Validator.validateID(), TodosControllers.updateTodoStatus);
+router.patch("/isCompleted/:ID", authenticateToken, Validator.validateID(), TodosControllers.updateTodoStatus);
 
 /**
  * @swagger
@@ -183,11 +183,11 @@ router.patch('/isCompleted/:ID', authenticateToken, Validator.validateID(), Todo
  *              content:
  *                application/json:
  *                  schema:
- *                    $ref: '#/components/schemas/TodoItem'      
+ *                    $ref: "#/components/schemas/TodoItem"      
  *           401:
- *             $ref: '#/components/responses/UnauthorizedError'
+ *             $ref: "#/components/responses/UnauthorizedError"
  */
-router.delete('/:ID', authenticateToken, Validator.validateID(), TodosControllers.deleteTodo);
+router.delete("/:ID", authenticateToken, Validator.validateID(), TodosControllers.deleteTodo);
 
 
 // ДОБАВИТЬ БОЛЬШЕ СТАТУСОВ С ОШИБКАМИ

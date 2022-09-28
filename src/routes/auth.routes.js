@@ -14,7 +14,7 @@ const router = express.Router();
  *      tags:
  *          - Login
  *      requestBody:
- *        $ref: '#/components/requestBodies/LogInfo'
+ *        $ref: "#/components/requestBodies/LogInfo"
  *      responses:
  *        200:
  *          description: Successful response with generated JWT token
@@ -39,7 +39,7 @@ const router = express.Router();
  * components:
  *   requestBodies: 
  *     LogInfo:
- *       description: Users' email and password
+ *       description: Users email and password
  *       required: true
  *       content:
  *         application/json:
@@ -49,12 +49,12 @@ const router = express.Router();
  *               email:
  *                 type: string
  *                 example: vlad8@mail.ru
- *                 description: Users' email
+ *                 description: Users email
  *               password: 
  *                 type: string
  *                 example: Hello_34
- *                 description: Users' password (min length - 8 symbols, min 1 uppercase, min 1 lowercase, min 1 number, min 1 symbol) 
+ *                 description: Users password (min length - 8 symbols, min 1 uppercase, min 1 lowercase, min 1 number, min 1 symbol) 
  */
-router.post('/login', Validator.validateLogin(), AuthControllers.login);
+router.post("/login", Validator.validateLogin(), AuthControllers.login);
 
 export default router;
