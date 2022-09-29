@@ -21,7 +21,7 @@ class TodosControllers {
         if (!errors.isEmpty()) {
             return res.status(400).send({
                 success: false,
-                errors: errors.array(),
+                errors: errors.array()
             });
         } else {
             try {
@@ -41,7 +41,7 @@ class TodosControllers {
         if (!errors.isEmpty()) {
             return res.status(400).send({
                 success: false,
-                errors: errors.array(),
+                errors: errors.array()
             });
         } else {
             try {
@@ -60,7 +60,7 @@ class TodosControllers {
         if (!errors.isEmpty()) {
             return res.status(400).send({
                 success: false,
-                errors: errors.array(),
+                errors: errors.array()
             });
         } else {
             try {
@@ -79,7 +79,7 @@ class TodosControllers {
         if (!errors.isEmpty()) {
             return res.status(400).send({
                 success: false,
-                errors: errors.array(),
+                errors: errors.array()
             });
         } else {
             try {

@@ -15,7 +15,7 @@ class UsersControllers {
         if (!errors.isEmpty()) {
             return res.status(400).send({
                 success: false,
-                errors: errors.array(),
+                errors: errors.array()
             });
         } else {
             let users = [];
@@ -39,7 +39,7 @@ class UsersControllers {
         if (!errors.isEmpty()) {
             return res.status(400).send({
                 success: false,
-                errors: errors.array(),
+                errors: errors.array()
             });
         } else {
             try {
@@ -58,7 +58,7 @@ class UsersControllers {
         if (!errors.isEmpty()) {
             return res.status(400).send({
                 success: false,
-                errors: errors.array(),
+                errors: errors.array()
             });
         } else {
             try {
@@ -88,7 +88,7 @@ class UsersControllers {
         if (!errors.isEmpty()) {
             return res.status(400).send({
                 success: false,
-                errors: errors.array(),
+                errors: errors.array()
             });
         } else {
             try {
@@ -97,7 +97,7 @@ class UsersControllers {
 
                 if (!isEmailAlreadyUsed && !isUserNameAlreadyUsed) {
                     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-                    const updatedUser = await UsersServices.updateFullUser({
+                    const updatedUser = await UsersServices.updateFullUser(req.params.ID, {
                         ...req.body,
                         password: hashedPassword
                     });
@@ -122,7 +122,7 @@ class UsersControllers {
         if (!errors.isEmpty()) {
             return res.status(400).send({
                 success: false,
-                errors: errors.array(),
+                errors: errors.array()
             });
         } else {
             try {
@@ -143,7 +143,7 @@ class UsersControllers {
                         updatedFields.password = hashedPassword;
                     }
 
-                    const updatedUser = await UsersServices.updateUser(updatedFields);
+                    const updatedUser = await UsersServices.updateUser(req.params.ID, updatedFields);
 
                     res.send(updatedUser);
                 } else {
@@ -166,7 +166,7 @@ class UsersControllers {
         if (!errors.isEmpty()) {
             return res.status(400).send({
                 success: false,
-                errors: errors.array(),
+                errors: errors.array()
             });
         } else {
             try {
@@ -185,7 +185,7 @@ class UsersControllers {
         if (!errors.isEmpty()) {
             return res.status(400).send({
                 success: false,
-                errors: errors.array(),
+                errors: errors.array()
             });
         } else {
             try {
