@@ -1,24 +1,35 @@
-import { validationResult } from 'express-validator';
-import Sentry from '@sentry/node';
-import * as bcrypt from 'bcrypt';
+import { validationResult } from "express-validator";
+import Sentry from "@sentry/node";
+import * as bcrypt from "bcrypt";
 
-import UsersServices from '../services/users.service.js';
+import User from "../models/User.js";
+import UsersServices from "../services/users.service.js";
+import Utils from "../utils/utils.js";
 
 const saltRounds = 5;
 
 class UsersControllers {
     async getUsers(req, res) {
-        let users = [];
-        try {
-            if (Object.values(req.query).length) {
-                users = await UsersServices.getQueryUsers(req.query);
-            } else {
-                users = await UsersServices.getAllUsers();
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(400).send({
+                success: false,
+                errors: errors.array(),
+            });
+        } else {
+            let users = [];
+            try {
+                if (Object.values(req.query).length) {
+                    users = await UsersServices.getQueryUsers(req.query);
+                } else {
+                    users = await UsersServices.getAllUsers();
+                }
+                res.send(users);
+            } catch (e) {
+                Sentry.captureException(e);
+                res.status(400).send({ message: e.message });
             }
-            res.send(users);
-        } catch (e) {
-            Sentry.captureException(e);
-            res.status(404).send(e.message);
         }
     }
 
@@ -36,7 +47,7 @@ class UsersControllers {
                 res.send(user);
             } catch (e) {
                 Sentry.captureException(e);
-                res.status(404).send(e.message);
+                res.status(400).send({ message: e.message });
             }
         }
     }
@@ -52,29 +63,28 @@ class UsersControllers {
         } else {
             try {
                 const isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email);
-                if (!isEmailAlreadyUsed) {
+                const isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username);
+                if (!isEmailAlreadyUsed && !isUserNameAlreadyUsed) {
                     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-                    const newUser = await UsersServices.createUser({
-                        ...req.body,
-                        password: hashedPassword
-                    });
-                    res.send(newUser);
-                } else {
+                    const newUser = new User(req.body, hashedPassword);
+                    const newDBUser = await UsersServices.createUser(newUser);
+                    res.send(newDBUser);
+                } else {  
+                    let message = Utils._createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed);
                     return res.status(400).send({
                         success: false,
-                        message: "Введенный email уже используется"
+                        message: message
                     });
                 }
             } catch (e) {
                 Sentry.captureException(e);
-                res.status(400).send(e.message);
+                res.status(400).send({ message: e.message });
             }
         }
     }
 
     async updateFullUser(req, res) {
         const errors = validationResult(req);
-
         if (!errors.isEmpty()) {
             return res.status(400).send({
                 success: false,
@@ -82,15 +92,26 @@ class UsersControllers {
             });
         } else {
             try {
-                const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-                const updatedUser = await UsersServices.updateFullUser({
-                    ...req.body,
-                    password: hashedPassword
-                });
-                res.send(updatedUser);
+                const isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email, req.params.ID);
+                const isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username, req.params.ID);
+
+                if (!isEmailAlreadyUsed && !isUserNameAlreadyUsed) {
+                    const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+                    const updatedUser = await UsersServices.updateFullUser({
+                        ...req.body,
+                        password: hashedPassword
+                    });
+                    res.send(updatedUser);
+                } else {
+                    let message = Utils._createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed);
+                    return res.status(400).send({
+                        success: false,
+                        message: message
+                    });
+                }
             } catch (e) {
                 Sentry.captureException(e);
-                res.status(400).send(e.message);
+                res.status(400).send({ message: e.message });
             }
         }
     }
@@ -105,20 +126,36 @@ class UsersControllers {
             });
         } else {
             try {
-                let hashedPassword;
-                if (req.body.password) {
-                    hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+                let isEmailAlreadyUsed, isUserNameAlreadyUsed = false;
+                if (req.body.email) {
+                    isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email, req.params.ID);
                 }
 
-                const updatedUser = await UsersServices.updateUser({
-                    ...req.body,
-                    password: hashedPassword || req.body.password
-                });
+                if (req.body.username) {
+                    isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username, req.params.ID);
+                }
+                
+                if (!isEmailAlreadyUsed && !isUserNameAlreadyUsed) {
+                    const updatedFields = {...req.body};
 
-                res.send(updatedUser);
+                    if (req.body.password) {
+                        const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+                        updatedFields.password = hashedPassword;
+                    }
+
+                    const updatedUser = await UsersServices.updateUser(updatedFields);
+
+                    res.send(updatedUser);
+                } else {
+                    let message = Utils._createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed);
+                    return res.status(400).send({
+                        success: false,
+                        message: message
+                    });
+                }
             } catch (e) {
                 Sentry.captureException(e);
-                res.status(400).send(e.message);
+                res.status(400).send({ message: e.message });
             }
         }
     }
@@ -137,7 +174,7 @@ class UsersControllers {
                 res.send(deletedUser);
             } catch (e) {
                 Sentry.captureException(e);
-                res.status(400).send(e.message);
+                res.status(400).send({ message: e.message });
             }
         }
     }
@@ -148,7 +185,7 @@ class UsersControllers {
         if (!errors.isEmpty()) {
             return res.status(400).send({
                 success: false,
-                errors: errors.mapped(),
+                errors: errors.array(),
             });
         } else {
             try {
@@ -156,7 +193,7 @@ class UsersControllers {
                 res.send(filteredUsers);
             } catch (e) {
                 Sentry.captureException(e);
-                res.status(404).send(e.message);
+                res.status(400).send({ message: e.message });
             }
         }
     }

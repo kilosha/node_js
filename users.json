@@ -44,6 +44,51 @@
          "isMan": false,
          "password": "$2b$05$bA7njGDIsJ2qsS1K97589ONeLshwIQLPU81ZN8boV15FdFbMsLJhO",
          "age": 23
+      },
+      {
+         "ID": "fca55332-354c-4c75-a328-c241f0101595",
+         "name": "Masha Gutkovskaya",
+         "username": "marrya91",
+         "email": "masha18@gmail.com",
+         "password": "$2b$05$jVaePYaiHBCP4PC4N2xEJuKZYTUXZPuxa52sKzl3B4pIuJ7aNI7KO",
+         "isMan": false,
+         "age": 25
+      },
+      {
+         "ID": "785f60b7-1a29-4cf4-8626-f3f3f2c62b12",
+         "name": "Masha Gutkovskaya",
+         "username": "marya91",
+         "email": "masha8@gmail.com",
+         "password": "$2b$05$YRaq78zQVFIsYAWuz6BTRuRkDYT5.NKVv5AGt.RqIXBpnj9q8IdEO",
+         "isMan": false,
+         "age": 25
+      },
+      {
+         "ID": "ff1be2bb-d160-40d0-8bbc-68a830a7dc60",
+         "name": "Vlad",
+         "username": "vlad91",
+         "email": "vlad8@mail.ru",
+         "password": "$2b$05$6hofnN.xcxJ0Xg0kmn/Sqe3Jh9IxTcW1VNlGwYoobFKXvp8HIqHMG",
+         "isMan": true,
+         "age": 25
+      },
+      {
+         "ID": "f007743c-9b94-47a1-a1e4-9da2a3c07c2a",
+         "name": "Masha",
+         "username": "marry22",
+         "email": "example@example.com",
+         "password": "$2b$05$9.uvozH6SWJNNgr1oCyGmO6nOHwG9EGW3wFp7myD9/Q6P8lYTzvOK",
+         "isMan": false,
+         "age": 25
+      },
+      {
+         "ID": "42aa23c4-5e23-48c4-b288-a60f2f3bd66d",
+         "name": "Vika",
+         "username": "vika22",
+         "email": "vika22@rambler.ru",
+         "password": "$2b$05$m/klFQzgBSThWI5XNXjzxueEP3H7y44paxkIAUPXSvAwkpUpq464K",
+         "isMan": false,
+         "age": 45
       }
    ]
 }
