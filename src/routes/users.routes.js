@@ -33,11 +33,33 @@ const router = express.Router();
  *                type: array
  *                items: 
  *                  $ref: "#/components/schemas/User"
- *        404:
- *          description: Error
- *          schema:
- *            type: string
- *            example: "Пользователи не найдены"
+ *        400:
+ *          description: Bad request
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties: 
+ *                  success:
+ *                    type: boolean
+ *                    example: false
+ *                  errors:
+ *                    type: array
+ *                    items:
+ *                      type: object                 
+ *                      properties:
+ *                        value:
+ *                          type: string
+ *                          example: 3
+ *                        msg:
+ *                          type: string
+ *                          example: Минимальный возраст должен быть целым числом от 10 до 100
+ *                        param:
+ *                          type: string
+ *                          example: min
+ *                        location:
+ *                          type: string
+ *                          example: query
  */
 router.get("/", Validator.validateQueryIfPresent(), UsersControllers.getUsers);
 
@@ -63,11 +85,33 @@ router.get("/", Validator.validateQueryIfPresent(), UsersControllers.getUsers);
  *            application/json:
  *              schema:
  *                $ref: "#/components/schemas/User"
- *        404:
- *          description: Error
- *          schema:
- *            type: string
- *            example: "Пользователь с ID 3c2af1c7-2bb9-4b33-b485-77f5a7d1d12a не найден"
+ *        400:
+ *          description: Bad request
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties: 
+ *                  success:
+ *                    type: boolean
+ *                    example: false
+ *                  errors:
+ *                    type: array
+ *                    items:
+ *                      type: object                 
+ *                      properties:
+ *                        value:
+ *                          type: string
+ *                          example: d2ba09800587da
+ *                        msg:
+ *                          type: string
+ *                          example: ID должен быть в формате UUID
+ *                        param:
+ *                          type: string
+ *                          example: ID
+ *                        location:
+ *                          type: string
+ *                          example: params
  */
 router.get("/user/:ID", Validator.validateID(), UsersControllers.getUserByID);
 
@@ -85,6 +129,7 @@ router.get("/user/:ID", Validator.validateID(), UsersControllers.getUserByID);
  *          required: true
  *          description: If "M" or "F" get array of users with isMan true or false, if ID - return user with this ID
  *          type: string
+ *          example: "M"
  *      responses:
  *        200:
  *          description: Successful response
@@ -93,13 +138,50 @@ router.get("/user/:ID", Validator.validateID(), UsersControllers.getUserByID);
  *              schema:
  *                type: array
  *                items: 
- *                  oneOf:
- *                    - $ref: "#/components/schemas/UpdateUser"
+ *                  $ref: "#/components/schemas/User"
  *        400:
- *          description: Error
- *          schema:
- *            type: string
- *            example: "Пользователь с ID 3c2af1c7-2bb9-4b33-b485-77f5a7d1d12a не найден"
+ *          description: Bad request
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties: 
+ *                  success:
+ *                    type: boolean
+ *                    example: false
+ *                  errors:
+ *                    type: array
+ *                    items:
+ *                      type: object
+ *                      properties: 
+ *                        msg:
+ *                          type: string
+ *                          example: Фильтр возможен только по F, M или UUID
+ *                        param:
+ *                          type: string
+ *                          example: _error
+ *                        nestedErrors:
+ *                          type: array
+ *                          items: 
+ *                            type: object                 
+ *                            properties:
+ *                              value:
+ *                                type: string
+ *                              msg:
+ *                                type: string
+ *                              param:
+ *                                type: string
+ *                              location:
+ *                                type: string
+ *                          example:
+ *                            - value: d2ba09800587da
+ *                              msg: Допустимы значения F или M
+ *                              param: param
+ *                              location: params           
+ *                            - value: d2ba09800587da
+ *                              msg: ID должен быть в формате UUID
+ *                              param: param
+ *                              location: params           
  */
 router.get("/:param", Validator.validateFilter(), UsersControllers.filterUsers);
 
@@ -124,9 +206,17 @@ router.get("/:param", Validator.validateFilter(), UsersControllers.filterUsers);
  *                $ref: "#/components/schemas/User"
  *        400:
  *          description: Error
- *          schema:
- *            type: string
- *            example: "Не заполнено обязательное поле username"
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties: 
+ *                  success:
+ *                    type: boolean
+ *                    example: false
+ *                  message:
+ *                    type: string
+ *                    example: "Введенный email уже используется"
  * components:
  *   requestBodies:
  *     User:
@@ -222,10 +312,7 @@ router.post("/register", Validator.validateUser(), UsersControllers.createUser);
  *              schema:
  *                $ref: "#/components/schemas/User"
  *        400:
- *          description: Error
- *          schema:
- *            type: string
- *            example: "Укажите корректный email (example@example.com)"
+ *          $ref: "#/components/responses/ValidationError"
  */
 router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersControllers.updateFullUser);
 
@@ -255,10 +342,7 @@ router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersCont
  *              schema:
  *                $ref: "#/components/schemas/User"
  *        400:
- *          description: Error
- *          schema:
- *            type: string
- *            example: "Укажите корректный email (example@example.com)"
+ *          $ref: "#/components/responses/ValidationError"
  * components:
  *   requestBodies:
  *     UserPropertiesForUpdate:
@@ -293,6 +377,44 @@ router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersCont
  *                 type: integer
  *                 example: 25
  *                 description: Users' age
+ *   responses:
+ *     ValidationError:
+ *       description: Bad request
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties: 
+ *               success:
+ *                 type: boolean
+ *                 example: false
+ *               errors:
+ *                 type: array
+ *                 items:
+ *                   type: object                 
+ *                   properties:
+ *                         value:
+ *                           type: string
+ *                           example: masha8.com
+ *                         msg:
+ *                           type: string
+ *                           example: Укажите корректный email (example@example.com)
+ *                         param:
+ *                           type: string
+ *                           example: email
+ *                         location:
+ *                           type: string
+ *                           example: body
+ *     UserNotFound: 
+ *       description: Cannot find user
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties: 
+ *               message:
+ *                 type: string
+ *                 example: "Пользователь с ID 3c2af1c7-2bb9-4b33-b425-77f5a7d1d12a не найден"      
  */
 router.patch("/:ID", [Validator.validateID(), Validator.validateUserUpdate()], UsersControllers.updateUser);
 
@@ -313,17 +435,14 @@ router.patch("/:ID", [Validator.validateID(), Validator.validateUserUpdate()], U
  *          type: string
  *          example: d28e6dd0-a5ce-4c2c-8790-2ba0980007da
  *      responses:
-  *        200:
+ *        200:
  *          description: Successful response
  *          content:
  *            application/json:
  *              schema:
  *                $ref: "#/components/schemas/User"
  *        400:
- *          description: Error
- *          schema:
- *            type: string
- *            example: "Пользователь с ID 3c2af1c7-2bb9-4b33-b485-77f5a7d1d12a не найден"
+ *          $ref: "#/components/responses/UserNotFound"
  */
 router.delete("/:ID", Validator.validateID(), UsersControllers.deleteUser);
 

@@ -4,6 +4,7 @@ import * as bcrypt from "bcrypt";
 
 import User from "../models/User.js";
 import UsersServices from "../services/users.service.js";
+import Utils from "../utils/utils.js";
 
 const saltRounds = 5;
 
@@ -27,7 +28,7 @@ class UsersControllers {
                 res.send(users);
             } catch (e) {
                 Sentry.captureException(e);
-                res.status(404).send(e.message);
+                res.status(400).send({ message: e.message });
             }
         }
     }
@@ -46,7 +47,7 @@ class UsersControllers {
                 res.send(user);
             } catch (e) {
                 Sentry.captureException(e);
-                res.status(404).send(e.message);
+                res.status(400).send({ message: e.message });
             }
         }
     }
@@ -68,22 +69,22 @@ class UsersControllers {
                     const newUser = new User(req.body, hashedPassword);
                     const newDBUser = await UsersServices.createUser(newUser);
                     res.send(newDBUser);
-                } else {   
+                } else {  
+                    let message = Utils._createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed);
                     return res.status(400).send({
                         success: false,
-                        message: this._createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed)
+                        message: message
                     });
                 }
             } catch (e) {
                 Sentry.captureException(e);
-                res.status(400).send(e.message);
+                res.status(400).send({ message: e.message });
             }
         }
     }
 
     async updateFullUser(req, res) {
         const errors = validationResult(req);
-
         if (!errors.isEmpty()) {
             return res.status(400).send({
                 success: false,
@@ -102,14 +103,15 @@ class UsersControllers {
                     });
                     res.send(updatedUser);
                 } else {
+                    let message = Utils._createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed);
                     return res.status(400).send({
                         success: false,
-                        message: this._createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed)
+                        message: message
                     });
                 }
             } catch (e) {
                 Sentry.captureException(e);
-                res.status(400).send(e.message);
+                res.status(400).send({ message: e.message });
             }
         }
     }
@@ -145,14 +147,15 @@ class UsersControllers {
 
                     res.send(updatedUser);
                 } else {
+                    let message = Utils._createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed);
                     return res.status(400).send({
                         success: false,
-                        message: this._createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed)
+                        message: message
                     });
                 }
             } catch (e) {
                 Sentry.captureException(e);
-                res.status(400).send(e.message);
+                res.status(400).send({ message: e.message });
             }
         }
     }
@@ -171,7 +174,7 @@ class UsersControllers {
                 res.send(deletedUser);
             } catch (e) {
                 Sentry.captureException(e);
-                res.status(400).send(e.message);
+                res.status(400).send({ message: e.message });
             }
         }
     }
@@ -182,7 +185,7 @@ class UsersControllers {
         if (!errors.isEmpty()) {
             return res.status(400).send({
                 success: false,
-                errors: errors.mapped(),
+                errors: errors.array(),
             });
         } else {
             try {
@@ -190,22 +193,9 @@ class UsersControllers {
                 res.send(filteredUsers);
             } catch (e) {
                 Sentry.captureException(e);
-                res.status(404).send(e.message);
+                res.status(400).send({ message: e.message });
             }
         }
-    }
-
-    _createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed) {
-        let message;
-        if (!isUserNameAlreadyUsed) {
-            message = "Введенный email уже используется";
-        } else if (!isEmailAlreadyUsed) {
-            message = "Введенный username уже используется";
-        } else {
-            message = "Введенныe username и email уже используются";
-        }
-
-        return message;
     }
 }
 

@@ -16,16 +16,16 @@ const router = express.Router();
  *      tags:
  *          - Todos
  *      responses:
- *           200:
- *              description: Successful response
- *              content:
- *                application/json:
- *                  schema: 
- *                    type: array
- *                    items:
- *                      $ref: "#/components/schemas/TodoItem"     
- *           401:
- *             $ref: "#/components/responses/UnauthorizedError"
+ *        200:
+ *          description: Successful response
+ *          content:
+ *            application/json:
+ *              schema: 
+ *                type: array
+ *                items:
+ *                  $ref: "#/components/schemas/TodoItem"     
+ *        401:
+ *          $ref: "#/components/responses/UnauthorizedError"
  */
 router.get("/", authenticateToken, TodosControllers.getTodos);
 
@@ -48,7 +48,9 @@ router.get("/", authenticateToken, TodosControllers.getTodos);
  *          content:
  *            application/json:
  *              schema:
- *                $ref: "#/components/schemas/TodoItem"            
+ *                $ref: "#/components/schemas/TodoItem"
+ *        400:
+ *          $ref: "#/components/responses/BodyContentError"             
  *        401:
  *          $ref: "#/components/responses/UnauthorizedError"
  * components:
@@ -100,6 +102,40 @@ router.get("/", authenticateToken, TodosControllers.getTodos);
  *               message:
  *                 type: string
  *                 example: Для работы нужен токен!
+ *     BodyContentError:
+ *       description: Bad request
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               success:
+ *                 type: boolean
+ *                 example: false
+ *               errors:
+ *                 type: array
+ *                 items:
+ *                    type: object                 
+ *                    properties:
+ *                      msg:
+ *                        type: string
+ *                        example: Title должно быть строкой
+ *                      param:
+ *                        type: string
+ *                        example: title
+ *                      location:
+ *                        type: string
+ *                        example: body
+ *     TodoNotFind:
+ *       description: Bad request
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               message:
+ *                 type: string
+ *                 example: У данного пользователя нет такой задачи   
  */
 router.post("/", authenticateToken, Validator.validateTodoTitle(), TodosControllers.createTodo);
 
@@ -127,7 +163,9 @@ router.post("/", authenticateToken, Validator.validateTodoTitle(), TodosControll
  *              content:
  *                application/json:
  *                  schema:
- *                    $ref: "#/components/schemas/TodoItem"      
+ *                    $ref: "#/components/schemas/TodoItem"
+ *           400:
+ *             $ref: "#/components/responses/BodyContentError"     
  *           401:
  *             $ref: "#/components/responses/UnauthorizedError"
  */
@@ -150,14 +188,16 @@ router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.valid
  *          type: string
  *          example: f465260c-3096-4069-9a30-0ad03bed7ca0
  *      responses:
- *           200:
- *              description: Successful response with updated Todo
- *              content:
- *                application/json:
- *                  schema:
- *                    $ref: "#/components/schemas/TodoItem"      
- *           401:
- *             $ref: "#/components/responses/UnauthorizedError"
+ *        200:
+ *          description: Successful response with updated Todo
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: "#/components/schemas/TodoItem"      
+ *        400:
+ *          $ref: "#/components/responses/TodoNotFind"                  
+ *        401:
+ *          $ref: "#/components/responses/UnauthorizedError"
  */
 router.patch("/isCompleted/:ID", authenticateToken, Validator.validateID(), TodosControllers.updateTodoStatus);
 
@@ -178,18 +218,17 @@ router.patch("/isCompleted/:ID", authenticateToken, Validator.validateID(), Todo
  *          type: string
  *          example: f465260c-3096-4069-9a30-0ad03bed7ca0
  *      responses:
- *           200:
- *              description: Successful response with updated Todo
- *              content:
- *                application/json:
- *                  schema:
- *                    $ref: "#/components/schemas/TodoItem"      
- *           401:
- *             $ref: "#/components/responses/UnauthorizedError"
+ *        200:
+ *          description: Successful response with updated Todo
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: "#/components/schemas/TodoItem"      
+ *        400:
+ *          $ref: "#/components/responses/TodoNotFind"                  
+ *        401:
+ *          $ref: "#/components/responses/UnauthorizedError"
  */
 router.delete("/:ID", authenticateToken, Validator.validateID(), TodosControllers.deleteTodo);
-
-
-// ДОБАВИТЬ БОЛЬШЕ СТАТУСОВ С ОШИБКАМИ
 
 export default router;

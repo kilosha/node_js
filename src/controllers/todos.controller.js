@@ -11,7 +11,7 @@ class TodosControllers {
             res.send(todos);
         } catch (e) {
             Sentry.captureException(e);
-            res.status(404).send({ message: e.message });
+            res.status(400).send({ message: e.message });
         }
     }
 

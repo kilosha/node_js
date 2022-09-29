@@ -110,8 +110,8 @@ class Validator {
                 }
                 return true;
             }),
-            query("min").if(query("min").exists()).isInt({ min: 10, max: 100 }).withMessage("Минимальный возраст должен быть целым числом от 10 до 100"),
-            query("max").if(query("max").exists()).isInt({ min: 10, max: 100 }).withMessage("Максимальный возраст должен быть целым числом от 10 до 100")
+            query("min").if(query("max").exists()).isInt({ min: 10, max: 100 }).withMessage("Минимальный возраст должен быть целым числом от 10 до 100"),
+            query("max").if(query("min").exists()).isInt({ min: 10, max: 100 }).withMessage("Максимальный возраст должен быть целым числом от 10 до 100")
         ]
     }
 
@@ -125,6 +125,7 @@ class Validator {
                 .isEmail().normalizeEmail().withMessage("Укажите корректный email (example@example.com)"),
             body("password")
                 .notEmpty().withMessage("Не заполнено обязательное поле password")
+                .isString().withMessage("Пароль должен быть строкой")
             ]
     }
 

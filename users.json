@@ -71,6 +71,24 @@
          "password": "$2b$05$6hofnN.xcxJ0Xg0kmn/Sqe3Jh9IxTcW1VNlGwYoobFKXvp8HIqHMG",
          "isMan": true,
          "age": 25
+      },
+      {
+         "ID": "f007743c-9b94-47a1-a1e4-9da2a3c07c2a",
+         "name": "Masha",
+         "username": "marry22",
+         "email": "example@example.com",
+         "password": "$2b$05$9.uvozH6SWJNNgr1oCyGmO6nOHwG9EGW3wFp7myD9/Q6P8lYTzvOK",
+         "isMan": false,
+         "age": 25
+      },
+      {
+         "ID": "42aa23c4-5e23-48c4-b288-a60f2f3bd66d",
+         "name": "Vika",
+         "username": "vika22",
+         "email": "vika22@rambler.ru",
+         "password": "$2b$05$m/klFQzgBSThWI5XNXjzxueEP3H7y44paxkIAUPXSvAwkpUpq464K",
+         "isMan": false,
+         "age": 45
       }
    ]
 }

@@ -20,11 +20,7 @@ class UsersServices {
                 .getAllUsers()
                 .then(users => {
                     const queryUsers = users.filter(user => +query.min <= user.age && user.age <= +query.max);
-                    if (queryUsers.length > 0) {
-                        res(queryUsers);
-                    } else {
-                        rej(new Error("Пользователи не найдены"));
-                    }
+                    res(queryUsers);
                 })
         })
     }
@@ -35,11 +31,7 @@ class UsersServices {
                 .getAllUsers()
                 .then(users => {
                     const user = users.find(user => user.ID === ID);
-                    if (user) {
-                        res(user);
-                    } else {
-                        rej(new Error(`Пользователь с ID ${ID} не найден`));
-                    }
+                    user ? res(user) : res({});
                 })
         })
     }
@@ -126,11 +118,7 @@ class UsersServices {
                         res(users.filter(user => !user.isMan));
                     } else {
                         const user = users.find(user => user.ID === param);
-                        if (user) {
-                            res(user);
-                        } else {
-                            rej(new Error(`Пользователь с ID ${param} не найден`));
-                        }
+                        user ? res(user) : res({});
                     }
                 })
         })
