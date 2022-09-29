@@ -252,12 +252,12 @@ router.get("/:param", Validator.validateFilter(), UsersControllers.filterUsers);
  *                 example: 25
  *                 description: Users' age
  *             required:
- *              - name
- *              - username
- *              - email
- *              - password
- *              - isMan
- *              - age
+ *               - name
+ *               - username
+ *               - email
+ *               - password
+ *               - isMan
+ *               - age
  *   schemas:
  *     User:
  *       description: Users object
@@ -283,6 +283,14 @@ router.get("/:param", Validator.validateFilter(), UsersControllers.filterUsers);
  *         age:
  *           type: integer
  *           example: 25
+ *       required:
+ *         - ID
+ *         - name
+ *         - username
+ *         - email
+ *         - password
+ *         - isMan
+ *         - age
  */
 router.post("/register", Validator.validateUser(), UsersControllers.createUser);
 
