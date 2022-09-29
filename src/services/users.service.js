@@ -51,12 +51,12 @@ class UsersServices {
         })
     }
 
-    updateFullUser(params) {
+    updateFullUser(userID, params) {
         return new Promise((res, rej) => {
             this
                 .getAllUsers()
                 .then(users => {
-                    const userIndex = users.findIndex(user => user.ID === params.ID);
+                    const userIndex = users.findIndex(user => user.ID === userID);
 
                     if (userIndex >= 0) {
                         users[userIndex] = { ID: users[userIndex].ID, ...params };
@@ -64,18 +64,18 @@ class UsersServices {
                         this._updateFile(users);
                         res(users[userIndex]);
                     } else {
-                        rej(new Error(`Пользователь с ID ${params.ID} не найден`));
+                        rej(new Error(`Пользователь с ID ${userID} не найден`));
                     }
                 })
         })
     }
 
-    updateUser(params) {
+    updateUser(userID, params) {
         return new Promise((res, rej) => {
             this
                 .getAllUsers()
                 .then(users => {
-                    const userIndex = users.findIndex(user => user.ID === params.ID);
+                    const userIndex = users.findIndex(user => user.ID === userID);
 
                     if (userIndex >= 0) {
                         users[userIndex] = { ...users[userIndex], ...params };
@@ -83,7 +83,7 @@ class UsersServices {
                         this._updateFile(users);
                         res(users[userIndex]);
                     } else {
-                        rej(new Error(`Пользователь с ID ${params.ID} не найден`));
+                        rej(new Error(`Пользователь с ID ${userID} не найден`));
                     }
                 })
         })
