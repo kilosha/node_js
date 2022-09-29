@@ -8,20 +8,6 @@ import Sentry from "@sentry/node";
 
 dotenv.config();
 
-// const swaggerOptions = {
-//     swaggerDefinition: {
-//         info: {
-//             title: "Users API",
-//             description: "API for getting, creating and updating users",
-//             servers: ["http://localhost:3000"],
-//             version: "1.0.0",
-//           },
-//     },
-//     apis: ["./src/routes/*.js"]
-// };
-  
-// const swaggerDocs = swaggerJSDoc(swaggerOptions);
-
 //OAS 3
 const swaggerOptions = {
   definition: {
@@ -45,7 +31,6 @@ const swaggerOptions = {
       "./src/routes/*.js"
   ]
 }
-
 
 const swaggerDocs = swaggerJSDoc(swaggerOptions);
 
