@@ -5,6 +5,7 @@ import routes from "./src/routes/index.js";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import Sentry from "@sentry/node";
+import cors from 'cors';
 
 dotenv.config();
 
@@ -34,10 +35,11 @@ const swaggerOptions = {
 
 const swaggerDocs = swaggerJSDoc(swaggerOptions);
 
+
 const app = express();
 
 app.use(Sentry.Handlers.requestHandler());
-
+app.use(cors());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // parse application/x-www-form-urlencoded
