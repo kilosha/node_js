@@ -1,7 +1,7 @@
 class Todo {
-    constructor(title, user_ID) {
+    constructor(title, userID) {
         this.title = title;
-        this.user_ID = user_ID;
+        this.userID = userID;
         this.isCompleted = false;
     }
 }

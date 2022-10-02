@@ -5,7 +5,7 @@ class TodosServices {
     getTodos(userID) {
         return new Promise((res, rej) => {
             this._getAllTodos().then(todos => {
-                const userTodos = todos.filter(todo => todo.user_ID === userID);
+                const userTodos = todos.filter(todo => todo.userID === userID);
                 res(userTodos);
             }).catch(err => {
                 rej(err);
@@ -49,7 +49,7 @@ class TodosServices {
     updateTodoTitle(newTitle, todoID, userID) {
         return new Promise((res, rej) => {
             this._getAllTodos().then(todos => {
-                const currentTodo = todos.find(todo => todo.user_ID === userID && todo.ID === todoID);
+                const currentTodo = todos.find(todo => todo.userID === userID && todo.ID === todoID);
                 if (currentTodo) {
                     currentTodo.title = newTitle;
                     this._updateFile(todos);
@@ -66,7 +66,7 @@ class TodosServices {
     updateTodoStatus(todoID, userID) {
         return new Promise((res, rej) => {
             this._getAllTodos().then(todos => {
-                const currentTodo = todos.find(todo => todo.user_ID === userID && todo.ID === todoID);
+                const currentTodo = todos.find(todo => todo.userID === userID && todo.ID === todoID);
                 if (currentTodo) {
                     currentTodo.isCompleted = !currentTodo.isCompleted;
                     this._updateFile(todos);
@@ -83,7 +83,7 @@ class TodosServices {
     deleteTodo(todoID, userID) {
         return new Promise((res, rej) => {
             this._getAllTodos().then(todos => {
-                const currentTodoIndex = todos.findIndex(todo => todo.user_ID === userID && todo.ID === todoID);
+                const currentTodoIndex = todos.findIndex(todo => todo.userID === userID && todo.ID === todoID);
                 if (currentTodoIndex !== -1) {
                     const deletedTodo = todos[currentTodoIndex];
                     todos.splice(currentTodoIndex, 1);

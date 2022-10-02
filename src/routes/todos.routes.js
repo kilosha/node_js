@@ -70,7 +70,7 @@ router.get("/", authenticateToken, TodosControllers.getTodos);
  *           type: boolean
  *           example: false
  *           description: Default value false. Is todo completed or not.
- *         user_ID:
+ *         userID:
  *           type: string
  *           example: ff1be2bb-d160-40d0-8bbc-68a830a7dc60
  *           description: ID of user, which todo it is.
@@ -78,7 +78,7 @@ router.get("/", authenticateToken, TodosControllers.getTodos);
  *         - ID
  *         - title
  *         - isCompleted
- *         - user_ID   
+ *         - userID   
  *   requestBodies: 
  *     TodoTitle:
  *       description: Title for new todo.
@@ -173,7 +173,7 @@ router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.valid
 
 /**
  * @swagger
- * /api/todos/isCompleted/{ID}:
+ * /api/todos/{ID}/isCompleted:
  *  patch:
  *      summary: Updates isCompleted property value to the opposite for todo with ID = {ID}
  *      tags:
@@ -199,7 +199,7 @@ router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.valid
  *        401:
  *          $ref: "#/components/responses/UnauthorizedError"
  */
-router.patch("/isCompleted/:ID", authenticateToken, Validator.validateID(), TodosControllers.updateTodoStatus);
+router.patch("/:ID/isCompleted", authenticateToken, Validator.validateID(), TodosControllers.updateTodoStatus);
 
 /**
  * @swagger
