@@ -49,7 +49,7 @@ app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
 
 Sentry.init({
-    dsn: "https://1279bf1de8fc4b9c87d7c7d6d473b893@o1409901.ingest.sentry.io/6746886",
+    dsn: process.env.SENTRY_DSN
 });
 
 app.use("/api", routes);
