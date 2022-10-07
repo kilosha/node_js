@@ -194,7 +194,6 @@ router.get("/:param", Validator.validateFilter(), UsersControllers.filterUsers);
  *          Register "User" object.
  *      tags:
  *          - Users
- *          - Registration
  *      requestBody:
  *        $ref: "#/components/requestBodies/User"
  *      responses:
