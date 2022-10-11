@@ -1,110 +1,43 @@
 import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
+import UsersCollection from '../dao/usersCollection.js';
 
 class UsersServices {
-    getAllUsers() {
-        return new Promise((res, rej) => {
-            fs.readFile("./users.json", "utf8", function (err, data) {
-                if (err) {
-                    rej(err);
-                } else {
-                    res(JSON.parse(data).users);
-                }
-            })
-        })
+    async getAllUsers() {
+        const users = await UsersCollection.getAllUsers();
+        return users;
     }
 
-    getQueryUsers(query) {
-        return new Promise((res, rej) => {
-            this
-                .getAllUsers()
-                .then(users => {
-                    const queryUsers = users.filter(user => +query.min <= user.age && user.age <= +query.max);
-                    res(queryUsers);
-                })
-        })
+    async getQueryUsers(query) {
+        const users = await UsersCollection.getQueryUsers(query);
+        return users;
     }
 
-    getUserByID(ID) {
-        return new Promise((res, rej) => {
-            this
-                .getAllUsers()
-                .then(users => {
-                    const user = users.find(user => user.ID === ID);
-                    user ? res(user) : res({});
-                })
-        })
+    async getUserByID(ID) {
+        const user = await UsersCollection.getUserByID(ID);
+        return user;
     }
 
-    createUser(userInfo) {
-        const newUserID = uuidv4();
-        const newUser = { ID: newUserID, ...userInfo };
-
-        return new Promise((res, rej) => {
-            this
-                .getAllUsers()
-                .then(users => {
-                    users.push(newUser);
-                    this._updateFile(users);
-                    res(newUser);
-                })
-        })
+    async createUser(userInfo) {
+        //тут добавить проверку на email && login
+        const user = await UsersCollection.createUser(userInfo);
+        return user;
     }
 
-    updateFullUser(userID, params) {
-        return new Promise((res, rej) => {
-            this
-                .getAllUsers()
-                .then(users => {
-                    const userIndex = users.findIndex(user => user.ID === userID);
+    async updateFullUser(userID, params) {
+        const updatedUser = await UsersCollection.updateFullUser(userID, params);
+        return updatedUser;
 
-                    if (userIndex >= 0) {
-                        users[userIndex] = { ID: users[userIndex].ID, ...params };
-
-                        this._updateFile(users);
-                        res(users[userIndex]);
-                    } else {
-                        rej(new Error(`Пользователь с ID ${userID} не найден`));
-                    }
-                })
-        })
     }
 
-    updateUser(userID, params) {
-        return new Promise((res, rej) => {
-            this
-                .getAllUsers()
-                .then(users => {
-                    const userIndex = users.findIndex(user => user.ID === userID);
-
-                    if (userIndex >= 0) {
-                        users[userIndex] = { ...users[userIndex], ...params };
-
-                        this._updateFile(users);
-                        res(users[userIndex]);
-                    } else {
-                        rej(new Error(`Пользователь с ID ${userID} не найден`));
-                    }
-                })
-        })
+    async updateUser(userID, params) {
+        const updatedUser = await UsersCollection.updateUser(userID, params);
+        return updatedUser;
     }
 
-    deleteUser(ID) {
-        return new Promise((res, rej) => {
-            this
-                .getAllUsers()
-                .then(users => {
-                    const userIndex = users.findIndex(user => user.ID === ID);
-                    if (userIndex !== -1) {
-                        const deletedUser = users.splice(userIndex, 1)[0];
-
-                        this._updateFile(users);
-                        res(deletedUser);
-                    } else {
-                        rej(new Error(`Пользователь с ID ${ID} не найден`));
-                    }
-                })
-        })
+    async deleteUser(ID) {
+        const deletedUser = await UsersCollection.deleteUser(ID);
+        return deletedUser;
     }
 
     filterUsers(param) {
@@ -124,48 +57,24 @@ class UsersServices {
         })
     }
 
-    _updateFile(users) {
-        fs.writeFile("./users.json", JSON.stringify({ users }, null, 3), (err) => {
-            if (err) {
-                throw err;
-            }
-        })
+    async checkEmailUsage(email, ID) {
+        let users = await this.getAllUsers();
+        if (ID) {
+            users = users.filter(user => user._id.toString() !== ID);
+        }
+
+        const user = users.find(user => user.email === email);
+        return !!user;
     }
 
-    checkEmailUsage(email, ID) {
-        return new Promise((res, rej) => {
-            this
-                .getAllUsers()
-                .then(users => {
-                    if (ID) {
-                        users = users.filter(user => user.ID !== ID);
-                    }
-                    const user = users.find(user => user.email === email);
-                    if (user) {
-                        res(true);
-                    } else {
-                        res(false);
-                    }
-                })
-        })
-    }
+    async checkUsernameUsage(username, ID) {
+        let users = await this.getAllUsers();
+        if (ID) {
+            users = users.filter(user => user._id.toString() !== ID);
+        }
 
-    checkUsernameUsage(username, ID) {
-        return new Promise((res, rej) => {
-            this
-                .getAllUsers()
-                .then(users => {
-                    if (ID) {
-                        users = users.filter(user => user.ID !== ID);
-                    }
-                    const user = users.find(user => user.username === username);
-                    if (user) {
-                        res(true);
-                    } else {
-                        res(false);
-                    }
-                })
-        })
+        const user = users.find(user => user.username === username);
+        return !!user;
     }
 }
 

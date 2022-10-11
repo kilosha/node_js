@@ -113,7 +113,7 @@ router.get("/", Validator.validateQueryIfPresent(), UsersControllers.getUsers);
  *                          type: string
  *                          example: params
  */
-router.get("/user/:ID", Validator.validateID(), UsersControllers.getUserByID);
+router.get("/user/:ID",  UsersControllers.getUserByID);
 
 /**
  * @swagger
@@ -321,7 +321,7 @@ router.post("/register", Validator.validateUser(), UsersControllers.createUser);
  *        400:
  *          $ref: "#/components/responses/ValidationError"
  */
-router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersControllers.updateFullUser);
+router.put("/:ID", Validator.validateUser(), UsersControllers.updateFullUser);
 
 /**
  * @swagger
@@ -423,7 +423,7 @@ router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersCont
  *                 type: string
  *                 example: "Пользователь с ID 3c2af1c7-2bb9-4b33-b425-77f5a7d1d12a не найден"      
  */
-router.patch("/:ID", [Validator.validateID(), Validator.validateUserUpdate()], UsersControllers.updateUser);
+router.patch("/:ID", Validator.validateUserUpdate(), UsersControllers.updateUser);
 
 /**
  * @swagger
@@ -451,6 +451,6 @@ router.patch("/:ID", [Validator.validateID(), Validator.validateUserUpdate()], U
  *        400:
  *          $ref: "#/components/responses/UserNotFound"
  */
-router.delete("/:ID", Validator.validateID(), UsersControllers.deleteUser);
+router.delete("/:ID", UsersControllers.deleteUser);
 
 export default router;
