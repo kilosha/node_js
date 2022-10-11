@@ -1,5 +1,3 @@
-import fs from "fs";
-import { v4 as uuidv4 } from "uuid";
 import UsersCollection from '../dao/usersCollection.js';
 
 class UsersServices {
@@ -40,21 +38,9 @@ class UsersServices {
         return deletedUser;
     }
 
-    filterUsers(param) {
-        return new Promise((res, rej) => {
-            this
-                .getAllUsers()
-                .then(users => {
-                    if (param === "M") {
-                        res(users.filter(user => user.isMan));
-                    } else if (param === "F") {
-                        res(users.filter(user => !user.isMan));
-                    } else {
-                        const user = users.find(user => user.ID === param);
-                        user ? res(user) : res({});
-                    }
-                })
-        })
+    async filterUsers(param) {
+        const users = await UsersCollection.filterUsers(param);
+        return users;
     }
 
     async checkEmailUsage(email, ID) {

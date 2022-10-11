@@ -65,20 +65,20 @@ class Validator {
     }
 
     validateID() {
-        return [param("ID").isUUID().withMessage("ID должен быть в формате UUID")];
+        return [param("ID").isMongoId().withMessage("ID должен быть в формате ObjectId")];
     }
 
     validateFilter() {
         return oneOf([
             param("param").isIn(["M", "F"]).withMessage("Допустимы значения F или M"),
-            param("param").isUUID().withMessage("ID должен быть в формате UUID")
-        ], "Фильтр возможен только по F, M или UUID")
+            param("param").isMongoId().withMessage("ID должен быть в формате ObjectId")
+        ], "Фильтр возможен только по F, M или ObjectId")
     }
 
     isValidUser(user) {
         const { ID, name, username, email, password, isMan, age, ...other } = user;
 
-        if (Object.keys(other).length > 0) {
+        if (Object.keys(other).length) {
             throw new Error("Объект содержит некорректные поля: " + Object.keys(other));
         }
 
@@ -88,7 +88,7 @@ class Validator {
     isValidNewUser(user) {
         const { name, username, email, password, isMan, age, ...other } = user;
 
-        if (Object.keys(other).length > 0) {
+        if (Object.keys(other).length) {
             throw new Error("Объект содержит некорректные поля: " + Object.keys(other));
         }
 
@@ -98,9 +98,9 @@ class Validator {
     validateQueryIfPresent() {
         return [
             query().custom(query => {
-                if (Object.keys(query).length > 0) {
+                if (Object.keys(query).length) {
                     const { min, max, ...other } = query;
-                    if (Object.keys(other).length > 0) {
+                    if (Object.keys(other).length) {
                         throw new Error("Некорректные query параметры: " + Object.keys(other));
                     }
 
@@ -133,7 +133,7 @@ class Validator {
     isValidLoginInfo(info) {
         const { email, password, ...other } = info;
 
-        if (Object.keys(other).length > 0) {
+        if (Object.keys(other).length) {
             throw new Error("Объект содержит некорректные поля: " + Object.keys(other));
         }
 
@@ -154,7 +154,7 @@ class Validator {
     isValidTodoObject(todo) {
         const { title, ...other } = todo;
 
-        if (Object.keys(other).length > 0) {
+        if (Object.keys(other).length) {
             throw new Error("Объект содержит некорректные поля: " + Object.keys(other));
         }
 

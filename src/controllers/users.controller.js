@@ -93,7 +93,7 @@ class UsersControllers {
         } else {
             try {
                 const user = await UsersServices.getUserByID(req.params.ID);
-                if (Object.keys(user).length === 0) {
+                if (!Object.keys(user).length) {
                     throw new Error(`Пользователь с ID ${req.params.ID} не найден`) 
                 } 
 
@@ -132,7 +132,7 @@ class UsersControllers {
         } else {
             try {
                 const user = await UsersServices.getUserByID(req.params.ID);
-                if (Object.keys(user).length === 0) {
+                if (!Object.keys(user).length) {
                     throw new Error(`Пользователь с ID ${req.params.ID} не найден`) 
                 } 
 
@@ -181,7 +181,7 @@ class UsersControllers {
         } else {
             try {
                 const user = await UsersServices.getUserByID(req.params.ID);
-                if (Object.keys(user).length === 0) {
+                if (!Object.keys(user).length) {
                     throw new Error(`Пользователь с ID ${req.params.ID} не найден`) 
                 } 
                 

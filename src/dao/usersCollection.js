@@ -10,10 +10,13 @@ class UsersCollection {
 
         const users = await db
             .collection(MONGO_COLLECTION)
-            .find()
+            .find({})
+            .project({ password: 0 })
             .toArray();
-  
+
         connection.close();
+
+        users.forEach(user => delete Object.assign(user, {ID: user._id })._id);
         return users;
     }
 
@@ -24,9 +27,12 @@ class UsersCollection {
         const users = await db
             .collection(MONGO_COLLECTION)
             .find({ age: { $gte: +query.min, $lte: +query.max} })
+            .project({ password: 0 })
             .toArray();
 
         connection.close();
+
+        users.forEach(user => delete Object.assign(user, {ID: user._id })._id);
         return users;
     }
 
@@ -36,9 +42,11 @@ class UsersCollection {
 
         const user = await db
             .collection(MONGO_COLLECTION)
-            .findOne(ObjectId(ID));
+            .findOne(ObjectId(ID), { projection: { password: 0 }});
 
         connection.close();
+
+        if (user) delete Object.assign(user, {ID: user._id })._id;
         return user || {};
     }
 
@@ -52,7 +60,9 @@ class UsersCollection {
 
         connection.close();
         
-        return { _id: user.insertedId, ...userInfo};
+        delete userInfo.password;
+
+        return { ID: user.insertedId, ...userInfo};
     }
 
     async updateFullUser(userID, params) {
@@ -65,7 +75,9 @@ class UsersCollection {
 
         connection.close();
 
-        return { _id: ObjectId(userID), ...params};
+        delete params.password;
+
+        return { ID: ObjectId(userID), ...params};
     }
 
     async updateUser(userID, params) {
@@ -78,7 +90,8 @@ class UsersCollection {
 
         connection.close();
 
-        return { _id: ObjectId(userID), ...params};
+        //тут пароль убрать (тут вообще ток измённые поля)
+        return { ID: ObjectId(userID), ...params};
     }
 
     async deleteUser(ID) {
@@ -87,7 +100,7 @@ class UsersCollection {
 
         const user = await db
             .collection(MONGO_COLLECTION)
-            .findOne(ObjectId(ID));
+            .findOne(ObjectId(ID), { projection: { password: 0 }});
         
         await db
             .collection(MONGO_COLLECTION)
@@ -95,20 +108,55 @@ class UsersCollection {
 
         connection.close();
 
+        if (user) delete Object.assign(user, {ID: user._id })._id;
+
         return user;
     }
 
-    // async findUserByEmail(email) {
-    //     const connection = await DBConnection.getConnection();
-    //     const db = DBConnection.connectToDB(connection);
+    async filterUsers(param) {
+        //Тут вообще либо объект, либо массив. Сделать фильтр отдельно!!!
 
-    //     const user = await db
-    //         .collection(MONGO_COLLECTION)
-    //         .findOne({ email: { $eq: email} });
+        const connection = await DBConnection.getConnection();
+        const db = DBConnection.connectToDB(connection);
+        let users;
 
-    //     connection.close();
-    //     return user;
-    // }
+        if (param === "M") {
+            users = await db
+                .collection(MONGO_COLLECTION)
+                .find({ isMan: true })
+                .project({ password: 0 })
+                .toArray();
+        } else if (param === "F") {
+            users = await db
+                .collection(MONGO_COLLECTION)
+                .find({ isMan: false  })
+                .project({ password: 0 })
+                .toArray();
+        } else {
+            users = await db
+                .collection(MONGO_COLLECTION)
+                .findOne(ObjectId(param), { projection: { password: 0 }});
+        }
+
+        connection.close();
+
+        if (Array.isArray(users)) users.forEach(user => delete Object.assign(user, {ID: user._id })._id);
+        if (users) delete Object.assign(users, {ID: users._id })._id;
+
+        return users || {};
+    }
+
+    async getUserByEmail(email) {
+        const connection = await DBConnection.getConnection();
+        const db = DBConnection.connectToDB(connection);
+
+        const user = await db
+            .collection(MONGO_COLLECTION)
+            .findOne( { email });
+
+        connection.close();
+        return user || {};
+    }
 }
 
 export default new UsersCollection();

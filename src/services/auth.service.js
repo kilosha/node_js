@@ -1,18 +1,9 @@
-import fs from "fs";
+import UsersCollection from '../dao/usersCollection.js';
 
 class AuthServices {
-
     async getUser(email) {
-        return new Promise((res, rej) => {
-            fs.readFile("./users.json", "utf8", function (err, users) {
-                if (err) {
-                    rej(err);
-                } else {
-                    const user = JSON.parse(users).users.find(user => user.email === email);
-                    res(user);
-                }
-            })
-        })
+        const user = await UsersCollection.getUserByEmail(email);
+        return user;
     }
 }
 
