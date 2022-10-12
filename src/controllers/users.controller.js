@@ -27,7 +27,7 @@ class UsersControllers {
                 }
                 res.send(users);
             } catch (e) {
-                Sentry.captureException(e);
+                //Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -46,7 +46,7 @@ class UsersControllers {
                 const user = await UsersServices.getUserByID(req.params.ID);
                 res.send(user);
             } catch (e) {
-                Sentry.captureException(e);
+                //Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -69,7 +69,7 @@ class UsersControllers {
                     const newUser = new User(req.body, hashedPassword);
                     const newDBUser = await UsersServices.createUser(newUser);
                     res.send(newDBUser);
-                } else {  
+                } else {
                     let message = Utils._createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed);
                     return res.status(400).send({
                         success: false,
@@ -77,7 +77,7 @@ class UsersControllers {
                     });
                 }
             } catch (e) {
-                Sentry.captureException(e);
+                //Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -94,8 +94,8 @@ class UsersControllers {
             try {
                 const user = await UsersServices.getUserByID(req.params.ID);
                 if (!Object.keys(user).length) {
-                    throw new Error(`Пользователь с ID ${req.params.ID} не найден`) 
-                } 
+                    throw new Error(`Пользователь с ID ${req.params.ID} не найден`)
+                }
 
                 const isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email, req.params.ID);
                 const isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username, req.params.ID);
@@ -115,7 +115,7 @@ class UsersControllers {
                     });
                 }
             } catch (e) {
-                Sentry.captureException(e);
+                //Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -133,8 +133,8 @@ class UsersControllers {
             try {
                 const user = await UsersServices.getUserByID(req.params.ID);
                 if (!Object.keys(user).length) {
-                    throw new Error(`Пользователь с ID ${req.params.ID} не найден`) 
-                } 
+                    throw new Error(`Пользователь с ID ${req.params.ID} не найден`)
+                }
 
                 let isEmailAlreadyUsed, isUserNameAlreadyUsed = false;
                 if (req.body.email) {
@@ -144,9 +144,9 @@ class UsersControllers {
                 if (req.body.username) {
                     isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username, req.params.ID);
                 }
-                
+
                 if (!isEmailAlreadyUsed && !isUserNameAlreadyUsed) {
-                    const updatedFields = {...req.body};
+                    const updatedFields = { ...req.body };
 
                     if (req.body.password) {
                         const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
@@ -164,7 +164,7 @@ class UsersControllers {
                     });
                 }
             } catch (e) {
-                Sentry.captureException(e);
+                //Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -182,13 +182,13 @@ class UsersControllers {
             try {
                 const user = await UsersServices.getUserByID(req.params.ID);
                 if (!Object.keys(user).length) {
-                    throw new Error(`Пользователь с ID ${req.params.ID} не найден`) 
-                } 
-                
+                    throw new Error(`Пользователь с ID ${req.params.ID} не найден`)
+                }
+
                 const deletedUser = await UsersServices.deleteUser(req.params.ID);
                 res.send(deletedUser);
             } catch (e) {
-                Sentry.captureException(e);
+                //Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -207,7 +207,7 @@ class UsersControllers {
                 const filteredUsers = await UsersServices.filterUsers(req.params.param);
                 res.send(filteredUsers);
             } catch (e) {
-                Sentry.captureException(e);
+                //Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }

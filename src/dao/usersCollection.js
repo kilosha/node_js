@@ -61,8 +61,9 @@ class UsersCollection {
         connection.close();
         
         delete userInfo.password;
+        delete Object.assign(userInfo, {ID: userInfo._id })._id;
 
-        return { ID: user.insertedId, ...userInfo};
+        return userInfo;
     }
 
     async updateFullUser(userID, params) {
@@ -102,13 +103,15 @@ class UsersCollection {
             .collection(MONGO_COLLECTION)
             .findOne(ObjectId(ID), { projection: { password: 0 }});
         
-        await db
-            .collection(MONGO_COLLECTION)
-            .deleteOne({ _id: ObjectId(ID)});
+        if (user) {
+            await db
+                .collection(MONGO_COLLECTION)
+                .deleteOne({ _id: ObjectId(ID)});
+
+            delete Object.assign(user, {ID: user._id })._id;
+        }
 
         connection.close();
-
-        if (user) delete Object.assign(user, {ID: user._id })._id;
 
         return user;
     }
@@ -155,6 +158,8 @@ class UsersCollection {
             .findOne( { email });
 
         connection.close();
+        if (user) delete Object.assign(user, {ID: user._id })._id;
+
         return user || {};
     }
 }

@@ -1,109 +1,32 @@
-import fs from "fs";
-import { v4 as uuidv4 } from "uuid";
+import TodosCollection from '../dao/todosCollection.js';
 
 class TodosServices {
-    getTodos(userID) {
-        return new Promise((res, rej) => {
-            this._getAllTodos().then(todos => {
-                const userTodos = todos.filter(todo => todo.userID === userID);
-                res(userTodos);
-            }).catch(err => {
-                rej(err);
-            });
-        })
+    async getTodos(userID) {
+        const todos = await TodosCollection.getTodos(userID);
+        return todos;
     }
 
-    _getAllTodos() {
-        return new Promise((res, rej) => {
-            fs.readFile("./todos.json", "utf8", function (err, data) {
-                if (err) {
-                    rej(err);
-                } else {
-                    const allTodos = JSON.parse(data).todos;
-                    if (allTodos && allTodos.length > 0) {
-                        res(JSON.parse(data).todos);
-                    }
-                    rej(new Error("Что-то пошло не так"));
-                }
-            })
-        })
+    async createTodo(newTodoInfo) {
+        const todo = await TodosCollection.createTodo(newTodoInfo);
+        return todo;
     }
 
-    createTodo(newTodoInfo) {
-        const newTodoID = uuidv4();
-        const newTodo = { ID: newTodoID, ...newTodoInfo };
-
-        return new Promise((res, rej) => {
-            this
-                ._getAllTodos()
-                .then(todos => {
-                    todos.push(newTodo);
-                    this._updateFile(todos);
-                    res(newTodo);
-                }).catch(err => {
-                    rej(err);
-                });
-        })
+    async updateTodoTitle(newTitle, todoID, userID) {
+        const todo = await TodosCollection.updateTodoTitle(newTitle, todoID, userID);
+        if (!todo) throw new Error("У данного пользователя нет такой задачи");
+        return todo;
     }
 
-    updateTodoTitle(newTitle, todoID, userID) {
-        return new Promise((res, rej) => {
-            this._getAllTodos().then(todos => {
-                const currentTodo = todos.find(todo => todo.userID === userID && todo.ID === todoID);
-                if (currentTodo) {
-                    currentTodo.title = newTitle;
-                    this._updateFile(todos);
-                    res(currentTodo);
-                } else {
-                    rej(new Error("У данного пользователя нет такой задачи"));
-                }
-            }).catch(err => {
-                rej(err);
-            });
-        })
+    async updateTodoStatus(todoID, userID) {
+        const todo = await TodosCollection.updateTodoStatus(todoID, userID);
+        if (!todo) throw new Error("У данного пользователя нет такой задачи");
+        return todo;
     }
 
-    updateTodoStatus(todoID, userID) {
-        return new Promise((res, rej) => {
-            this._getAllTodos().then(todos => {
-                const currentTodo = todos.find(todo => todo.userID === userID && todo.ID === todoID);
-                if (currentTodo) {
-                    currentTodo.isCompleted = !currentTodo.isCompleted;
-                    this._updateFile(todos);
-                    res(currentTodo);
-                } else {
-                    rej(new Error("У данного пользователя нет такой задачи"));
-                }
-            }).catch(err => {
-                rej(err);
-            });
-        })
-    }
-
-    deleteTodo(todoID, userID) {
-        return new Promise((res, rej) => {
-            this._getAllTodos().then(todos => {
-                const currentTodoIndex = todos.findIndex(todo => todo.userID === userID && todo.ID === todoID);
-                if (currentTodoIndex !== -1) {
-                    const deletedTodo = todos[currentTodoIndex];
-                    todos.splice(currentTodoIndex, 1);
-                    this._updateFile(todos);
-                    res(deletedTodo);
-                } else {
-                    rej(new Error("У данного пользователя нет такой задачи"));
-                }
-            }).catch(err => {
-                rej(err);
-            });
-        })
-    }
-
-    _updateFile(todos) {
-        fs.writeFile("./todos.json", JSON.stringify({ todos }, null, 3), (err) => {
-            if (err) {
-                throw err;
-            }
-        })
+    async deleteTodo(todoID, userID) {
+        const todo = await TodosCollection.deleteTodo(todoID, userID);
+        if (!todo) throw new Error("У данного пользователя нет такой задачи");
+        return todo;
     }
 }
 
