@@ -6,6 +6,11 @@ class TodosServices {
         return todos;
     }
 
+    async getQueryTodos(userID, isCompleted) {
+        const todos = await TodosCollection.getQueryTodos(userID, isCompleted);
+        return todos;
+    }
+
     async createTodo(newTodoInfo) {
         const todo = await TodosCollection.createTodo(newTodoInfo);
         return todo;

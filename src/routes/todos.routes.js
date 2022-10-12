@@ -11,10 +11,16 @@ const router = express.Router();
  *  get:
  *      security: 
  *        - bearerAuth: []
- *      summary: Get all tasks of current user
+ *      summary: Get all tasks of current user or filtered by isCompleted tasks (if query exists)
  *      description: Returns tasks array
  *      tags:
  *          - Todos
+ *      parameters:
+ *        - in: query
+ *          name: isCompleted
+ *          required: false
+ *          description: Filter task by completeness (true or false)
+ *          type: boolean
  *      responses:
  *        200:
  *          description: Successful response
@@ -27,7 +33,7 @@ const router = express.Router();
  *        401:
  *          $ref: "#/components/responses/UnauthorizedError"
  */
-router.get("/", authenticateToken, TodosControllers.getTodos);
+router.get("/", authenticateToken, Validator.validateTodoQueryIfPresent(), TodosControllers.getTodos);
 
 /**
  * @swagger
@@ -60,7 +66,7 @@ router.get("/", authenticateToken, TodosControllers.getTodos);
  *       properties:
  *         ID:
  *           type: string
- *           example: 410bed16-5f00-44f8-aa33-d1f27bd4db13
+ *           example: 63460d72bf56cb381a9eb823
  *           description: Todos ID
  *         title:
  *           type: string
@@ -72,7 +78,7 @@ router.get("/", authenticateToken, TodosControllers.getTodos);
  *           description: Default value false. Is todo completed or not.
  *         userID:
  *           type: string
- *           example: ff1be2bb-d160-40d0-8bbc-68a830a7dc60
+ *           example: 63460ba6f0b67c1c38fedce5
  *           description: ID of user, which todo it is.
  *       required:
  *         - ID
@@ -154,7 +160,7 @@ router.post("/", authenticateToken, Validator.validateTodoTitle(), TodosControll
  *          required: true
  *          description: Set an {ID} of a todo to update
  *          type: string
- *          example: f465260c-3096-4069-9a30-0ad03bed7ca0
+ *          example: 63460d72bf56cb381a9eb823
  *      requestBody:
  *        $ref: "#/components/requestBodies/TodoTitle"
  *      responses:
@@ -186,7 +192,7 @@ router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.valid
  *          required: true
  *          description: Set an {ID} of a todo to update
  *          type: string
- *          example: f465260c-3096-4069-9a30-0ad03bed7ca0
+ *          example: 63460d72bf56cb381a9eb823
  *      responses:
  *        200:
  *          description: Successful response with updated Todo
@@ -216,7 +222,7 @@ router.patch("/:ID/isCompleted", authenticateToken, Validator.validateID(), Todo
  *          required: true
  *          description: Set an {ID} of a todo to update
  *          type: string
- *          example: f465260c-3096-4069-9a30-0ad03bed7ca0
+ *          example: 63460d72bf56cb381a9eb823
  *      responses:
  *        200:
  *          description: Successful response with updated Todo

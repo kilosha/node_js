@@ -15,8 +15,23 @@ class TodosCollection {
 
         connection.close();
 
-        todos.forEach(todos => delete Object.assign(todos, {ID: todos._id })._id);
+        todos.forEach(todo => delete Object.assign(todo, {ID: todo._id })._id);
 
+        return todos;
+    }
+
+    async getQueryTodos(userID, isCompleted) {
+        const connection = await DBConnection.getConnection();
+        const db = DBConnection.connectToDB(connection);
+
+        const todos = await db
+            .collection(MONGO_COLLECTION)
+            .find({ userID, isCompleted: isCompleted === 'true' })
+            .toArray();
+
+        connection.close();
+
+        todos.forEach(todo => delete Object.assign(todo, {ID: todo._id })._id);
         return todos;
     }
 
@@ -24,7 +39,7 @@ class TodosCollection {
         const connection = await DBConnection.getConnection();
         const db = DBConnection.connectToDB(connection);
 
-        const user = await db
+        const todo = await db
             .collection(MONGO_COLLECTION)
             .insertOne(newTodoInfo);
 

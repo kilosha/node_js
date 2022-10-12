@@ -18,8 +18,8 @@ class UsersControllers {
                 errors: errors.array()
             });
         } else {
-            let users = [];
             try {
+                let users = [];
                 if (Object.values(req.query).length) {
                     users = await UsersServices.getQueryUsers(req.query);
                 } else {

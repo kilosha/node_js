@@ -129,7 +129,6 @@ class Validator {
             ]
     }
 
-
     isValidLoginInfo(info) {
         const { email, password, ...other } = info;
 
@@ -148,6 +147,21 @@ class Validator {
             body("title")
             .notEmpty().withMessage("Не заполнено обязательное поле title")
             .isString().withMessage("Title должно быть строкой")
+        ]
+    }
+
+    validateTodoQueryIfPresent() {
+        return [
+            query().custom(query => {
+                if (Object.keys(query).length) {
+                    const { isCompleted, ...other } = query;
+                    if (Object.keys(other).length) {
+                        throw new Error("Некорректные query параметры: " + Object.keys(other));
+                    }
+                }
+                return true;
+            }),
+            query("isCompleted").if(query("isCompleted").exists()).isBoolean().withMessage("Значение должно быть true или false")
         ]
     }
 
