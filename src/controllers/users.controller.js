@@ -92,11 +92,7 @@ class UsersControllers {
             });
         } else {
             try {
-                const user = await UsersServices.getUserByID(req.params.ID);
-                if (!Object.keys(user).length) {
-                    throw new Error(`Пользователь с ID ${req.params.ID} не найден`)
-                }
-
+                if (req.user.ID !== req.params.ID) throw new Error('Пользователь может менять только свои данные!');
                 const isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email, req.params.ID);
                 const isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username, req.params.ID);
 
@@ -131,11 +127,7 @@ class UsersControllers {
             });
         } else {
             try {
-                const user = await UsersServices.getUserByID(req.params.ID);
-                if (!Object.keys(user).length) {
-                    throw new Error(`Пользователь с ID ${req.params.ID} не найден`)
-                }
-
+                if (req.user.ID !== req.params.ID) throw new Error('Пользователь может менять только свои данные!');
                 let isEmailAlreadyUsed, isUserNameAlreadyUsed = false;
                 if (req.body.email) {
                     isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email, req.params.ID);

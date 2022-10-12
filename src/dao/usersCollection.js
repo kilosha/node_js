@@ -67,32 +67,50 @@ class UsersCollection {
     }
 
     async updateFullUser(userID, params) {
+        let updatedUser;
         const connection = await DBConnection.getConnection();
         const db = DBConnection.connectToDB(connection);
 
-        await db
+        const user = await db
             .collection(MONGO_COLLECTION)
-            .replaceOne({ _id: ObjectId(userID)}, params);
+            .findOne(ObjectId(userID), { projection: { password: 0 }});
+        
+        if (user) { 
+            updatedUser = await db
+                .collection(MONGO_COLLECTION)
+                .replaceOne({ _id: ObjectId(userID)}, params);
+
+            delete Object.assign(user, {ID: user._id })._id;
+        }
 
         connection.close();
 
         delete params.password;
 
-        return { ID: ObjectId(userID), ...params};
+        return updatedUser ? { ...user, ...params } : user;
     }
 
     async updateUser(userID, params) {
+        let updatedUser;
         const connection = await DBConnection.getConnection();
         const db = DBConnection.connectToDB(connection);
 
-        await db
+        const user = await db
             .collection(MONGO_COLLECTION)
-            .updateOne({ _id: ObjectId(userID)}, { $set: params });
+            .findOne(ObjectId(userID), { projection: { password: 0 }});
 
+        if (user) { 
+            updatedUser = await db
+                .collection(MONGO_COLLECTION)
+                .updateOne({ _id: ObjectId(userID)}, { $set: params });
+
+            delete Object.assign(user, {ID: user._id })._id;
+        }        
+        
         connection.close();
 
-        //тут пароль убрать (тут вообще ток измённые поля)
-        return { ID: ObjectId(userID), ...params};
+        delete params.password;
+        return updatedUser ? { ...user, ...params } : user;
     }
 
     async deleteUser(ID) {

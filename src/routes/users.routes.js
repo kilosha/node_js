@@ -300,6 +300,8 @@ router.post("/register", Validator.validateUser(), UsersControllers.createUser);
  *      summary: Updates a user with {ID}
  *      tags:
  *        - Users
+ *      security: 
+ *        - bearerAuth: []
  *      consumes:
  *        - application/json
  *      parameters:
@@ -321,7 +323,7 @@ router.post("/register", Validator.validateUser(), UsersControllers.createUser);
  *        400:
  *          $ref: "#/components/responses/ValidationError"
  */
-router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersControllers.updateFullUser);
+router.put("/:ID", authenticateToken, [Validator.validateID(), Validator.validateUser()], UsersControllers.updateFullUser);
 
 /**
  * @swagger
@@ -330,6 +332,8 @@ router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersCont
  *      summary: Updates a user with {ID}
  *      tags:
  *        - Users
+ *      security: 
+ *        - bearerAuth: []
  *      consumes:
  *        - application/json
  *      parameters:
@@ -444,7 +448,7 @@ router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersCont
  *                 type: string
  *                 example: "Пользователь с ID 23452ed7d18c1bb917ecf031 не найден"      
  */
-router.patch("/:ID", [Validator.validateID(), Validator.validateUserUpdate()], UsersControllers.updateUser);
+router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.validateUserUpdate()], UsersControllers.updateUser);
 
 /**
  * @swagger

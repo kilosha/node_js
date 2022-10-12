@@ -24,12 +24,13 @@ class UsersServices {
 
     async updateFullUser(userID, params) {
         const updatedUser = await UsersCollection.updateFullUser(userID, params);
+        if (!updatedUser) throw new Error(`Пользователь с ID ${userID} не найден`);
         return updatedUser;
-
     }
 
     async updateUser(userID, params) {
         const updatedUser = await UsersCollection.updateUser(userID, params);
+        if (!updatedUser) throw new Error(`Пользователь с ID ${userID} не найден`);
         return updatedUser;
     }
 
@@ -46,7 +47,7 @@ class UsersServices {
     async checkEmailUsage(email, ID) {
         let users = await this.getAllUsers();
         if (ID) {
-            users = users.filter(user => user._id.toString() !== ID);
+            users = users.filter(user => user.ID.toString() !== ID);
         }
 
         const user = users.find(user => user.email === email);
@@ -56,7 +57,7 @@ class UsersServices {
     async checkUsernameUsage(username, ID) {
         let users = await this.getAllUsers();
         if (ID) {
-            users = users.filter(user => user._id.toString() !== ID);
+            users = users.filter(user => user.ID.toString() !== ID);
         }
 
         const user = users.find(user => user.username === username);
