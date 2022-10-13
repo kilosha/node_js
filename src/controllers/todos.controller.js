@@ -6,12 +6,27 @@ import Todo from "../models/Todo.js";
 
 class TodosControllers {
     async getTodos(req, res) {
-        try {
-            const todos = await TodosServices.getTodos(req.user.ID);
-            res.send(todos);
-        } catch (e) {
-            Sentry.captureException(e);
-            res.status(400).send({ message: e.message });
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(400).send({
+                success: false,
+                errors: errors.array()
+            });
+        } else {
+            try {
+                let todos;
+                if (Object.values(req.query).length) {
+                    todos = await TodosServices.getQueryTodos(req.user.ID, req.query.isCompleted);
+                } else {
+                    todos = await TodosServices.getTodos(req.user.ID);
+                }
+
+                res.send(todos);
+            } catch (e) {
+                Sentry.captureException(e);
+                res.status(400).send({ message: e.message });
+            }
         }
     }
 
@@ -35,7 +50,7 @@ class TodosControllers {
         }
     }
 
-    async updateTodoTitle(req, res) { 
+    async updateTodoTitle(req, res) {
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
@@ -54,7 +69,7 @@ class TodosControllers {
         }
     }
 
-    async updateTodoStatus(req, res) { 
+    async updateTodoStatus(req, res) {
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
@@ -71,7 +86,7 @@ class TodosControllers {
                 res.status(400).send({ message: e.message });
             }
         }
-    }  
+    }
 
     async deleteTodo(req, res) {
         const errors = validationResult(req);

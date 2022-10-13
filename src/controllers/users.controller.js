@@ -18,8 +18,8 @@ class UsersControllers {
                 errors: errors.array()
             });
         } else {
-            let users = [];
             try {
+                let users = [];
                 if (Object.values(req.query).length) {
                     users = await UsersServices.getQueryUsers(req.query);
                 } else {
@@ -69,7 +69,7 @@ class UsersControllers {
                     const newUser = new User(req.body, hashedPassword);
                     const newDBUser = await UsersServices.createUser(newUser);
                     res.send(newDBUser);
-                } else {  
+                } else {
                     let message = Utils._createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed);
                     return res.status(400).send({
                         success: false,
@@ -92,6 +92,7 @@ class UsersControllers {
             });
         } else {
             try {
+                if (req.user.ID !== req.params.ID) throw new Error('Пользователь может менять только свои данные!');
                 const isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email, req.params.ID);
                 const isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username, req.params.ID);
 
@@ -126,6 +127,7 @@ class UsersControllers {
             });
         } else {
             try {
+                if (req.user.ID !== req.params.ID) throw new Error('Пользователь может менять только свои данные!');
                 let isEmailAlreadyUsed, isUserNameAlreadyUsed = false;
                 if (req.body.email) {
                     isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email, req.params.ID);
@@ -134,9 +136,9 @@ class UsersControllers {
                 if (req.body.username) {
                     isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username, req.params.ID);
                 }
-                
+
                 if (!isEmailAlreadyUsed && !isUserNameAlreadyUsed) {
-                    const updatedFields = {...req.body};
+                    const updatedFields = { ...req.body };
 
                     if (req.body.password) {
                         const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
@@ -170,6 +172,7 @@ class UsersControllers {
             });
         } else {
             try {
+                if (req.user.ID !== req.params.ID) throw new Error('Пользователь не может удалить другого пользователя!');
                 const deletedUser = await UsersServices.deleteUser(req.params.ID);
                 res.send(deletedUser);
             } catch (e) {

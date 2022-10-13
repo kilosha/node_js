@@ -32,7 +32,7 @@ const router = express.Router();
  *              schema:
  *                type: array
  *                items: 
- *                  $ref: "#/components/schemas/User"
+ *                  $ref: "#/components/responses/User"
  *        400:
  *          description: Bad request
  *          content:
@@ -77,14 +77,14 @@ router.get("/", Validator.validateQueryIfPresent(), UsersControllers.getUsers);
  *          required: true
  *          description: Set an {ID} of a user to get
  *          type: string
- *          example: d28e6dd0-a5ce-4c2c-8790-2ba0980007da
+ *          example: 63452ed7d18c1bb917ecf031
  *      responses:
  *        200:
  *          description: Successful response
  *          content:
  *            application/json:
  *              schema:
- *                $ref: "#/components/schemas/User"
+ *                $ref: "#/components/responses/User"
  *        400:
  *          description: Bad request
  *          content:
@@ -105,7 +105,7 @@ router.get("/", Validator.validateQueryIfPresent(), UsersControllers.getUsers);
  *                          example: d2ba09800587da
  *                        msg:
  *                          type: string
- *                          example: ID должен быть в формате UUID
+ *                          example: ID должен быть в формате ObjectId
  *                        param:
  *                          type: string
  *                          example: ID
@@ -113,7 +113,7 @@ router.get("/", Validator.validateQueryIfPresent(), UsersControllers.getUsers);
  *                          type: string
  *                          example: params
  */
-router.get("/user/:ID", Validator.validateID(), UsersControllers.getUserByID);
+router.get("/user/:ID",  Validator.validateID(), UsersControllers.getUserByID);
 
 /**
  * @swagger
@@ -127,7 +127,7 @@ router.get("/user/:ID", Validator.validateID(), UsersControllers.getUserByID);
  *        - in: path
  *          name: param
  *          required: true
- *          description: If "M" or "F" get array of users with isMan true or false, if ID - return user with this ID
+ *          description: If "M" or "F" get array of users with isMan true or false, if ID - return user object with this ID
  *          type: string
  *          example: "M"
  *      responses:
@@ -138,7 +138,7 @@ router.get("/user/:ID", Validator.validateID(), UsersControllers.getUserByID);
  *              schema:
  *                type: array
  *                items: 
- *                  $ref: "#/components/schemas/User"
+ *                  $ref: "#/components/responses/User"
  *        400:
  *          description: Bad request
  *          content:
@@ -156,7 +156,7 @@ router.get("/user/:ID", Validator.validateID(), UsersControllers.getUserByID);
  *                      properties: 
  *                        msg:
  *                          type: string
- *                          example: Фильтр возможен только по F, M или UUID
+ *                          example: Фильтр возможен только по F, M или ObjectId
  *                        param:
  *                          type: string
  *                          example: _error
@@ -174,12 +174,12 @@ router.get("/user/:ID", Validator.validateID(), UsersControllers.getUserByID);
  *                              location:
  *                                type: string
  *                          example:
- *                            - value: d2ba09800587da
+ *                            - value: d2bkka09800587da
  *                              msg: Допустимы значения F или M
  *                              param: param
  *                              location: params           
- *                            - value: d2ba09800587da
- *                              msg: ID должен быть в формате UUID
+ *                            - value: d2bkka09800587da
+ *                              msg: ID должен быть в формате ObjectId
  *                              param: param
  *                              location: params           
  */
@@ -202,7 +202,7 @@ router.get("/:param", Validator.validateFilter(), UsersControllers.filterUsers);
  *          content:
  *            application/json:
  *              schema:
- *                $ref: "#/components/schemas/User"
+ *                $ref: "#/components/responses/User"
  *        400:
  *          description: Error
  *          content:
@@ -263,7 +263,7 @@ router.get("/:param", Validator.validateFilter(), UsersControllers.filterUsers);
  *       properties:
  *         ID:
  *           type: string
- *           example: d28e6dd0-a5ce-4c2c-8790-2ba0980007da
+ *           example: 63452ed7d18c1bb917ecf031
  *         name:
  *           type: string
  *           example: Masha
@@ -275,7 +275,7 @@ router.get("/:param", Validator.validateFilter(), UsersControllers.filterUsers);
  *           example: example@example.com
  *         password:
  *           type: string
- *           example: $2b$05$N3D9QDUXCp3N7cjNJyfi9uHwzx862bgvEhx03Krwh54VXyOPUIJcm
+ *           example: 1Sq_22qw
  *         isMan:
  *           type: boolean
  *           example: false
@@ -300,6 +300,8 @@ router.post("/register", Validator.validateUser(), UsersControllers.createUser);
  *      summary: Updates a user with {ID}
  *      tags:
  *        - Users
+ *      security: 
+ *        - bearerAuth: []
  *      consumes:
  *        - application/json
  *      parameters:
@@ -308,7 +310,7 @@ router.post("/register", Validator.validateUser(), UsersControllers.createUser);
  *          required: true
  *          description: Set an {ID} of a user to update
  *          type: string
- *          example: d28e6dd0-a5ce-4c2c-8790-2ba0980007da
+ *          example: 63452ed7d18c1bb917ecf031
  *      requestBody:
  *        $ref: "#/components/requestBodies/User"
  *      responses:
@@ -317,11 +319,11 @@ router.post("/register", Validator.validateUser(), UsersControllers.createUser);
  *          content:
  *            application/json:
  *              schema:
- *                $ref: "#/components/schemas/User"
+ *                $ref: "#/components/responses/User"
  *        400:
  *          $ref: "#/components/responses/ValidationError"
  */
-router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersControllers.updateFullUser);
+router.put("/:ID", authenticateToken, [Validator.validateID(), Validator.validateUser()], UsersControllers.updateFullUser);
 
 /**
  * @swagger
@@ -330,6 +332,8 @@ router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersCont
  *      summary: Updates a user with {ID}
  *      tags:
  *        - Users
+ *      security: 
+ *        - bearerAuth: []
  *      consumes:
  *        - application/json
  *      parameters:
@@ -338,7 +342,7 @@ router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersCont
  *          required: true
  *          description: Set an {ID} of a user to update
  *          type: string
- *          example: d28e6dd0-a5ce-4c2c-8790-2ba0980007da
+ *          example: 63452ed7d18c1bb917ecf031
  *      requestBody:
  *        $ref: "#/components/requestBodies/UserPropertiesForUpdate"
  *      responses:
@@ -347,7 +351,7 @@ router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersCont
  *          content:
  *            application/json:
  *              schema:
- *                $ref: "#/components/schemas/User"
+ *                $ref: "#/components/responses/User"
  *        400:
  *          $ref: "#/components/responses/ValidationError"
  * components:
@@ -385,6 +389,27 @@ router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersCont
  *                 example: 25
  *                 description: Users' age
  *   responses:
+ *     User:
+ *       description: User object
+ *       properties:
+ *         ID:
+ *           type: string
+ *           example: 63452ed7d18c1bb917ecf031
+ *         name:
+ *           type: string
+ *           example: Masha
+ *         username:
+ *           type: string
+ *           example: marry22
+ *         email:
+ *           type: string
+ *           example: example@example.com
+ *         isMan:
+ *           type: boolean
+ *           example: false
+ *         age:
+ *           type: integer
+ *           example: 25
  *     ValidationError:
  *       description: Bad request
  *       content:
@@ -421,9 +446,9 @@ router.put("/:ID", [Validator.validateID(), Validator.validateUser()], UsersCont
  *             properties: 
  *               message:
  *                 type: string
- *                 example: "Пользователь с ID 3c2af1c7-2bb9-4b33-b425-77f5a7d1d12a не найден"      
+ *                 example: "Пользователь с ID 23452ed7d18c1bb917ecf031 не найден"      
  */
-router.patch("/:ID", [Validator.validateID(), Validator.validateUserUpdate()], UsersControllers.updateUser);
+router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.validateUserUpdate()], UsersControllers.updateUser);
 
 /**
  * @swagger
@@ -432,6 +457,8 @@ router.patch("/:ID", [Validator.validateID(), Validator.validateUserUpdate()], U
  *      summary: Delete user with {ID}
  *      tags:
  *        - Users
+ *      security: 
+ *        - bearerAuth: []
  *      consumes:
  *        - application/json
  *      parameters:
@@ -440,17 +467,17 @@ router.patch("/:ID", [Validator.validateID(), Validator.validateUserUpdate()], U
  *          required: true
  *          description: ID of user to delete
  *          type: string
- *          example: d28e6dd0-a5ce-4c2c-8790-2ba0980007da
+ *          example: 63452ed7d18c1bb917ecf031
  *      responses:
  *        200:
  *          description: Successful response
  *          content:
  *            application/json:
  *              schema:
- *                $ref: "#/components/schemas/User"
+ *                $ref: "#/components/responses/User"
  *        400:
  *          $ref: "#/components/responses/UserNotFound"
  */
-router.delete("/:ID", Validator.validateID(), UsersControllers.deleteUser);
+router.delete("/:ID", authenticateToken, Validator.validateID(), UsersControllers.deleteUser);
 
 export default router;
