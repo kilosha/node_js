@@ -23,7 +23,7 @@ class Validator {
                     minSymbols: 1
                 }).withMessage("Пароль должен быть длиной не менее 8 символов, из них минимум 1 заглавная буква, 1 прописная, 1 число и 1 символ"),
             body("isMan").notEmpty().withMessage("Не заполнено обязательное поле isMan"),
-            body("isMan").if(body("isMan").exists()).isBoolean().withMessage("Значение должно быть true или false"),
+            body("isMan").if(body("isMan").exists()).isBoolean({strict: true}).withMessage("Значение должно быть true или false"),
             body("age").notEmpty().withMessage("Не заполнено обязательное поле age"),
             body("age").if(body("age").exists()).isInt({ min: 10, max: 100 }).withMessage("Введите целое число от 10 до 100")
         ]
@@ -53,7 +53,7 @@ class Validator {
             }).withMessage("Пароль должен быть длиной не менее 8 символов, из них минимум 1 заглавная буква, 1 прописная, 1 число и 1 символ"),
             body("isMan").if(body("isMan").exists())
                 .notEmpty().withMessage("Не заполнено обязательное поле isMan")
-                .isBoolean().withMessage("Значение должно быть true или false"),
+                .isBoolean({strict: true}).withMessage("Значение должно быть true или false"),
             body("age").if(body("age").exists())
                 .notEmpty().withMessage("Не заполнено обязательное поле age")
                 .isInt({ min: 10, max: 100 }).withMessage("Введите целое число от 10 до 100")
@@ -158,7 +158,7 @@ class Validator {
                 }
                 return true;
             }),
-            query("isCompleted").if(query("isCompleted").exists()).isBoolean().withMessage("Значение должно быть true или false")
+            query("isCompleted").if(query("isCompleted").exists()).isBoolean({strict: true}).withMessage("Значение должно быть true или false")
         ]
     }
 
