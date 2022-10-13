@@ -27,7 +27,7 @@ class UsersControllers {
                 }
                 res.send(users);
             } catch (e) {
-                //Sentry.captureException(e);
+                Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -46,7 +46,7 @@ class UsersControllers {
                 const user = await UsersServices.getUserByID(req.params.ID);
                 res.send(user);
             } catch (e) {
-                //Sentry.captureException(e);
+                Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -77,7 +77,7 @@ class UsersControllers {
                     });
                 }
             } catch (e) {
-                //Sentry.captureException(e);
+                Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -111,7 +111,7 @@ class UsersControllers {
                     });
                 }
             } catch (e) {
-                //Sentry.captureException(e);
+                Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -156,7 +156,7 @@ class UsersControllers {
                     });
                 }
             } catch (e) {
-                //Sentry.captureException(e);
+                Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -176,7 +176,7 @@ class UsersControllers {
                 const deletedUser = await UsersServices.deleteUser(req.params.ID);
                 res.send(deletedUser);
             } catch (e) {
-                //Sentry.captureException(e);
+                Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -195,7 +195,7 @@ class UsersControllers {
                 const filteredUsers = await UsersServices.filterUsers(req.params.param);
                 res.send(filteredUsers);
             } catch (e) {
-                //Sentry.captureException(e);
+                Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
