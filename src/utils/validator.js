@@ -142,9 +142,8 @@ class Validator {
             body().custom(todo => {
                 return this.isValidTodoObject(todo);
             }), 
-            body("title")
-            .notEmpty().withMessage("Не заполнено обязательное поле title")
-            .isString().withMessage("Title должно быть строкой")
+            body("title").notEmpty().withMessage("Не заполнено обязательное поле title"),
+            body("title").if(body("title").exists()).isString().withMessage("Title должно быть строкой")
         ]
     }
 

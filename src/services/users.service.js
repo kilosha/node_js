@@ -34,8 +34,8 @@ class UsersServices {
         return updatedUser;
     }
 
-    async deleteUser(ID) {
-        const deletedUser = await UsersCollection.deleteUser(ID);
+    async deleteUser(userID) {
+        const deletedUser = await UsersCollection.deleteUser(userID);
         return deletedUser;
     }
 

@@ -172,11 +172,7 @@ class UsersControllers {
             });
         } else {
             try {
-                const user = await UsersServices.getUserByID(req.params.ID);
-                if (!Object.keys(user).length) {
-                    throw new Error(`Пользователь с ID ${req.params.ID} не найден`)
-                }
-
+                if (req.user.ID !== req.params.ID) throw new Error('Пользователь не может удалить другого пользователя!');
                 const deletedUser = await UsersServices.deleteUser(req.params.ID);
                 res.send(deletedUser);
             } catch (e) {

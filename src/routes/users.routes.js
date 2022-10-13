@@ -457,6 +457,8 @@ router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.valid
  *      summary: Delete user with {ID}
  *      tags:
  *        - Users
+ *      security: 
+ *        - bearerAuth: []
  *      consumes:
  *        - application/json
  *      parameters:
@@ -476,6 +478,6 @@ router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.valid
  *        400:
  *          $ref: "#/components/responses/UserNotFound"
  */
-router.delete("/:ID", Validator.validateID(), UsersControllers.deleteUser);
+router.delete("/:ID", authenticateToken, Validator.validateID(), UsersControllers.deleteUser);
 
 export default router;
