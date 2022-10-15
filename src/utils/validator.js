@@ -158,7 +158,7 @@ class Validator {
                 }
                 return true;
             }),
-            query("isCompleted").if(query("isCompleted").exists()).isBoolean({strict: true}).withMessage("Значение должно быть true или false")
+            query("isCompleted").if(query("isCompleted").exists()).isBoolean().withMessage("Значение должно быть true или false")
         ]
     }
 
