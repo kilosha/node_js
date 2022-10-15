@@ -44,12 +44,4 @@ userSchema.post('find', function(result) {
   return result;
 })
 
-userSchema.post('findById', function(result) {
-  if (Object.keys(result).length > 0) {
-    delete result.password;
-    delete Object.assign(result, {ID: result._id })._id;
-  }
-  return result;
-})
-
 export default mongoose.model("user", userSchema);

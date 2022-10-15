@@ -1,6 +1,6 @@
 import express from "express";
 import authenticateToken from "../middleware/auth.js";
-import TodosControllers from "../controllers/todos.controller.js";
+import TodosMongooseControllers from "../controllers/todosMongoose.controller.js";
 import Validator from "../utils/validator.js";
 
 const router = express.Router();
@@ -33,7 +33,7 @@ const router = express.Router();
  *        401:
  *          $ref: "#/components/responses/UnauthorizedError"
  */
-router.get("/", authenticateToken, Validator.validateTodoQueryIfPresent(), TodosControllers.getTodos);
+router.get("/", authenticateToken, Validator.validateTodoQueryIfPresent(), TodosMongooseControllers.getTodos);
 
 /**
  * @swagger
@@ -143,7 +143,7 @@ router.get("/", authenticateToken, Validator.validateTodoQueryIfPresent(), Todos
  *                 type: string
  *                 example: У данного пользователя нет такой задачи   
  */
-router.post("/", authenticateToken, Validator.validateTodoTitle(), TodosControllers.createTodo);
+router.post("/", authenticateToken, Validator.validateTodoTitle(), TodosMongooseControllers.createTodo);
 
 /**
  * @swagger
@@ -175,7 +175,7 @@ router.post("/", authenticateToken, Validator.validateTodoTitle(), TodosControll
  *           401:
  *             $ref: "#/components/responses/UnauthorizedError"
  */
-router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.validateTodoTitle()], TodosControllers.updateTodoTitle);
+router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.validateTodoTitle()], TodosMongooseControllers.updateTodoTitle);
 
 /**
  * @swagger
@@ -205,7 +205,7 @@ router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.valid
  *        401:
  *          $ref: "#/components/responses/UnauthorizedError"
  */
-router.patch("/:ID/isCompleted", authenticateToken, Validator.validateID(), TodosControllers.updateTodoStatus);
+router.patch("/:ID/isCompleted", authenticateToken, Validator.validateID(), TodosMongooseControllers.updateTodoStatus);
 
 /**
  * @swagger
@@ -235,6 +235,6 @@ router.patch("/:ID/isCompleted", authenticateToken, Validator.validateID(), Todo
  *        401:
  *          $ref: "#/components/responses/UnauthorizedError"
  */
-router.delete("/:ID", authenticateToken, Validator.validateID(), TodosControllers.deleteTodo);
+router.delete("/:ID", authenticateToken, Validator.validateID(), TodosMongooseControllers.deleteTodo);
 
 export default router;
