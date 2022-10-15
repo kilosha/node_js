@@ -3,12 +3,12 @@ import Sentry from "@sentry/node";
 import * as bcrypt from "bcrypt";
 
 import User from "../models/User.js";
-import UsersServices from "../services/users.service.js";
+import UsersMongooseServices from "../services/usersMongoose.service.js";
 import Utils from "../utils/utils.js";
 
 const saltRounds = 5;
 
-class UsersControllers {
+class UsersMongooseControllers {
     async getUsers(req, res) {
         const errors = validationResult(req);
 
@@ -21,9 +21,9 @@ class UsersControllers {
             try {
                 let users = [];
                 if (Object.values(req.query).length) {
-                    users = await UsersServices.getQueryUsers(req.query);
+                    users = await UsersMongooseServices.getQueryUsers(req.query);
                 } else {
-                    users = await UsersServices.getAllUsers();
+                    users = await UsersMongooseServices.getAllUsers();
                 }
                 res.send(users);
             } catch (e) {
@@ -43,7 +43,7 @@ class UsersControllers {
             });
         } else {
             try {
-                const user = await UsersServices.getUserByID(req.params.ID);
+                const user = await UsersMongooseServices.getUserByID(req.params.ID);
                 res.send(user);
             } catch (e) {
                 Sentry.captureException(e);
@@ -62,12 +62,12 @@ class UsersControllers {
             });
         } else {
             try {
-                const isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email);
-                const isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username);
+                const isEmailAlreadyUsed = await UsersMongooseServices.checkEmailUsage(req.body.email);
+                const isUserNameAlreadyUsed = await UsersMongooseServices.checkUsernameUsage(req.body.username);
                 if (!isEmailAlreadyUsed && !isUserNameAlreadyUsed) {
                     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
                     const newUser = new User(req.body, hashedPassword);
-                    const newDBUser = await UsersServices.createUser(newUser);
+                    const newDBUser = await UsersMongooseServices.createUser(newUser);
                     res.send(newDBUser);
                 } else {
                     let message = Utils._createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed);
@@ -93,12 +93,12 @@ class UsersControllers {
         } else {
             try {
                 if (req.user.ID !== req.params.ID) throw new Error("Пользователь может менять только свои данные!");
-                const isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email, req.params.ID);
-                const isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username, req.params.ID);
+                const isEmailAlreadyUsed = await UsersMongooseServices.checkEmailUsage(req.body.email, req.params.ID);
+                const isUserNameAlreadyUsed = await UsersMongooseServices.checkUsernameUsage(req.body.username, req.params.ID);
 
                 if (!isEmailAlreadyUsed && !isUserNameAlreadyUsed) {
                     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-                    const updatedUser = await UsersServices.updateFullUser(req.params.ID, {
+                    const updatedUser = await UsersMongooseServices.updateFullUser(req.params.ID, {
                         ...req.body,
                         password: hashedPassword
                     });
@@ -130,11 +130,11 @@ class UsersControllers {
                 if (req.user.ID !== req.params.ID) throw new Error("Пользователь может менять только свои данные!");
                 let isEmailAlreadyUsed, isUserNameAlreadyUsed = false;
                 if (req.body.email) {
-                    isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email, req.params.ID);
+                    isEmailAlreadyUsed = await UsersMongooseServices.checkEmailUsage(req.body.email, req.params.ID);
                 }
 
                 if (req.body.username) {
-                    isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username, req.params.ID);
+                    isUserNameAlreadyUsed = await UsersMongooseServices.checkUsernameUsage(req.body.username, req.params.ID);
                 }
 
                 if (!isEmailAlreadyUsed && !isUserNameAlreadyUsed) {
@@ -145,7 +145,7 @@ class UsersControllers {
                         updatedFields.password = hashedPassword;
                     }
 
-                    const updatedUser = await UsersServices.updateUser(req.params.ID, updatedFields);
+                    const updatedUser = await UsersMongooseServices.updateUser(req.params.ID, updatedFields);
 
                     res.send(updatedUser);
                 } else {
@@ -173,7 +173,7 @@ class UsersControllers {
         } else {
             try {
                 if (req.user.ID !== req.params.ID) throw new Error("Пользователь не может удалить другого пользователя!");
-                const deletedUser = await UsersServices.deleteUser(req.params.ID);
+                const deletedUser = await UsersMongooseServices.deleteUser(req.params.ID);
                 res.send(deletedUser);
             } catch (e) {
                 Sentry.captureException(e);
@@ -192,7 +192,7 @@ class UsersControllers {
             });
         } else {
             try {
-                const filteredUsers = await UsersServices.filterUsers(req.params.param);
+                const filteredUsers = await UsersMongooseServices.filterUsers(req.params.param);
                 res.send(filteredUsers);
             } catch (e) {
                 Sentry.captureException(e);
@@ -202,4 +202,4 @@ class UsersControllers {
     }
 }
 
-export default new UsersControllers();
+export default new UsersMongooseControllers();
