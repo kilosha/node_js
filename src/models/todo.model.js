@@ -17,16 +17,16 @@ const todoSchema = mongoose.Schema({
 
 if (!todoSchema.options.toObject) todoSchema.options.toObject = {};
 todoSchema.options.toObject.transform = function (doc, ret, options) {
-  delete Object.assign(ret, {ID: ret._id })._id;
+  delete Object.assign(ret, { ID: ret._id })._id;
   return ret;
 }
 
-todoSchema.post('find', function(result) {
+todoSchema.post("find", function (result) {
   if (Array.isArray(result)) {
     result.forEach(item => {
-      delete Object.assign(item, {ID: item._id })._id;
+      delete Object.assign(item, { ID: item._id })._id;
     });
-  } 
+  }
   return result;
 })
 

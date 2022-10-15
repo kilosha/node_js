@@ -2,18 +2,18 @@ import UserModel from "../models/user.model.js";
 
 class UsersMongooseServices {
     async getAllUsers() {
-        const usersDocs = await UserModel.find({}).lean();
-        return usersDocs;
+        const users = await UserModel.find({}).lean();
+        return users;
     }
 
     async getQueryUsers(query) {
-        const usersDocs = await UserModel.find({ age: { $gte: +query.min, $lte: +query.max}}).lean();
-        return usersDocs;
+        const users = await UserModel.find({ age: { $gte: +query.min, $lte: +query.max}}).lean();
+        return users;
     }
 
     async getUserByID(ID) {
-        const usersDocs = await UserModel.findById(ID);
-        return usersDocs? usersDocs.toObject() : {};
+        const user = await UserModel.findById(ID);
+        return user? user.toObject() : {};
     }
 
     async createUser(userInfo) {

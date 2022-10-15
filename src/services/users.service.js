@@ -1,4 +1,4 @@
-import UsersCollection from '../dao/usersCollection.js';
+import UsersCollection from "../dao/usersCollection.js";
 
 class UsersServices {
     async getAllUsers() {

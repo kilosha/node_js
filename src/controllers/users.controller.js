@@ -92,7 +92,7 @@ class UsersControllers {
             });
         } else {
             try {
-                if (req.user.ID !== req.params.ID) throw new Error('Пользователь может менять только свои данные!');
+                if (req.user.ID !== req.params.ID) throw new Error("Пользователь может менять только свои данные!");
                 const isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email, req.params.ID);
                 const isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username, req.params.ID);
 
@@ -127,7 +127,7 @@ class UsersControllers {
             });
         } else {
             try {
-                if (req.user.ID !== req.params.ID) throw new Error('Пользователь может менять только свои данные!');
+                if (req.user.ID !== req.params.ID) throw new Error("Пользователь может менять только свои данные!");
                 let isEmailAlreadyUsed, isUserNameAlreadyUsed = false;
                 if (req.body.email) {
                     isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email, req.params.ID);
@@ -172,7 +172,7 @@ class UsersControllers {
             });
         } else {
             try {
-                if (req.user.ID !== req.params.ID) throw new Error('Пользователь не может удалить другого пользователя!');
+                if (req.user.ID !== req.params.ID) throw new Error("Пользователь не может удалить другого пользователя!");
                 const deletedUser = await UsersServices.deleteUser(req.params.ID);
                 res.send(deletedUser);
             } catch (e) {

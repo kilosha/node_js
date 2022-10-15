@@ -4,8 +4,8 @@ import * as dotenv from "dotenv";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import Sentry from "@sentry/node";
-import cors from 'cors';
-import mongoose from 'mongoose';
+import cors from "cors";
+import mongoose from "mongoose";
 import routes from "./src/routes/index.js";
 
 dotenv.config();
@@ -21,16 +21,18 @@ const swaggerOptions = {
       version: "1.0.0"
     },
     components: {
-      securitySchemes: { bearerAuth : {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT",
-        "name": "Authorization"
+      securitySchemes: {
+        bearerAuth: {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT",
+          "name": "Authorization"
+        }
       }
-    }}
+    }
   },
   apis: [
-      "./src/routes/*.js"
+    "./src/routes/*.js"
   ]
 }
 
@@ -50,7 +52,7 @@ app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
 
 Sentry.init({
-    dsn: process.env.SENTRY_DSN
+  dsn: process.env.SENTRY_DSN
 });
 
 app.use("/api", routes);
@@ -62,4 +64,4 @@ const db = mongoose.connect(
   () => console.log("Connected to MongoDB " + `${process.env.MONGO_CONNECTION_STRING}/${process.env.MONGO_DB_NAME}`)
 );
 
-app.listen(process.env.PORT, () => { console.log(`Now server is listening on http://localhost:${process.env.PORT}`)});
+app.listen(process.env.PORT, () => { console.log(`Now server is listening on http://localhost:${process.env.PORT}`) });

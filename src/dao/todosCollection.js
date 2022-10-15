@@ -15,7 +15,7 @@ class TodosCollection {
 
         connection.close();
 
-        todos.forEach(todo => delete Object.assign(todo, {ID: todo._id })._id);
+        todos.forEach(todo => delete Object.assign(todo, { ID: todo._id })._id);
 
         return todos;
     }
@@ -26,91 +26,92 @@ class TodosCollection {
 
         const todos = await db
             .collection(MONGO_COLLECTION)
-            .find({ userID, isCompleted: isCompleted === 'true' })
-            .toArray();
+            .find({
+                userID, isCompleted: isCompleted === "true" })
+                    .toArray();
 
-        connection.close();
+                connection.close();
 
-        todos.forEach(todo => delete Object.assign(todo, {ID: todo._id })._id);
-        return todos;
-    }
+                todos.forEach(todo => delete Object.assign(todo, { ID: todo._id })._id);
+                return todos;
+            }
 
     async createTodo(newTodoInfo) {
-        const connection = await DBConnection.getConnection();
-        const db = DBConnection.connectToDB(connection);
+                const connection = await DBConnection.getConnection();
+                const db = DBConnection.connectToDB(connection);
 
-        const todo = await db
-            .collection(MONGO_COLLECTION)
-            .insertOne(newTodoInfo);
+                const todo = await db
+                    .collection(MONGO_COLLECTION)
+                    .insertOne(newTodoInfo);
 
-        connection.close();
+                connection.close();
 
-        delete Object.assign(newTodoInfo, {ID: newTodoInfo._id })._id;
-        return newTodoInfo;
-    }
+                delete Object.assign(newTodoInfo, { ID: newTodoInfo._id })._id;
+                return newTodoInfo;
+            }
 
     async updateTodoTitle(newTitle, todoID, userID) {
-        let updatedTodo;
-        const connection = await DBConnection.getConnection();
-        const db = DBConnection.connectToDB(connection);
+                let updatedTodo;
+                const connection = await DBConnection.getConnection();
+                const db = DBConnection.connectToDB(connection);
 
-        const todo = await db
-            .collection(MONGO_COLLECTION)
-            .findOne({ _id: ObjectId(todoID), userID });
-            
+                const todo = await db
+                    .collection(MONGO_COLLECTION)
+                    .findOne({ _id: ObjectId(todoID), userID });
 
-        if (todo) { 
-            updatedTodo = await db
-                .collection(MONGO_COLLECTION)
-                .updateOne({ _id: ObjectId(todoID)}, { $set: { title: newTitle } });
 
-            delete Object.assign(todo, {ID: todo._id })._id;
-        }
+                if(todo) {
+                    updatedTodo = await db
+                        .collection(MONGO_COLLECTION)
+                        .updateOne({ _id: ObjectId(todoID) }, { $set: { title: newTitle } });
+
+                    delete Object.assign(todo, { ID: todo._id })._id;
+                }
 
         connection.close();
-        return updatedTodo ? { ...todo, title: newTitle } : todo;
-    }
+                return updatedTodo ? { ...todo, title: newTitle } : todo;
+            }
 
     async updateTodoStatus(todoID, userID) {
-        let updatedTodo;
-        const connection = await DBConnection.getConnection();
-        const db = DBConnection.connectToDB(connection);
+                let updatedTodo;
+                const connection = await DBConnection.getConnection();
+                const db = DBConnection.connectToDB(connection);
 
-        const todo = await db
-            .collection(MONGO_COLLECTION)
-            .findOne({ _id: ObjectId(todoID), userID });
-            
-        if (todo) { 
-            updatedTodo = await db
-                .collection(MONGO_COLLECTION)
-                .updateOne({ _id: ObjectId(todoID)}, { $set: { isCompleted: !todo.isCompleted } });
+                const todo = await db
+                    .collection(MONGO_COLLECTION)
+                    .findOne({ _id: ObjectId(todoID), userID });
 
-            delete Object.assign(todo, {ID: todo._id })._id;
-        }
+                if(todo) {
+                    updatedTodo = await db
+                        .collection(MONGO_COLLECTION)
+                        .updateOne({ _id: ObjectId(todoID) }, { $set: { isCompleted: !todo.isCompleted } });
+
+                    delete Object.assign(todo, { ID: todo._id })._id;
+                }
 
         connection.close();
-        return updatedTodo ? { ...todo, isCompleted: !todo.isCompleted } : todo;
-    }
+                return updatedTodo ? { ...todo, isCompleted: !todo.isCompleted } : todo;
+            }
 
     async deleteTodo(todoID, userID) {
-        const connection = await DBConnection.getConnection();
-        const db = DBConnection.connectToDB(connection);
+                const connection = await DBConnection.getConnection();
+                const db = DBConnection.connectToDB(connection);
 
-        const todo = await db
-            .collection(MONGO_COLLECTION)
-            .findOne({ _id: ObjectId(todoID), userID });
-            
-        if (todo) { 
-            await db
-                .collection(MONGO_COLLECTION)
-                .deleteOne({ _id: ObjectId(todoID)});
+                const todo = await db
+                    .collection(MONGO_COLLECTION)
+                    .findOne({ _id: ObjectId(todoID), userID });
 
-            delete Object.assign(todo, {ID: todo._id })._id;
-        }
+                if(todo) {
+                    await db
+                        .collection(MONGO_COLLECTION)
+                        .deleteOne({ _id: ObjectId(todoID) });
+
+                    delete Object.assign(todo, { ID: todo._id })._id;
+                }
 
         connection.close();
-        return todo;
-    }
+                return todo;
+            }
 }
 
 export default new TodosCollection();

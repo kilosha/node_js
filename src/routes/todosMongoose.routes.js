@@ -7,7 +7,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/todos:
+ * /api/mongoose/todos:
  *  get:
  *      security: 
  *        - bearerAuth: []
@@ -37,7 +37,7 @@ router.get("/", authenticateToken, Validator.validateTodoQueryIfPresent(), Todos
 
 /**
  * @swagger
- *  /api/todos:
+ *  /api/mongoose/todos:
  *    post:
  *      security: 
  *      - bearerAuth: []
@@ -147,7 +147,7 @@ router.post("/", authenticateToken, Validator.validateTodoTitle(), TodosMongoose
 
 /**
  * @swagger
- * /api/todos/{ID}:
+ * /api/mongoose/todos/{ID}:
  *  patch:
  *      summary: Updates todo title for todo with ID = {ID}
  *      tags:
@@ -179,7 +179,7 @@ router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.valid
 
 /**
  * @swagger
- * /api/todos/{ID}/isCompleted:
+ * /api/mongoose/todos/{ID}/isCompleted:
  *  patch:
  *      summary: Updates isCompleted property value to the opposite for todo with ID = {ID}
  *      tags:
@@ -209,7 +209,7 @@ router.patch("/:ID/isCompleted", authenticateToken, Validator.validateID(), Todo
 
 /**
  * @swagger
- * /api/todos/{ID}:
+ * /api/mongoose/todos/{ID}:
  *  delete:
  *      summary: Delete todo with {ID} and return deleted object if success
  *      tags:

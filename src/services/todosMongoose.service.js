@@ -2,8 +2,8 @@ import TodoModel from "../models/todo.model.js";
 
 class TodosMongooseServices {
     async getTodos(userID) {
-        const usersDocs = await TodoModel.find({userID}).lean();
-        return usersDocs;
+        const todos = await TodoModel.find({userID}).lean();
+        return todos;
     }
 
     async getQueryTodos(userID, isCompleted) {
