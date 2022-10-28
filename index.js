@@ -5,7 +5,6 @@ import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import Sentry from "@sentry/node";
 import cors from "cors";
-import mongoose from "mongoose";
 import routes from "./src/routes/index.js";
 
 dotenv.config();
@@ -58,10 +57,5 @@ Sentry.init({
 app.use("/api", routes);
 
 app.use(Sentry.Handlers.errorHandler());
-
-const db = mongoose.connect(
-  `${process.env.MONGO_CONNECTION_STRING}/${process.env.MONGO_DB_NAME}`,
-  () => console.log("Connected to MongoDB " + `${process.env.MONGO_CONNECTION_STRING}/${process.env.MONGO_DB_NAME}`)
-);
 
 app.listen(process.env.PORT, () => { console.log(`Now server is listening on http://localhost:${process.env.PORT}`) });
