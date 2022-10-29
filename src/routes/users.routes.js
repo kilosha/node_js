@@ -113,77 +113,7 @@ router.get("/", Validator.validateQueryIfPresent(), UsersControllers.getUsers);
  *                          type: string
  *                          example: params
  */
-router.get("/user/:ID",  Validator.validateID(), UsersControllers.getUserByID);
-
-/**
- * @swagger
- * /api/users/{param}:
- *  get:
- *      summary: Get filtered users by isMan or get user by ID
- *      description: Returns users array or user with ID
- *      tags:
- *          - Users
- *      parameters:
- *        - in: path
- *          name: param
- *          required: true
- *          description: If "M" or "F" get array of users with isMan true or false, if ID - return user object with this ID
- *          type: string
- *          example: "M"
- *      responses:
- *        200:
- *          description: Successful response
- *          content:
- *            application/json:
- *              schema:
- *                type: array
- *                items: 
- *                  $ref: "#/components/responses/User"
- *        400:
- *          description: Bad request
- *          content:
- *            application/json:
- *              schema:
- *                type: object
- *                properties: 
- *                  success:
- *                    type: boolean
- *                    example: false
- *                  errors:
- *                    type: array
- *                    items:
- *                      type: object
- *                      properties: 
- *                        msg:
- *                          type: string
- *                          example: Фильтр возможен только по F, M или ObjectId
- *                        param:
- *                          type: string
- *                          example: _error
- *                        nestedErrors:
- *                          type: array
- *                          items: 
- *                            type: object                 
- *                            properties:
- *                              value:
- *                                type: string
- *                              msg:
- *                                type: string
- *                              param:
- *                                type: string
- *                              location:
- *                                type: string
- *                          example:
- *                            - value: d2bkka09800587da
- *                              msg: Допустимы значения F или M
- *                              param: param
- *                              location: params           
- *                            - value: d2bkka09800587da
- *                              msg: ID должен быть в формате ObjectId
- *                              param: param
- *                              location: params           
- */
-router.get("/:param", Validator.validateFilter(), UsersControllers.filterUsers);
+router.get("/:ID",  Validator.validateID(), UsersControllers.getUserByID);
 
 /**
  * @swagger
@@ -323,37 +253,37 @@ router.post("/register", Validator.validateUser(), UsersControllers.createUser);
  *        400:
  *          $ref: "#/components/responses/ValidationError"
  */
-router.put("/:ID", authenticateToken, [Validator.validateID(), Validator.validateUser()], UsersControllers.updateFullUser);
+ router.put("/:ID", authenticateToken, [Validator.validateID(), Validator.validateUser()], UsersControllers.updateFullUser);
 
-/**
- * @swagger
- * /api/users/{ID}:
- *  patch:
- *      summary: Updates a user with {ID}
- *      tags:
- *        - Users
- *      security: 
- *        - bearerAuth: []
- *      consumes:
- *        - application/json
- *      parameters:
- *        - in: path
- *          name: ID
- *          required: true
- *          description: Set an {ID} of a user to update
- *          type: string
- *          example: 63452ed7d18c1bb917ecf031
- *      requestBody:
- *        $ref: "#/components/requestBodies/UserPropertiesForUpdate"
- *      responses:
- *        200:
- *          description: Successful response
- *          content:
- *            application/json:
- *              schema:
- *                $ref: "#/components/responses/User"
- *        400:
- *          $ref: "#/components/responses/ValidationError"
+ /**
+  * @swagger
+  * /api/users/{ID}:
+  *  patch:
+  *      summary: Updates a user with {ID}
+  *      tags:
+  *        - Users
+  *      security: 
+  *        - bearerAuth: []
+  *      consumes:
+  *        - application/json
+  *      parameters:
+  *        - in: path
+  *          name: ID
+  *          required: true
+  *          description: Set an {ID} of a user to update
+  *          type: string
+  *          example: 63452ed7d18c1bb917ecf031
+  *      requestBody:
+  *        $ref: "#/components/requestBodies/UserPropertiesForUpdate"
+  *      responses:
+  *        200:
+  *          description: Successful response
+  *          content:
+  *            application/json:
+  *              schema:
+  *                $ref: "#/components/responses/User"
+  *        400:
+  *          $ref: "#/components/responses/ValidationError"
  * components:
  *   requestBodies:
  *     UserPropertiesForUpdate:
@@ -446,7 +376,7 @@ router.put("/:ID", authenticateToken, [Validator.validateID(), Validator.validat
  *             properties: 
  *               message:
  *                 type: string
- *                 example: "Пользователь с ID 23452ed7d18c1bb917ecf031 не найден"      
+ *                 example: "Пользователь с ID 23452ed7d18c1bb917ecf031 не найден"    
  */
 router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.validateUserUpdate()], UsersControllers.updateUser);
 

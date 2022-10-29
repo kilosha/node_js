@@ -1,63 +1,81 @@
-import UsersCollection from "../dao/usersCollection.js";
+import model from '../models/index.js';
+const { User } = model;
 
 class UsersServices {
     async getAllUsers() {
-        const users = await UsersCollection.getAllUsers();
+        const users = await User.findAll({
+            attributes: { exclude: ['password'] }
+        });
         return users;
     }
 
     async getQueryUsers(query) {
-        const users = await UsersCollection.getQueryUsers(query);
+        const users = await await User.findAll({
+            where: query,
+            attributes: { exclude: ['password'] }
+        });
         return users;
     }
 
     async getUserByID(ID) {
-        const user = await UsersCollection.getUserByID(ID);
+        const user = await User.findOne({
+            where: {
+                id: ID
+            },
+            attributes: { exclude: ['password'] }
+        });
         return user;
     }
 
     async createUser(userInfo) {
-        //тут добавить проверку на email && login
-        const user = await UsersCollection.createUser(userInfo);
+        const user =  await User.create(userInfo);
         return user;
     }
 
-    async updateFullUser(userID, params) {
-        const updatedUser = await UsersCollection.updateFullUser(userID, params);
-        if (!updatedUser) throw new Error(`Пользователь с ID ${userID} не найден`);
-        return updatedUser;
-    }
-
     async updateUser(userID, params) {
-        const updatedUser = await UsersCollection.updateUser(userID, params);
+        const updatedUser = await User.update(params, {
+            where: {
+              id: userID
+            }
+        });
         if (!updatedUser) throw new Error(`Пользователь с ID ${userID} не найден`);
         return updatedUser;
     }
 
     async deleteUser(userID) {
-        const deletedUser = await UsersCollection.deleteUser(userID);
-        return deletedUser;
+        const deletedUser = await User.findOne({
+            where: {
+                id: userID
+            },
+            attributes: { exclude: ['password'] }
+        });
+        
+        const destroyStatus = await User.destroy({
+            where: {
+              id: userID
+            }
+        });
+
+        if (!destroyStatus) throw new Error('Что-то пошло не так');
+        return deletedUser; 
     }
 
-    async filterUsers(param) {
-        const users = await UsersCollection.filterUsers(param);
-        return users;
-    }
-
+    //переделать на findOne
     async checkEmailUsage(email, ID) {
         let users = await this.getAllUsers();
         if (ID) {
-            users = users.filter(user => user.ID.toString() !== ID);
+            users = users.filter(user => user.id !== +ID);
         }
 
         const user = users.find(user => user.email === email);
         return !!user;
     }
 
+    //переделать на findOne
     async checkUsernameUsage(username, ID) {
         let users = await this.getAllUsers();
         if (ID) {
-            users = users.filter(user => user.ID.toString() !== ID);
+            users = users.filter(user => user.id !== +ID);
         }
 
         const user = users.find(user => user.username === username);

@@ -6,6 +6,7 @@ import swaggerUi from "swagger-ui-express";
 import Sentry from "@sentry/node";
 import cors from "cors";
 import routes from "./src/routes/index.js";
+import db from "./src/config/database.js";
 
 dotenv.config();
 
@@ -57,5 +58,9 @@ Sentry.init({
 app.use("/api", routes);
 
 app.use(Sentry.Handlers.errorHandler());
+
+db.authenticate()
+    .then(() => {console.log('Connection has been established successfully.')})
+    .catch(() => {console.error('Unable to connect to the database:', error)});
 
 app.listen(process.env.PORT, () => { console.log(`Now server is listening on http://localhost:${process.env.PORT}`) });

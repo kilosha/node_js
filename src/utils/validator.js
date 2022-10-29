@@ -6,14 +6,8 @@ class Validator {
             body().custom(user => {
                 return this.isValidNewUser(user);
             }),
-            body("name").notEmpty().withMessage("Не заполнено обязательное поле name"),
-            body("name").if(body("name").exists()).isString().withMessage("Имя пользователя должно быть строкой"),
             body("username").notEmpty().withMessage("Не заполнено обязательное поле username"),
             body("username").if(body("username").exists()).isString().withMessage("Username должно быть строкой"),
-            body("email").notEmpty().withMessage("Не заполнено обязательное поле email"),
-            body("email").if(body("email").exists()).isEmail().normalizeEmail().withMessage("Укажите корректный email (example@example.com)"),
-
-
             body("password").notEmpty().withMessage("Не заполнено обязательное поле password"),
             body("password").if(body("password").exists()).isStrongPassword({
                     minLength: 8,
@@ -22,8 +16,10 @@ class Validator {
                     minNumbers: 1,
                     minSymbols: 1
                 }).withMessage("Пароль должен быть длиной не менее 8 символов, из них минимум 1 заглавная буква, 1 прописная, 1 число и 1 символ"),
-            body("isMan").notEmpty().withMessage("Не заполнено обязательное поле isMan"),
-            body("isMan").if(body("isMan").exists()).isBoolean({strict: true}).withMessage("Значение должно быть true или false"),
+            body("email").notEmpty().withMessage("Не заполнено обязательное поле email"),
+            body("email").if(body("email").exists()).isEmail().normalizeEmail().withMessage("Укажите корректный email (example@example.com)"),
+            body("gender").notEmpty().withMessage("Не заполнено обязательное поле gender"),
+            body("gender").if(body("gender").exists()).isIn(['male', 'female']).withMessage("Пол должен быть male or female"),
             body("age").notEmpty().withMessage("Не заполнено обязательное поле age"),
             body("age").if(body("age").exists()).isInt({ min: 10, max: 100 }).withMessage("Введите целое число от 10 до 100")
         ]
@@ -35,14 +31,9 @@ class Validator {
             body().custom(user => {
                 return this.isValidUser(user);
             }),
-            body("name").if(body("name").exists())
-                .notEmpty().withMessage("Не заполнено обязательное поле name")
-                .isString().withMessage("Имя пользователя должно быть строкой"),
             body("username").if(body("username").exists())
-                .notEmpty().withMessage("Не заполнено обязательное поле username")
                 .isString().withMessage("Username должно быть строкой"),
             body("email").if(body("email").exists())
-                .notEmpty().withMessage("Не заполнено обязательное поле email")
                 .isEmail().normalizeEmail().withMessage("Укажите корректный email (example@example.com)"),
             body("password").if(body("password").exists()).isStrongPassword({
                 minLength: 8,
@@ -51,28 +42,19 @@ class Validator {
                 minNumbers: 1,
                 minSymbols: 1
             }).withMessage("Пароль должен быть длиной не менее 8 символов, из них минимум 1 заглавная буква, 1 прописная, 1 число и 1 символ"),
-            body("isMan").if(body("isMan").exists())
-                .notEmpty().withMessage("Не заполнено обязательное поле isMan")
-                .isBoolean({strict: true}).withMessage("Значение должно быть true или false"),
+            body("gender").if(body("gender").exists())
+                .isIn(['male', 'female']).withMessage("Пол должен быть male or female"),
             body("age").if(body("age").exists())
-                .notEmpty().withMessage("Не заполнено обязательное поле age")
                 .isInt({ min: 10, max: 100 }).withMessage("Введите целое число от 10 до 100")
         ]
     }
 
     validateID() {
-        return [param("ID").isMongoId().withMessage("ID должен быть в формате ObjectId")];
-    }
-
-    validateFilter() {
-        return oneOf([
-            param("param").isIn(["M", "F"]).withMessage("Допустимы значения F или M"),
-            param("param").isMongoId().withMessage("ID должен быть в формате ObjectId")
-        ], "Фильтр возможен только по F, M или ObjectId")
+        return [param("ID").isInt( {min: 1}).withMessage("ID должен быть целым числом от 1")];
     }
 
     isValidUser(user) {
-        const { ID, name, username, email, password, isMan, age, ...other } = user;
+        const { id, username, email, password, gender, age, ...other } = user;
 
         if (Object.keys(other).length) {
             throw new Error("Объект содержит некорректные поля: " + Object.keys(other));
@@ -82,7 +64,7 @@ class Validator {
     }
 
     isValidNewUser(user) {
-        const { name, username, email, password, isMan, age, ...other } = user;
+        const { username, password, email, gender, age, ...other } = user;
 
         if (Object.keys(other).length) {
             throw new Error("Объект содержит некорректные поля: " + Object.keys(other));
@@ -95,21 +77,14 @@ class Validator {
         return [
             query().custom(query => {
                 if (Object.keys(query).length) {
-                    const { min, max, ...other } = query;
+                    const { gender, ...other } = query;
                     if (Object.keys(other).length) {
                         throw new Error("Некорректные query параметры: " + Object.keys(other));
-                    }
-
-                    if (+min > +max) {
-                        throw new Error("Некорректные query параметры: min должно быть <= max");
                     }
                 }
                 return true;
             }),
-            query("min").if(query("min").exists()).isInt({ min: 10, max: 100 }).withMessage("Минимальный возраст должен быть целым числом от 10 до 100"),
-            query("min").if(query("max").exists()).notEmpty().withMessage("Если задан максимальный возраст, нужно задать и минимальный"),
-            query("max").if(query("max").exists()).isInt({ min: 10, max: 100 }).withMessage("Максимальный возраст должен быть целым числом от 10 до 100"),
-            query("max").if(query("min").exists()).notEmpty().withMessage("Если задан минимальный возраст, нужно задать и максимальный")
+            query("gender").if(query("gender").exists()).isIn(['male', 'female']).withMessage("Пол должен быть male or female")
         ]
     }
 

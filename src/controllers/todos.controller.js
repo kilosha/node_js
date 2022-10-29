@@ -2,7 +2,6 @@ import { validationResult } from "express-validator";
 import Sentry from "@sentry/node";
 
 import TodosServices from "../services/todos.service.js";
-import Todo from "../models/Todo.js";
 
 class TodosControllers {
     async getTodos(req, res) {
@@ -24,7 +23,7 @@ class TodosControllers {
 
                 res.send(todos);
             } catch (e) {
-                Sentry.captureException(e);
+                ////Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -40,11 +39,11 @@ class TodosControllers {
             });
         } else {
             try {
-                const newTodo = new Todo(req.body.title, req.user.ID);
+                const newTodo = { title: req.body.title, userID: req.user.ID };
                 const newDBTodo = await TodosServices.createTodo(newTodo);
                 res.send(newDBTodo);
             } catch (e) {
-                Sentry.captureException(e);
+                ////Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -63,7 +62,7 @@ class TodosControllers {
                 const updatedTodo = await TodosServices.updateTodoTitle(req.body.title, req.params.ID, req.user.ID);
                 res.send(updatedTodo);
             } catch (e) {
-                Sentry.captureException(e);
+                ////Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -82,7 +81,7 @@ class TodosControllers {
                 const updatedTodo = await TodosServices.updateTodoStatus(req.params.ID, req.user.ID);
                 res.send(updatedTodo);
             } catch (e) {
-                Sentry.captureException(e);
+                ////Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -101,7 +100,7 @@ class TodosControllers {
                 const deletedTodo = await TodosServices.deleteTodo(req.params.ID, req.user.ID);
                 res.send(deletedTodo);
             } catch (e) {
-                Sentry.captureException(e);
+                ////Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }

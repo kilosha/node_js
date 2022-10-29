@@ -20,10 +20,10 @@ class AuthControllers {
         const user = await AuthServices.getUser(email);
 
         if (!!Object.keys(user).length) {
-          const ID = user.ID;
+          const id = user.id;
           const compareUser = await bcrypt.compare(password, user.password);
           if (compareUser) {
-            const token = sign({ email, ID }, process.env.ACCESS_TOKEN_SECRET);
+            const token = sign({ email, id }, process.env.ACCESS_TOKEN_SECRET);
             res.send({ token });
           } else {
             throw new Error("Пароль не правильный!");
