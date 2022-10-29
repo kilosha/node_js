@@ -1,3 +1,4 @@
+import Sequelize from 'sequelize';
 import model from '../models/index.js';
 const { User } = model;
 
@@ -36,12 +37,15 @@ class UsersServices {
         const updatedUser = await User.update(params, {
             where: {
               id: userID
-            }
+            },
+            returning: true,
+            individualHooks: true
         });
         if (!updatedUser) throw new Error(`Пользователь с ID ${userID} не найден`);
-        return updatedUser;
+        return updatedUser[1][0];
     }
 
+    //удалять и тудушки
     async deleteUser(userID) {
         const deletedUser = await User.findOne({
             where: {
@@ -60,26 +64,46 @@ class UsersServices {
         return deletedUser; 
     }
 
-    //переделать на findOne
     async checkEmailUsage(email, ID) {
-        let users = await this.getAllUsers();
+        let userWithSuchEmail;
         if (ID) {
-            users = users.filter(user => user.id !== +ID);
+            userWithSuchEmail = await User.findOne({
+                where: {
+                    email,
+                    id: {
+                      [Sequelize.Op.not]: ID
+                    }
+                } 
+            });
+        } else {
+            userWithSuchEmail = await User.findOne({
+                where: {
+                    email
+                } 
+            });
         }
-
-        const user = users.find(user => user.email === email);
-        return !!user;
+        return !!userWithSuchEmail;
     }
 
-    //переделать на findOne
     async checkUsernameUsage(username, ID) {
-        let users = await this.getAllUsers();
+        let userWithSuchUsername;
         if (ID) {
-            users = users.filter(user => user.id !== +ID);
+            userWithSuchUsername = await User.findOne({
+                where: {
+                    username,
+                    id: {
+                      [Sequelize.Op.not]: ID
+                    }
+                } 
+            });
+        } else {
+            userWithSuchUsername = await User.findOne({
+                where: {
+                    username
+                } 
+            });
         }
-
-        const user = users.find(user => user.username === username);
-        return !!user;
+        return !!userWithSuchUsername;
     }
 }
 
