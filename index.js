@@ -61,6 +61,6 @@ app.use(Sentry.Handlers.errorHandler());
 
 db.authenticate()
     .then(() => {console.log('Connection has been established successfully.')})
-    .catch(() => {console.error('Unable to connect to the database:', error)});
+    .catch((error) => {console.error('Unable to connect to the database:', error)});
 
 app.listen(process.env.PORT, () => { console.log(`Now server is listening on http://localhost:${process.env.PORT}`) });
