@@ -6,9 +6,37 @@ class TodosMongooseServices {
         return todos;
     }
 
-    async getQueryTodos(userID, isCompleted) {
-        const todos = await TodoModel.find({userID, isCompleted}).lean();
-        return todos;
+    async getQueryTodos(userID, query) {
+        let todos;
+        if (query.limit || query.page) {
+            let count;
+            const { page = 1, limit = 10 } = query;
+
+            if (query.isCompleted !== undefined ) {
+                todos = await TodoModel.find({userID, isCompleted: query.isCompleted})
+                            .limit(limit * 1)
+                            .skip((page - 1) * limit)
+                            .lean();
+
+                count = await TodoModel.countDocuments({userID, isCompleted: query.isCompleted});
+            } else {
+                todos = await TodoModel.find({userID})
+                    .limit(limit * 1)
+                    .skip((page - 1) * limit)
+                    .lean();
+                    
+                count = await TodoModel.countDocuments({userID});
+            
+            }
+            return {
+                todos, 
+                totalPages: Math.ceil(count / limit),
+                currentPage: page};
+
+        } else {
+            todos = await TodoModel.find({userID, isCompleted: query.isCompleted}).lean();
+            return todos;
+        }
     }
 
     async createTodo(newTodoInfo) {

@@ -17,7 +17,7 @@ class TodosMongooseControllers {
             try {
                 let todos;
                 if (Object.values(req.query).length) {
-                    todos = await TodosMongooseServices.getQueryTodos(req.user.ID, req.query.isCompleted);
+                    todos = await TodosMongooseServices.getQueryTodos(req.user.ID, req.query);
                 } else {
                     todos = await TodosMongooseServices.getTodos(req.user.ID);
                 }

@@ -21,6 +21,16 @@ const router = express.Router();
  *          required: false
  *          description: Filter task by completeness (true or false)
  *          type: boolean
+ *        - in: query
+ *          name: page
+ *          required: false
+ *          description: Show limited amount of tasks (if limit exists, default value is 1)
+ *          type: number
+ *        - in: query
+ *          name: limit
+ *          required: false
+ *          description: Show only limited amount of tasks (if page exists, default value is 10)
+ *          type: number
  *      responses:
  *        200:
  *          description: Successful response
@@ -33,7 +43,7 @@ const router = express.Router();
  *        401:
  *          $ref: "#/components/responses/UnauthorizedError"
  */
-router.get("/", authenticateToken, Validator.validateTodoQueryIfPresent(), TodosMongooseControllers.getTodos);
+router.get("/", authenticateToken, Validator.validateMongooseTodoQueryIfPresent(), TodosMongooseControllers.getTodos);
 
 /**
  * @swagger
