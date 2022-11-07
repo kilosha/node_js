@@ -162,6 +162,23 @@ class Validator {
         ]
     }
 
+    validateMongooseTodoQueryIfPresent() {
+        return [
+            query().custom(query => {
+                if (Object.keys(query).length) {
+                    const { isCompleted, page, limit, ...other } = query;
+                    if (Object.keys(other).length) {
+                        throw new Error("Некорректные query параметры: " + Object.keys(other));
+                    }
+                }
+                return true;
+            }),
+            query("isCompleted").if(query("isCompleted").exists()).isBoolean().withMessage("Значение должно быть true или false"),
+            query("page").if(query("page").exists()).isInt({ min: 1}).withMessage("Значение должно быть целым числом от 1"),
+            query("limit").if(query("limit").exists()).isInt({ min: 1}).withMessage("Значение должно быть целым числом от 1")
+        ]
+    }
+
     isValidTodoObject(todo) {
         const { title, ...other } = todo;
 
