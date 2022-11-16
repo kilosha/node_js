@@ -18,8 +18,7 @@ class AuthControllers {
       try {
         const { email, password } = req.body;
         const user = await AuthServices.getUser(email);
-
-        if (!!Object.keys(user).length) {
+        if (user) {
           const id = user.id;
           const compareUser = await bcrypt.compare(password, user.password);
           if (compareUser) {

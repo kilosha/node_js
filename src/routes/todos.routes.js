@@ -64,10 +64,10 @@ router.get("/", authenticateToken, Validator.validateTodoQueryIfPresent(), Todos
  *     TodoItem:
  *       description: Todos object
  *       properties:
- *         ID:
- *           type: string
- *           example: 63460d72bf56cb381a9eb823
- *           description: Todos ID
+ *         id:
+ *           type: integer
+ *           example: 1
+ *           description: Todos id
  *         title:
  *           type: string
  *           example: Купить гвозди
@@ -76,15 +76,15 @@ router.get("/", authenticateToken, Validator.validateTodoQueryIfPresent(), Todos
  *           type: boolean
  *           example: false
  *           description: Default value false. Is todo completed or not.
- *         userID:
- *           type: string
- *           example: 63460ba6f0b67c1c38fedce5
- *           description: ID of user, which todo it is.
+ *         user_id:
+ *           type: integer
+ *           example: 1
+ *           description: id of user, which todo it is.
  *       required:
- *         - ID
+ *         - id
  *         - title
  *         - isCompleted
- *         - userID   
+ *         - user_id   
  *   requestBodies: 
  *     TodoTitle:
  *       description: Title for new todo.
@@ -147,20 +147,20 @@ router.post("/", authenticateToken, Validator.validateTodoTitle(), TodosControll
 
 /**
  * @swagger
- * /api/todos/{ID}:
+ * /api/todos/{id}:
  *  patch:
- *      summary: Updates todo title for todo with ID = {ID}
+ *      summary: Updates todo title for todo with id = {id}
  *      tags:
  *        - Todos
  *      security: 
  *        - bearerAuth: []
  *      parameters:
  *        - in: path
- *          name: ID
+ *          name: id
  *          required: true
- *          description: Set an {ID} of a todo to update
- *          type: string
- *          example: 63460d72bf56cb381a9eb823
+ *          description: Set an {id} of a todo to update
+ *          type: integer
+ *          example: 1
  *      requestBody:
  *        $ref: "#/components/requestBodies/TodoTitle"
  *      responses:
@@ -175,24 +175,24 @@ router.post("/", authenticateToken, Validator.validateTodoTitle(), TodosControll
  *           401:
  *             $ref: "#/components/responses/UnauthorizedError"
  */
-router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.validateTodoTitle()], TodosControllers.updateTodoTitle);
+router.patch("/:id", authenticateToken, [Validator.validateID(), Validator.validateTodoTitle()], TodosControllers.updateTodoTitle);
 
 /**
  * @swagger
- * /api/todos/{ID}/isCompleted:
+ * /api/todos/{id}/isCompleted:
  *  patch:
- *      summary: Updates isCompleted property value to the opposite for todo with ID = {ID}
+ *      summary: Updates isCompleted property value to the opposite for todo with id = {id}
  *      tags:
  *        - Todos
  *      security: 
  *        - bearerAuth: []
  *      parameters:
  *        - in: path
- *          name: ID
+ *          name: id
  *          required: true
- *          description: Set an {ID} of a todo to update
- *          type: string
- *          example: 63460d72bf56cb381a9eb823
+ *          description: Set an {id} of a todo to update
+ *          type: integer
+ *          example: 1
  *      responses:
  *        200:
  *          description: Successful response with updated Todo
@@ -205,24 +205,24 @@ router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.valid
  *        401:
  *          $ref: "#/components/responses/UnauthorizedError"
  */
-router.patch("/:ID/isCompleted", authenticateToken, Validator.validateID(), TodosControllers.updateTodoStatus);
+router.patch("/:id/isCompleted", authenticateToken, Validator.validateID(), TodosControllers.updateTodoStatus);
 
 /**
  * @swagger
- * /api/todos/{ID}:
+ * /api/todos/{id}:
  *  delete:
- *      summary: Delete todo with {ID} and return deleted object if success
+ *      summary: Delete todo with {id} and return deleted object if success
  *      tags:
  *        - Todos
  *      security: 
  *        - bearerAuth: []
  *      parameters:
  *        - in: path
- *          name: ID
+ *          name: id
  *          required: true
- *          description: Set an {ID} of a todo to update
- *          type: string
- *          example: 63460d72bf56cb381a9eb823
+ *          description: Set an {id} of a todo to update
+ *          type: integer
+ *          example: 1
  *      responses:
  *        200:
  *          description: Successful response with updated Todo
@@ -235,6 +235,6 @@ router.patch("/:ID/isCompleted", authenticateToken, Validator.validateID(), Todo
  *        401:
  *          $ref: "#/components/responses/UnauthorizedError"
  */
-router.delete("/:ID", authenticateToken, Validator.validateID(), TodosControllers.deleteTodo);
+router.delete("/:id", authenticateToken, Validator.validateID(), TodosControllers.deleteTodo);
 
 export default router;

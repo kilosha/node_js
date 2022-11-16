@@ -42,7 +42,7 @@ class UsersControllers {
             });
         } else {
             try {
-                const user = await UsersServices.getUserByID(req.params.ID);
+                const user = await UsersServices.getUserByID(req.params.id);
                 res.send(user || {});
             } catch (e) {
                 ////Sentry.captureException(e);
@@ -91,13 +91,13 @@ class UsersControllers {
             });
         } else {
             try {
-                if (req.user.id !== +req.params.ID) throw new Error("Пользователь может менять только свои данные!");
-                const isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email, req.params.ID);
-                const isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username, req.params.ID);
+                if (req.user.id !== +req.params.id) throw new Error("Пользователь может менять только свои данные!");
+                const isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email, req.params.id);
+                const isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username, req.params.id);
 
                 if (!isEmailAlreadyUsed && !isUserNameAlreadyUsed) {
                     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-                    const updatedUser = await UsersServices.updateUser(req.params.ID, {
+                    const updatedUser = await UsersServices.updateUser(req.params.id, {
                         ...req.body,
                         password: hashedPassword
                     });
@@ -126,14 +126,14 @@ class UsersControllers {
             });
         } else {
             try {
-                if (req.user.id !== +req.params.ID) throw new Error("Пользователь может менять только свои данные!");
+                if (req.user.id !== +req.params.id) throw new Error("Пользователь может менять только свои данные!");
                 let isEmailAlreadyUsed, isUserNameAlreadyUsed = false;
                 if (req.body.email) {
-                    isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email, req.params.ID);
+                    isEmailAlreadyUsed = await UsersServices.checkEmailUsage(req.body.email, req.params.id);
                 }
 
                 if (req.body.username) {
-                    isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username, req.params.ID);
+                    isUserNameAlreadyUsed = await UsersServices.checkUsernameUsage(req.body.username, req.params.id);
                 }
 
                 if (!isEmailAlreadyUsed && !isUserNameAlreadyUsed) {
@@ -144,7 +144,7 @@ class UsersControllers {
                         updatedFields.password = hashedPassword;
                     }
 
-                    const updatedUser = await UsersServices.updateUser(req.params.ID, updatedFields);
+                    const updatedUser = await UsersServices.updateUser(req.params.id, updatedFields);
 
                     res.send(updatedUser);
                 } else {
@@ -171,8 +171,8 @@ class UsersControllers {
             });
         } else {
             try {
-                if (req.user.id !== +req.params.ID) throw new Error("Пользователь не может удалить другого пользователя!");
-                const deletedUser = await UsersServices.deleteUser(req.params.ID);   
+                if (req.user.id !== +req.params.id) throw new Error("Пользователь не может удалить другого пользователя!");
+                const deletedUser = await UsersServices.deleteUser(req.params.id);   
                 res.send(deletedUser);
             } catch (e) {
                 ////Sentry.captureException(e);

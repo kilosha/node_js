@@ -50,7 +50,7 @@ class Validator {
     }
 
     validateID() {
-        return [param("ID").isInt( {min: 1}).withMessage("ID должен быть целым числом от 1")];
+        return [param("id").isInt( {min: 1}).withMessage("id должен быть целым числом от 1")];
     }
 
     isValidUser(user) {

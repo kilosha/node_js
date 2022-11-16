@@ -13,7 +13,7 @@ const Todo = db.define('todo', {
         type: Sequelize.STRING,
         allowNull: false
     },
-    iscompleted: {
+    isCompleted: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: false

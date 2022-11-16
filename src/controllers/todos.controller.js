@@ -16,9 +16,9 @@ class TodosControllers {
             try {
                 let todos;
                 if (Object.values(req.query).length) {
-                    todos = await TodosServices.getQueryTodos(req.user.ID, req.query.isCompleted);
+                    todos = await TodosServices.getQueryTodos(req.user.id, req.query.isCompleted);
                 } else {
-                    todos = await TodosServices.getTodos(req.user.ID);
+                    todos = await TodosServices.getTodos(req.user.id);
                 }
 
                 res.send(todos);
@@ -39,7 +39,7 @@ class TodosControllers {
             });
         } else {
             try {
-                const newTodo = { title: req.body.title, userID: req.user.ID };
+                const newTodo = { title: req.body.title, user_id: req.user.id };
                 const newDBTodo = await TodosServices.createTodo(newTodo);
                 res.send(newDBTodo);
             } catch (e) {
@@ -59,8 +59,8 @@ class TodosControllers {
             });
         } else {
             try {
-                const updatedTodo = await TodosServices.updateTodoTitle(req.body.title, req.params.ID, req.user.ID);
-                res.send(updatedTodo);
+                const updatedTodo = await TodosServices.updateTodoTitle(req.body.title, req.params.id, req.user.id);
+                res.send(...updatedTodo);
             } catch (e) {
                 ////Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
@@ -78,7 +78,7 @@ class TodosControllers {
             });
         } else {
             try {
-                const updatedTodo = await TodosServices.updateTodoStatus(req.params.ID, req.user.ID);
+                const updatedTodo = await TodosServices.updateTodoStatus(req.params.id, req.user.id);
                 res.send(updatedTodo);
             } catch (e) {
                 ////Sentry.captureException(e);
@@ -97,7 +97,7 @@ class TodosControllers {
             });
         } else {
             try {
-                const deletedTodo = await TodosServices.deleteTodo(req.params.ID, req.user.ID);
+                const deletedTodo = await TodosServices.deleteTodo(req.params.id, req.user.id);
                 res.send(deletedTodo);
             } catch (e) {
                 ////Sentry.captureException(e);

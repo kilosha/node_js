@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "start:dev": "nodemon index.js"
+    "start:dev": "nodemon index.js",
+    "fake-data": "node src/utils/DBFiller.js"
   },
   "keywords": [
     "node"

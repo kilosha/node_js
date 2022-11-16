@@ -15,15 +15,10 @@ const router = express.Router();
  *          - Users
  *      parameters:
  *        - in: query
- *          name: min
+ *          name: gender
  *          required: false
- *          description: Set an min age of users to get (from 10 to 100)
- *          type: integer
- *        - in: query
- *          name: max
- *          required: false
- *          description: Set an max age of users to get (from 10 to 100)
- *          type: integer
+ *          description: Select all males or females
+ *          type: string
  *      responses:
  *        200:
  *          description: Successful response
@@ -50,13 +45,13 @@ const router = express.Router();
  *                      properties:
  *                        value:
  *                          type: string
- *                          example: 3
+ *                          example: test
  *                        msg:
  *                          type: string
- *                          example: Минимальный возраст должен быть целым числом от 10 до 100
+ *                          example: Пол должен быть male or female
  *                        param:
  *                          type: string
- *                          example: min
+ *                          example: gender
  *                        location:
  *                          type: string
  *                          example: query
@@ -65,19 +60,19 @@ router.get("/", Validator.validateQueryIfPresent(), UsersControllers.getUsers);
 
 /**
  * @swagger
- * /api/users/user/{ID}:
+ * /api/users/{id}:
  *  get:
- *      summary: Get user by {ID}
- *      description: Returns user object with ID
+ *      summary: Get user by {id}
+ *      description: Returns user object with id
  *      tags:
  *          - Users
  *      parameters:
  *        - in: path
- *          name: ID
+ *          name: id
  *          required: true
- *          description: Set an {ID} of a user to get
- *          type: string
- *          example: 63452ed7d18c1bb917ecf031
+ *          description: Set an {id} of a user to get
+ *          type: integer
+ *          example: 1
  *      responses:
  *        200:
  *          description: Successful response
@@ -105,21 +100,21 @@ router.get("/", Validator.validateQueryIfPresent(), UsersControllers.getUsers);
  *                          example: d2ba09800587da
  *                        msg:
  *                          type: string
- *                          example: ID должен быть в формате ObjectId
+ *                          example: id должен быть целым числом от 1
  *                        param:
  *                          type: string
- *                          example: ID
+ *                          example: id
  *                        location:
  *                          type: string
  *                          example: params
  */
-router.get("/:ID",  Validator.validateID(), UsersControllers.getUserByID);
+router.get("/:id",  Validator.validateID(), UsersControllers.getUserByID);
 
 /**
  * @swagger
  *  /api/users/register:
  *    post:
- *      summary: Add new user and return new user object with ID if success
+ *      summary: Add new user and return new user object with id if success
  *      description:
  *          Register "User" object.
  *      tags:
@@ -156,10 +151,6 @@ router.get("/:ID",  Validator.validateID(), UsersControllers.getUserByID);
  *           schema:
  *             type: object
  *             properties:
- *               name:
- *                 type: string
- *                 example: Masha
- *                 description: Users' name
  *               username:
  *                 type: string
  *                 example: marry22
@@ -172,31 +163,27 @@ router.get("/:ID",  Validator.validateID(), UsersControllers.getUserByID);
  *                 type: string
  *                 example: 1Sq_22qw
  *                 description: Users' password (min length - 8 symbols, min 1 uppercase, min 1 lowercase, min 1 number, min 1 symbol) 
- *               isMan:
- *                 type: boolean
- *                 example: false
- *                 description: Man or woman
+ *               gender:
+ *                 type: string
+ *                 example: female
+ *                 description: Male or female
  *               age:
  *                 type: integer
  *                 example: 25
  *                 description: Users' age
  *             required:
- *               - name
  *               - username
  *               - email
  *               - password
- *               - isMan
+ *               - gender
  *               - age
  *   schemas:
  *     User:
  *       description: Users object
  *       properties:
- *         ID:
- *           type: string
- *           example: 63452ed7d18c1bb917ecf031
- *         name:
- *           type: string
- *           example: Masha
+ *         id:
+ *           type: integer
+ *           example: 1
  *         username:
  *           type: string
  *           example: marry22
@@ -206,28 +193,27 @@ router.get("/:ID",  Validator.validateID(), UsersControllers.getUserByID);
  *         password:
  *           type: string
  *           example: 1Sq_22qw
- *         isMan:
- *           type: boolean
- *           example: false
+ *         gender:
+ *           type: string
+ *           example: female
  *         age:
  *           type: integer
  *           example: 25
  *       required:
- *         - ID
- *         - name
+ *         - id
  *         - username
  *         - email
  *         - password
- *         - isMan
+ *         - gender
  *         - age
  */
 router.post("/register", Validator.validateUser(), UsersControllers.createUser);
 
 /**
  * @swagger
- * /api/users/{ID}:
+ * /api/users/{id}:
  *  put:
- *      summary: Updates a user with {ID}
+ *      summary: Updates a user with {id}
  *      tags:
  *        - Users
  *      security: 
@@ -236,11 +222,11 @@ router.post("/register", Validator.validateUser(), UsersControllers.createUser);
  *        - application/json
  *      parameters:
  *        - in: path
- *          name: ID
+ *          name: id
  *          required: true
- *          description: Set an {ID} of a user to update
- *          type: string
- *          example: 63452ed7d18c1bb917ecf031
+ *          description: Set an {id} of a user to update
+ *          type: integer
+ *          example: 1
  *      requestBody:
  *        $ref: "#/components/requestBodies/User"
  *      responses:
@@ -253,13 +239,13 @@ router.post("/register", Validator.validateUser(), UsersControllers.createUser);
  *        400:
  *          $ref: "#/components/responses/ValidationError"
  */
- router.put("/:ID", authenticateToken, [Validator.validateID(), Validator.validateUser()], UsersControllers.updateFullUser);
+ router.put("/:id", authenticateToken, [Validator.validateID(), Validator.validateUser()], UsersControllers.updateFullUser);
 
  /**
   * @swagger
-  * /api/users/{ID}:
+  * /api/users/{id}:
   *  patch:
-  *      summary: Updates a user with {ID}
+  *      summary: Updates a user with {id}
   *      tags:
   *        - Users
   *      security: 
@@ -268,11 +254,11 @@ router.post("/register", Validator.validateUser(), UsersControllers.createUser);
   *        - application/json
   *      parameters:
   *        - in: path
-  *          name: ID
+  *          name: id
   *          required: true
-  *          description: Set an {ID} of a user to update
-  *          type: string
-  *          example: 63452ed7d18c1bb917ecf031
+  *          description: Set an {id} of a user to update
+  *          type: integer
+  *          example: 1
   *      requestBody:
   *        $ref: "#/components/requestBodies/UserPropertiesForUpdate"
   *      responses:
@@ -294,10 +280,6 @@ router.post("/register", Validator.validateUser(), UsersControllers.createUser);
  *           schema:
  *             type: object
  *             properties:
- *               name:
- *                 type: string
- *                 example: Masha
- *                 description: Users' name
  *               username:
  *                 type: string
  *                 example: marry22
@@ -310,10 +292,10 @@ router.post("/register", Validator.validateUser(), UsersControllers.createUser);
  *                 type: string
  *                 example: 1Sq_22qw
  *                 description: Users' password (min length - 8 symbols, min 1 uppercase, min 1 lowercase, min 1 number, min 1 symbol) 
- *               isMan:
- *                 type: boolean
- *                 example: false
- *                 description: Man or woman
+ *               gender:
+ *                 type: string
+ *                 example: female
+ *                 description: Male or female
  *               age:
  *                 type: integer
  *                 example: 25
@@ -322,24 +304,21 @@ router.post("/register", Validator.validateUser(), UsersControllers.createUser);
  *     User:
  *       description: User object
  *       properties:
- *         ID:
- *           type: string
- *           example: 63452ed7d18c1bb917ecf031
- *         name:
- *           type: string
- *           example: Masha
+ *         id:
+ *           type: integer
+ *           example: 1
  *         username:
  *           type: string
  *           example: marry22
  *         email:
  *           type: string
  *           example: example@example.com
- *         isMan:
- *           type: boolean
- *           example: false
  *         age:
  *           type: integer
  *           example: 25
+ *         gender:
+ *           type: string
+ *           example: female
  *     ValidationError:
  *       description: Bad request
  *       content:
@@ -376,15 +355,15 @@ router.post("/register", Validator.validateUser(), UsersControllers.createUser);
  *             properties: 
  *               message:
  *                 type: string
- *                 example: "Пользователь с ID 23452ed7d18c1bb917ecf031 не найден"    
+ *                 example: "Пользователь не может удалить другого пользователя!"    
  */
-router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.validateUserUpdate()], UsersControllers.updateUser);
+router.patch("/:id", authenticateToken, [Validator.validateID(), Validator.validateUserUpdate()], UsersControllers.updateUser);
 
 /**
  * @swagger
- * /api/users/{ID}:
+ * /api/users/{id}:
  *  delete:
- *      summary: Delete user with {ID}
+ *      summary: Delete user with {id}
  *      tags:
  *        - Users
  *      security: 
@@ -393,11 +372,11 @@ router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.valid
  *        - application/json
  *      parameters:
  *        - in: path
- *          name: ID
+ *          name: id
  *          required: true
- *          description: ID of user to delete
- *          type: string
- *          example: 63452ed7d18c1bb917ecf031
+ *          description: id of user to delete
+ *          type: integer
+ *          example: 1
  *      responses:
  *        200:
  *          description: Successful response
@@ -408,6 +387,6 @@ router.patch("/:ID", authenticateToken, [Validator.validateID(), Validator.valid
  *        400:
  *          $ref: "#/components/responses/UserNotFound"
  */
-router.delete("/:ID", authenticateToken, Validator.validateID(), UsersControllers.deleteUser);
+router.delete("/:id", authenticateToken, Validator.validateID(), UsersControllers.deleteUser);
 
 export default router;

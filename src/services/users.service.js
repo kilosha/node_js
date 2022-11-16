@@ -5,7 +5,10 @@ const { User } = model;
 class UsersServices {
     async getAllUsers() {
         const users = await User.findAll({
-            attributes: { exclude: ['password'] }
+            attributes: { exclude: ['password'] },
+            order: [
+                ['id', 'ASC']
+            ]
         });
         return users;
     }
@@ -13,15 +16,18 @@ class UsersServices {
     async getQueryUsers(query) {
         const users = await await User.findAll({
             where: query,
-            attributes: { exclude: ['password'] }
+            attributes: { exclude: ['password'] },
+            order: [
+                ['id', 'ASC']
+            ]
         });
         return users;
     }
 
-    async getUserByID(ID) {
+    async getUserByID(id) {
         const user = await User.findOne({
             where: {
-                id: ID
+                id: id
             },
             attributes: { exclude: ['password'] }
         });
@@ -41,11 +47,10 @@ class UsersServices {
             returning: true,
             individualHooks: true
         });
-        if (!updatedUser) throw new Error(`Пользователь с ID ${userID} не найден`);
+        if (!updatedUser) throw new Error(`Пользователь с id ${userID} не найден`);
         return updatedUser[1][0];
     }
 
-    //удалять и тудушки
     async deleteUser(userID) {
         const deletedUser = await User.findOne({
             where: {
@@ -64,14 +69,14 @@ class UsersServices {
         return deletedUser; 
     }
 
-    async checkEmailUsage(email, ID) {
+    async checkEmailUsage(email, id) {
         let userWithSuchEmail;
-        if (ID) {
+        if (id) {
             userWithSuchEmail = await User.findOne({
                 where: {
                     email,
                     id: {
-                      [Sequelize.Op.not]: ID
+                      [Sequelize.Op.not]: id
                     }
                 } 
             });
@@ -85,14 +90,14 @@ class UsersServices {
         return !!userWithSuchEmail;
     }
 
-    async checkUsernameUsage(username, ID) {
+    async checkUsernameUsage(username, id) {
         let userWithSuchUsername;
-        if (ID) {
+        if (id) {
             userWithSuchUsername = await User.findOne({
                 where: {
                     username,
                     id: {
-                      [Sequelize.Op.not]: ID
+                      [Sequelize.Op.not]: id
                     }
                 } 
             });
