@@ -2,7 +2,7 @@ import db from "../config/database.js";
 import model from '../models/index.js';
 const { User, Todo } = model;
 
-db.authenticate()
+await db.authenticate()
     .then(() => console.log("DB connected!"))
     .catch((err) => console.log(err));
 
