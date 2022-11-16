@@ -26,7 +26,7 @@ class UsersControllers {
                 }
                 res.send(users);
             } catch (e) {
-                ////Sentry.captureException(e);
+                Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -45,7 +45,7 @@ class UsersControllers {
                 const user = await UsersServices.getUserByID(req.params.id);
                 res.send(user || {});
             } catch (e) {
-                ////Sentry.captureException(e);
+                Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -76,7 +76,7 @@ class UsersControllers {
                     });
                 }
             } catch (e) {
-                ////Sentry.captureException(e);
+                Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -110,7 +110,7 @@ class UsersControllers {
                     });
                 }
             } catch (e) {
-                //Sentry.captureException(e);
+                Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -155,7 +155,7 @@ class UsersControllers {
                     });
                 }
             } catch (e) {
-                //Sentry.captureException(e);
+                Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
@@ -172,10 +172,10 @@ class UsersControllers {
         } else {
             try {
                 if (req.user.id !== +req.params.id) throw new Error("Пользователь не может удалить другого пользователя!");
-                const deletedUser = await UsersServices.deleteUser(req.params.id);   
+                const deletedUser = await UsersServices.deleteUser(req.params.id);
                 res.send(deletedUser);
             } catch (e) {
-                ////Sentry.captureException(e);
+                Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
             }
         }
