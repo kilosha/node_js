@@ -70,10 +70,10 @@ class UsersControllers {
                     const newDBUser = await UsersServices.createUser(newUser);
                     res.send(newDBUser);
                 } else {
-                    let message = Utils._createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed);
+                    const alreadyUsedErrors = Utils._createErrors(isUserNameAlreadyUsed, isEmailAlreadyUsed, req.body.username, req.body.email);
                     return res.status(400).send({
                         success: false,
-                        message: message
+                        errors: alreadyUsedErrors
                     });
                 }
             } catch (e) {
@@ -104,10 +104,10 @@ class UsersControllers {
                     });
                     res.send(updatedUser);
                 } else {
-                    let message = Utils._createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed);
+                    const alreadyUsedErrors = Utils._createErrors(isUserNameAlreadyUsed, isEmailAlreadyUsed, req.body.username, req.body.email);
                     return res.status(400).send({
                         success: false,
-                        message: message
+                        errors: alreadyUsedErrors
                     });
                 }
             } catch (e) {
@@ -149,10 +149,10 @@ class UsersControllers {
 
                     res.send(updatedUser);
                 } else {
-                    let message = Utils._createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed);
+                    const alreadyUsedErrors = Utils._createErrors(isUserNameAlreadyUsed, isEmailAlreadyUsed, req.body.username, req.body.email);
                     return res.status(400).send({
                         success: false,
-                        message: message
+                        errors: alreadyUsedErrors
                     });
                 }
             } catch (e) {
