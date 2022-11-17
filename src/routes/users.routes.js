@@ -321,7 +321,13 @@ router.post("/register", Validator.validateUser(), UsersControllers.createUser);
  *              schema:
  *                $ref: "#/components/responses/User"
  *        400:
- *          $ref: "#/components/responses/ValidationError"
+ *          description: Bad request
+ *          content:
+ *            application/json:
+ *              schema:
+ *                oneOf:
+ *                 - $ref: "#/components/responses/ValidationError"
+ *                 - $ref: "#/components/responses/AlreadyUsedError"
  */
 router.put("/:ID", authenticateToken, [Validator.validateID(), Validator.validateUser()], UsersControllers.updateFullUser);
 
@@ -353,7 +359,13 @@ router.put("/:ID", authenticateToken, [Validator.validateID(), Validator.validat
  *              schema:
  *                $ref: "#/components/responses/User"
  *        400:
- *          $ref: "#/components/responses/ValidationError"
+ *          description: Bad request
+ *          content:
+ *            application/json:
+ *              schema:
+ *                oneOf:
+ *                 - $ref: "#/components/responses/AlreadyUsedError"
+ *                 - $ref: "#/components/responses/ValidationError"
  * components:
  *   requestBodies:
  *     UserPropertiesForUpdate:
@@ -412,31 +424,50 @@ router.put("/:ID", authenticateToken, [Validator.validateID(), Validator.validat
  *           example: 25
  *     ValidationError:
  *       description: Bad request
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties: 
- *               success:
- *                 type: boolean
- *                 example: false
- *               errors:
- *                 type: array
- *                 items:
- *                   type: object                 
- *                   properties:
- *                         value:
- *                           type: string
- *                           example: masha8.com
- *                         msg:
- *                           type: string
- *                           example: Укажите корректный email (example@example.com)
- *                         param:
- *                           type: string
- *                           example: email
- *                         location:
- *                           type: string
- *                           example: body
+ *       properties: 
+ *         success:
+ *           type: boolean
+ *           example: false
+ *         errors:
+ *           type: array
+ *           items:
+ *             type: object                 
+ *             properties:
+ *               value:
+ *                 type: string
+ *                 example: masha8.com
+ *               msg:
+ *                 type: string
+ *                 example: Укажите корректный email (example@example.com)
+ *               param:
+ *                 type: string
+ *                 example: email
+ *               location:
+ *                 type: string
+ *                 example: body
+ *     AlreadyUsedError:
+ *       description: Bad request
+ *       properties: 
+ *         success:
+ *           type: boolean
+ *           example: false
+ *         errors:
+ *           type: array
+ *           items:
+ *             type: object                 
+ *             properties:
+ *               value:
+ *                 type: string
+ *                 example: masha8.com
+ *               msg:
+ *                 type: string
+ *                 example: Введённый email уже используется
+ *               param:
+ *                 type: string
+ *                 example: email
+ *               location:
+ *                 type: string
+ *                 example: body
  *     UserNotFound: 
  *       description: Cannot find user
  *       content:

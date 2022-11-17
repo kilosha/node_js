@@ -1,15 +1,25 @@
 class Utils {
-    _createErrorMessage(isUserNameAlreadyUsed, isEmailAlreadyUsed) {
-        let message;
-        if (!isUserNameAlreadyUsed) {
-            message = "Введенный email уже используется";
-        } else if (!isEmailAlreadyUsed) {
-            message = "Введенный username уже используется";
-        } else {
-            message = "Введенныe username и email уже используются";
-        }
+    _createErrors(isUserNameAlreadyUsed, isEmailAlreadyUsed, username, email) {
+        const errors = [];
+        if (isUserNameAlreadyUsed) {
+            errors.push({
+                value: username,
+                msg: "Введенный username уже используется",
+                param: "username",
+                location: "body"
+            });
+        } 
+        
+        if (isEmailAlreadyUsed) {
+            errors.push({
+                value: email,
+                msg: "Введенный email уже используется",
+                param: "email",
+                location: "body"
+            });
+        } 
 
-        return message;
+        return errors;
     }
 }
 
