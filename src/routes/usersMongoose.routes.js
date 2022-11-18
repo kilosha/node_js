@@ -427,16 +427,21 @@ router.put("/:ID", authenticateToken, [Validator.validateID(), Validator.validat
  *                   properties:
  *                         value:
  *                           type: string
- *                           example: masha8.com
  *                         msg:
  *                           type: string
- *                           example: Укажите корректный email (example@example.com)
  *                         param:
  *                           type: string
- *                           example: email
  *                         location:
  *                           type: string
- *                           example: body
+ *                 example:
+ *                   - value: masha8.com
+ *                     msg: Укажите корректный email (example@example.com)
+ *                     param: email
+ *                     location: body         
+ *                   - value: masha
+ *                     msg: Введённый username уже используется
+ *                     param: username
+ *                     location: body  
  *     UserNotFound: 
  *       description: Cannot find user
  *       content:

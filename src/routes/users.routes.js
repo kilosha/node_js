@@ -111,7 +111,7 @@ router.get("/", Validator.validateQueryIfPresent(), UsersControllers.getUsers);
  *                          example: ID
  *                        location:
  *                          type: string
- *                          example: params
+ *                          example: params    
  */
 router.get("/user/:ID",  Validator.validateID(), UsersControllers.getUserByID);
 
@@ -204,18 +204,11 @@ router.get("/:param", Validator.validateFilter(), UsersControllers.filterUsers);
  *              schema:
  *                $ref: "#/components/responses/User"
  *        400:
- *          description: Error
+ *          description: Bad request
  *          content:
  *            application/json:
  *              schema:
- *                type: object
- *                properties: 
- *                  success:
- *                    type: boolean
- *                    example: false
- *                  message:
- *                    type: string
- *                    example: "Введенный email уже используется"
+ *                 $ref: "#/components/responses/ValidationError"
  * components:
  *   requestBodies:
  *     User:
@@ -325,9 +318,7 @@ router.post("/register", Validator.validateUser(), UsersControllers.createUser);
  *          content:
  *            application/json:
  *              schema:
- *                oneOf:
- *                 - $ref: "#/components/responses/ValidationError"
- *                 - $ref: "#/components/responses/AlreadyUsedError"
+ *                 $ref: "#/components/responses/ValidationError"
  */
 router.put("/:ID", authenticateToken, [Validator.validateID(), Validator.validateUser()], UsersControllers.updateFullUser);
 
@@ -363,9 +354,7 @@ router.put("/:ID", authenticateToken, [Validator.validateID(), Validator.validat
  *          content:
  *            application/json:
  *              schema:
- *                oneOf:
- *                 - $ref: "#/components/responses/AlreadyUsedError"
- *                 - $ref: "#/components/responses/ValidationError"
+ *                 $ref: "#/components/responses/ValidationError"
  * components:
  *   requestBodies:
  *     UserPropertiesForUpdate:
@@ -435,39 +424,21 @@ router.put("/:ID", authenticateToken, [Validator.validateID(), Validator.validat
  *             properties:
  *               value:
  *                 type: string
- *                 example: masha8.com
  *               msg:
  *                 type: string
- *                 example: Укажите корректный email (example@example.com)
  *               param:
  *                 type: string
- *                 example: email
  *               location:
  *                 type: string
- *                 example: body
- *     AlreadyUsedError:
- *       description: Bad request
- *       properties: 
- *         success:
- *           type: boolean
- *           example: false
- *         errors:
- *           type: array
- *           items:
- *             type: object                 
- *             properties:
- *               value:
- *                 type: string
- *                 example: masha8.com
- *               msg:
- *                 type: string
- *                 example: Введённый email уже используется
- *               param:
- *                 type: string
- *                 example: email
- *               location:
- *                 type: string
- *                 example: body
+ *           example:
+ *             - value: masha8.com
+ *               msg: Укажите корректный email (example@example.com)
+ *               param: email
+ *               location: body         
+ *             - value: masha
+ *               msg: Введённый username уже используется
+ *               param: username
+ *               location: body  
  *     UserNotFound: 
  *       description: Cannot find user
  *       content:

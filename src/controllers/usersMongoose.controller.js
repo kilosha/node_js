@@ -54,28 +54,26 @@ class UsersMongooseControllers {
 
     async createUser(req, res) {
         const errors = validationResult(req);
+        const isEmailAlreadyUsed = await UsersMongooseServices.checkEmailUsage(req.body.email);
+        const isUserNameAlreadyUsed = await UsersMongooseServices.checkUsernameUsage(req.body.username);
+        let errorsStrorage = [];
 
-        if (!errors.isEmpty()) {
+        if (isEmailAlreadyUsed || isUserNameAlreadyUsed) {
+            const alreadyUsedErrors = Utils._createErrors(isUserNameAlreadyUsed, isEmailAlreadyUsed, req.body.username, req.body.email);
+            errorsStrorage.push(alreadyUsedErrors);
+        }
+
+        if (!errors.isEmpty() || errorsStrorage.length) {
             return res.status(400).send({
                 success: false,
-                errors: errors.array()
+                errors: errors.array().concat(...errorsStrorage)
             });
         } else {
             try {
-                const isEmailAlreadyUsed = await UsersMongooseServices.checkEmailUsage(req.body.email);
-                const isUserNameAlreadyUsed = await UsersMongooseServices.checkUsernameUsage(req.body.username);
-                if (!isEmailAlreadyUsed && !isUserNameAlreadyUsed) {
-                    const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-                    const newUser = new User(req.body, hashedPassword);
-                    const newDBUser = await UsersMongooseServices.createUser(newUser);
-                    res.send(newDBUser);
-                } else {
-                    const alreadyUsedErrors = Utils._createErrors(isUserNameAlreadyUsed, isEmailAlreadyUsed, req.body.username, req.body.email);
-                    return res.status(400).send({
-                        success: false,
-                        errors: alreadyUsedErrors
-                    });
-                }
+                const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+                const newUser = new User(req.body, hashedPassword);
+                const newDBUser = await UsersMongooseServices.createUser(newUser);
+                res.send(newDBUser);
             } catch (e) {
                 Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
@@ -85,31 +83,30 @@ class UsersMongooseControllers {
 
     async updateFullUser(req, res) {
         const errors = validationResult(req);
-        if (!errors.isEmpty()) {
+        const isEmailAlreadyUsed = await UsersMongooseServices.checkEmailUsage(req.body.email, req.params.ID);
+        const isUserNameAlreadyUsed = await UsersMongooseServices.checkUsernameUsage(req.body.username, req.params.ID);
+        let errorsStrorage = [];
+
+        if (isEmailAlreadyUsed || isUserNameAlreadyUsed) {
+            const alreadyUsedErrors = Utils._createErrors(isUserNameAlreadyUsed, isEmailAlreadyUsed, req.body.username, req.body.email);
+            errorsStrorage.push(alreadyUsedErrors);
+        }
+        
+        if (!errors.isEmpty() || errorsStrorage.length) {
             return res.status(400).send({
                 success: false,
-                errors: errors.array()
+                errors: errors.array().concat(...errorsStrorage)
             });
         } else {
             try {
                 if (req.user.ID !== req.params.ID) throw new Error("Пользователь может менять только свои данные!");
-                const isEmailAlreadyUsed = await UsersMongooseServices.checkEmailUsage(req.body.email, req.params.ID);
-                const isUserNameAlreadyUsed = await UsersMongooseServices.checkUsernameUsage(req.body.username, req.params.ID);
 
-                if (!isEmailAlreadyUsed && !isUserNameAlreadyUsed) {
-                    const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-                    const updatedUser = await UsersMongooseServices.updateFullUser(req.params.ID, {
-                        ...req.body,
-                        password: hashedPassword
-                    });
-                    res.send(updatedUser);
-                } else {
-                    const alreadyUsedErrors = Utils._createErrors(isUserNameAlreadyUsed, isEmailAlreadyUsed, req.body.username, req.body.email);
-                    return res.status(400).send({
-                        success: false,
-                        errors: alreadyUsedErrors
-                    });
-                }
+                const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+                const updatedUser = await UsersMongooseServices.updateFullUser(req.params.ID, {
+                    ...req.body,
+                    password: hashedPassword
+                });
+                res.send(updatedUser);
             } catch (e) {
                 Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
@@ -119,42 +116,41 @@ class UsersMongooseControllers {
 
     async updateUser(req, res) {
         const errors = validationResult(req);
+        let errorsStrorage = [];
+        let isEmailAlreadyUsed, isUserNameAlreadyUsed = false;
 
-        if (!errors.isEmpty()) {
+        if (req.body.email) {
+            isEmailAlreadyUsed = await UsersMongooseServices.checkEmailUsage(req.body.email, req.params.ID);
+        }
+
+        if (req.body.username) {
+            isUserNameAlreadyUsed = await UsersMongooseServices.checkUsernameUsage(req.body.username, req.params.ID);
+        }
+
+        if (isEmailAlreadyUsed || isUserNameAlreadyUsed) {
+            const alreadyUsedErrors = Utils._createErrors(isUserNameAlreadyUsed, isEmailAlreadyUsed, req.body.username, req.body.email);
+            errorsStrorage.push(alreadyUsedErrors);
+        }
+
+        if (!errors.isEmpty() || errorsStrorage.length) {
             return res.status(400).send({
                 success: false,
-                errors: errors.array()
+                errors: errors.array().concat(...errorsStrorage)
             });
         } else {
             try {
                 if (req.user.ID !== req.params.ID) throw new Error("Пользователь может менять только свои данные!");
-                let isEmailAlreadyUsed, isUserNameAlreadyUsed = false;
-                if (req.body.email) {
-                    isEmailAlreadyUsed = await UsersMongooseServices.checkEmailUsage(req.body.email, req.params.ID);
+
+                const updatedFields = { ...req.body };
+
+                if (req.body.password) {
+                    const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+                    updatedFields.password = hashedPassword;
                 }
 
-                if (req.body.username) {
-                    isUserNameAlreadyUsed = await UsersMongooseServices.checkUsernameUsage(req.body.username, req.params.ID);
-                }
+                const updatedUser = await UsersMongooseServices.updateUser(req.params.ID, updatedFields);
 
-                if (!isEmailAlreadyUsed && !isUserNameAlreadyUsed) {
-                    const updatedFields = { ...req.body };
-
-                    if (req.body.password) {
-                        const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-                        updatedFields.password = hashedPassword;
-                    }
-
-                    const updatedUser = await UsersMongooseServices.updateUser(req.params.ID, updatedFields);
-
-                    res.send(updatedUser);
-                } else {
-                    const alreadyUsedErrors = Utils._createErrors(isUserNameAlreadyUsed, isEmailAlreadyUsed, req.body.username, req.body.email);
-                    return res.status(400).send({
-                        success: false,
-                        errors: alreadyUsedErrors
-                    });
-                }
+                res.send(updatedUser);
             } catch (e) {
                 Sentry.captureException(e);
                 res.status(400).send({ message: e.message });
