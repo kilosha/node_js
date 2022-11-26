@@ -104,6 +104,7 @@ class UsersControllers {
                 const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
                 const updatedUser = await UsersServices.updateFullUser(req.params.ID, {
                     ...req.body,
+                    age: Number(req.body.age),
                     password: hashedPassword
                 });
                 res.send(updatedUser);
@@ -142,6 +143,10 @@ class UsersControllers {
                 if (req.user.ID !== req.params.ID) throw new Error("Пользователь может менять только свои данные!");
                 
                 const updatedFields = { ...req.body };
+                
+                if (req.body.age) {
+                    updatedFields.age = Number(req.body.age);
+                } 
 
                 if (req.body.password) {
                     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);

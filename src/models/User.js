@@ -5,7 +5,7 @@ class User {
         this.email = email;
         this.password = password;
         this.isMan = isMan;
-        this.age = age;
+        this.age = Number(age);
     }
 }
 
